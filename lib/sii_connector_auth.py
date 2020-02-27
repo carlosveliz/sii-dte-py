@@ -4,7 +4,7 @@ import logging
 import zeep
 import re
 
-class SiiConnectorSeed(SiiConnectorBase):
+class SiiConnectorAuth(SiiConnectorBase):
 	""" As discribed in documentation, seed is at least 12 digits """
 	REGEX_MATCH_SEED = r"<SEMILLA>(\d{12,})</SEMILLA>"
 	""" State seems to be at least 3 digits """
@@ -38,3 +38,6 @@ class SiiConnectorSeed(SiiConnectorBase):
 
 		logger.info("Seed " + str(seed))
 		return seed
+
+	def get_token(self, seed):
+		assert len(seed) >= 12

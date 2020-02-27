@@ -1,5 +1,82 @@
-2020-02-27 05:32:30,309 | root - INFO - Application started.
-2020-02-27 05:32:30,309 | root - WARNING - Diagnose started.
-2020-02-27 05:32:30,309 | root - WARNING - Authentication test.
-2020-02-27 05:32:35,472 | root - INFO - Seed 024105508926
-2020-02-27 05:32:35,474 | root - INFO - Application stopped.
+2020-02-27 05:39:21,843 | root - INFO - Application started.
+2020-02-27 05:39:21,843 | root - WARNING - Diagnose started.
+2020-02-27 05:39:21,844 | root - WARNING - Authentication test.
+2020-02-27 05:39:21,845 | zeep.xsd.schema - DEBUG - Init schema document for None
+2020-02-27 05:39:21,846 | zeep.xsd.schema - DEBUG - register_type('{http://www.w3.org/2001/XMLSchema}string', <zeep.xsd.types.builtins.String object at 0x7f939f79cb70>)
+2020-02-27 05:39:21,846 | zeep.xsd.schema - DEBUG - register_type('{http://www.w3.org/2001/XMLSchema}boolean', <zeep.xsd.types.builtins.Boolean object at 0x7f939f79cbe0>)
+2020-02-27 05:39:21,846 | zeep.xsd.schema - DEBUG - register_type('{http://www.w3.org/2001/XMLSchema}decimal', <zeep.xsd.types.builtins.Decimal object at 0x7f939f79cc88>)
+2020-02-27 05:39:21,846 | zeep.xsd.schema - DEBUG - register_type('{http://www.w3.org/2001/XMLSchema}float', <zeep.xsd.types.builtins.Float object at 0x7f939f79ccf8>)
+2020-02-27 05:39:21,847 | zeep.xsd.schema - DEBUG - register_type('{http://www.w3.org/2001/XMLSchema}double', <zeep.xsd.types.builtins.Double object at 0x7f939f79cd68>)
+2020-02-27 05:39:21,847 | zeep.xsd.schema - DEBUG - register_type('{http://www.w3.org/2001/XMLSchema}duration', <zeep.xsd.types.builtins.Duration object at 0x7f939f79cdd8>)
+2020-02-27 05:39:21,847 | zeep.xsd.schema - DEBUG - register_type('{http://www.w3.org/2001/XMLSchema}dateTime', <zeep.xsd.types.builtins.DateTime object at 0x7f939f79ce10>)
+2020-02-27 05:39:21,847 | zeep.xsd.schema - DEBUG - register_type('{http://www.w3.org/2001/XMLSchema}time', <zeep.xsd.types.builtins.Time object at 0x7f939f79ce48>)
+2020-02-27 05:39:21,847 | zeep.xsd.schema - DEBUG - register_type('{http://www.w3.org/2001/XMLSchema}date', <zeep.xsd.types.builtins.Date object at 0x7f939f79ceb8>)
+2020-02-27 05:39:21,847 | zeep.xsd.schema - DEBUG - register_type('{http://www.w3.org/2001/XMLSchema}gYearMonth', <zeep.xsd.types.builtins.gYearMonth object at 0x7f939f79cf28>)
+2020-02-27 05:39:21,847 | zeep.xsd.schema - DEBUG - register_type('{http://www.w3.org/2001/XMLSchema}gYear', <zeep.xsd.types.builtins.gYear object at 0x7f939f79cf60>)
+2020-02-27 05:39:21,847 | zeep.xsd.schema - DEBUG - register_type('{http://www.w3.org/2001/XMLSchema}gMonthDay', <zeep.xsd.types.builtins.gMonthDay object at 0x7f939f79cfd0>)
+2020-02-27 05:39:21,847 | zeep.xsd.schema - DEBUG - register_type('{http://www.w3.org/2001/XMLSchema}gDay', <zeep.xsd.types.builtins.gDay object at 0x7f939f733048>)
+2020-02-27 05:39:21,847 | zeep.xsd.schema - DEBUG - register_type('{http://www.w3.org/2001/XMLSchema}gMonth', <zeep.xsd.types.builtins.gMonth object at 0x7f939f7330b8>)
+2020-02-27 05:39:21,848 | zeep.xsd.schema - DEBUG - register_type('{http://www.w3.org/2001/XMLSchema}hexBinary', <zeep.xsd.types.builtins.HexBinary object at 0x7f939f733128>)
+2020-02-27 05:39:21,848 | zeep.xsd.schema - DEBUG - register_type('{http://www.w3.org/2001/XMLSchema}base64Binary', <zeep.xsd.types.builtins.Base64Binary object at 0x7f939f733160>)
+2020-02-27 05:39:21,848 | zeep.xsd.schema - DEBUG - register_type('{http://www.w3.org/2001/XMLSchema}anyURI', <zeep.xsd.types.builtins.AnyURI object at 0x7f939f733198>)
+2020-02-27 05:39:21,848 | zeep.xsd.schema - DEBUG - register_type('{http://www.w3.org/2001/XMLSchema}QName', <zeep.xsd.types.builtins.QName object at 0x7f939f733208>)
+2020-02-27 05:39:21,848 | zeep.xsd.schema - DEBUG - register_type('{http://www.w3.org/2001/XMLSchema}NOTATION', <zeep.xsd.types.builtins.Notation object at 0x7f939f733278>)
+2020-02-27 05:39:21,848 | zeep.xsd.schema - DEBUG - register_type('{http://www.w3.org/2001/XMLSchema}normalizedString', <zeep.xsd.types.builtins.NormalizedString object at 0x7f939f7332b0>)
+2020-02-27 05:39:21,848 | zeep.xsd.schema - DEBUG - register_type('{http://www.w3.org/2001/XMLSchema}token', <zeep.xsd.types.builtins.Token object at 0x7f939f7332e8>)
+2020-02-27 05:39:21,848 | zeep.xsd.schema - DEBUG - register_type('{http://www.w3.org/2001/XMLSchema}language', <zeep.xsd.types.builtins.Language object at 0x7f939f733358>)
+2020-02-27 05:39:21,848 | zeep.xsd.schema - DEBUG - register_type('{http://www.w3.org/2001/XMLSchema}NMTOKEN', <zeep.xsd.types.builtins.NmToken object at 0x7f939f733390>)
+2020-02-27 05:39:21,848 | zeep.xsd.schema - DEBUG - register_type('{http://www.w3.org/2001/XMLSchema}NMTOKENS', <zeep.xsd.types.builtins.NmTokens object at 0x7f939f733400>)
+2020-02-27 05:39:21,848 | zeep.xsd.schema - DEBUG - register_type('{http://www.w3.org/2001/XMLSchema}Name', <zeep.xsd.types.builtins.Name object at 0x7f939f733438>)
+2020-02-27 05:39:21,848 | zeep.xsd.schema - DEBUG - register_type('{http://www.w3.org/2001/XMLSchema}NCName', <zeep.xsd.types.builtins.NCName object at 0x7f939f7334a8>)
+2020-02-27 05:39:21,849 | zeep.xsd.schema - DEBUG - register_type('{http://www.w3.org/2001/XMLSchema}ID', <zeep.xsd.types.builtins.ID object at 0x7f939f733518>)
+2020-02-27 05:39:21,849 | zeep.xsd.schema - DEBUG - register_type('{http://www.w3.org/2001/XMLSchema}IDREF', <zeep.xsd.types.builtins.IDREF object at 0x7f939f733588>)
+2020-02-27 05:39:21,849 | zeep.xsd.schema - DEBUG - register_type('{http://www.w3.org/2001/XMLSchema}IDREFS', <zeep.xsd.types.builtins.IDREFS object at 0x7f939f7335f8>)
+2020-02-27 05:39:21,849 | zeep.xsd.schema - DEBUG - register_type('{http://www.w3.org/2001/XMLSchema}ENTITY', <zeep.xsd.types.builtins.Entity object at 0x7f939f733668>)
+2020-02-27 05:39:21,849 | zeep.xsd.schema - DEBUG - register_type('{http://www.w3.org/2001/XMLSchema}ENTITIES', <zeep.xsd.types.builtins.Entities object at 0x7f939f7336d8>)
+2020-02-27 05:39:21,849 | zeep.xsd.schema - DEBUG - register_type('{http://www.w3.org/2001/XMLSchema}integer', <zeep.xsd.types.builtins.Integer object at 0x7f939f733710>)
+2020-02-27 05:39:21,849 | zeep.xsd.schema - DEBUG - register_type('{http://www.w3.org/2001/XMLSchema}nonPositiveInteger', <zeep.xsd.types.builtins.NonPositiveInteger object at 0x7f939f733780>)
+2020-02-27 05:39:21,849 | zeep.xsd.schema - DEBUG - register_type('{http://www.w3.org/2001/XMLSchema}negativeInteger', <zeep.xsd.types.builtins.NegativeInteger object at 0x7f939f7337b8>)
+2020-02-27 05:39:21,849 | zeep.xsd.schema - DEBUG - register_type('{http://www.w3.org/2001/XMLSchema}long', <zeep.xsd.types.builtins.Long object at 0x7f939f7337f0>)
+2020-02-27 05:39:21,849 | zeep.xsd.schema - DEBUG - register_type('{http://www.w3.org/2001/XMLSchema}int', <zeep.xsd.types.builtins.Int object at 0x7f939f733860>)
+2020-02-27 05:39:21,849 | zeep.xsd.schema - DEBUG - register_type('{http://www.w3.org/2001/XMLSchema}short', <zeep.xsd.types.builtins.Short object at 0x7f939f7338d0>)
+2020-02-27 05:39:21,849 | zeep.xsd.schema - DEBUG - register_type('{http://www.w3.org/2001/XMLSchema}byte', <zeep.xsd.types.builtins.Byte object at 0x7f939f733940>)
+2020-02-27 05:39:21,849 | zeep.xsd.schema - DEBUG - register_type('{http://www.w3.org/2001/XMLSchema}nonNegativeInteger', <zeep.xsd.types.builtins.NonNegativeInteger object at 0x7f939f7339b0>)
+2020-02-27 05:39:21,849 | zeep.xsd.schema - DEBUG - register_type('{http://www.w3.org/2001/XMLSchema}unsignedByte', <zeep.xsd.types.builtins.UnsignedByte object at 0x7f939f7339e8>)
+2020-02-27 05:39:21,849 | zeep.xsd.schema - DEBUG - register_type('{http://www.w3.org/2001/XMLSchema}unsignedInt', <zeep.xsd.types.builtins.UnsignedInt object at 0x7f939f733a20>)
+2020-02-27 05:39:21,849 | zeep.xsd.schema - DEBUG - register_type('{http://www.w3.org/2001/XMLSchema}unsignedLong', <zeep.xsd.types.builtins.UnsignedLong object at 0x7f939f733a58>)
+2020-02-27 05:39:21,849 | zeep.xsd.schema - DEBUG - register_type('{http://www.w3.org/2001/XMLSchema}unsignedShort', <zeep.xsd.types.builtins.UnsignedShort object at 0x7f939f733a90>)
+2020-02-27 05:39:21,849 | zeep.xsd.schema - DEBUG - register_type('{http://www.w3.org/2001/XMLSchema}positiveInteger', <zeep.xsd.types.builtins.PositiveInteger object at 0x7f939f733ac8>)
+2020-02-27 05:39:21,849 | zeep.xsd.schema - DEBUG - register_type('{http://www.w3.org/2001/XMLSchema}anyType', <zeep.xsd.types.any.AnyType object at 0x7f939f733b00>)
+2020-02-27 05:39:21,850 | zeep.xsd.schema - DEBUG - register_type('{http://www.w3.org/2001/XMLSchema}anySimpleType', <zeep.xsd.types.simple.AnySimpleType object at 0x7f939f733b38>)
+2020-02-27 05:39:21,850 | zeep.xsd.schema - DEBUG - register_element('{http://www.w3.org/2001/XMLSchema}schema', <zeep.xsd.elements.builtins.Schema object at 0x7f939f733b70>)
+2020-02-27 05:39:21,850 | zeep.xsd.schema - DEBUG - Add document with tns http://www.w3.org/2001/XMLSchema to schema 140272012479176
+2020-02-27 05:39:21,850 | zeep.wsdl.wsdl - DEBUG - Creating definition for /home/sunpaz/DTE/sii-dte-py/wsdl/maullin/CrSeed/CrSeed.wsdl
+2020-02-27 05:39:21,851 | zeep.wsdl.wsdl - DEBUG - Adding message: {https://maullin.sii.cl/DTEWS/CrSeed.jws}getVersionMayorResponse
+2020-02-27 05:39:21,851 | zeep.wsdl.wsdl - DEBUG - Adding message: {https://maullin.sii.cl/DTEWS/CrSeed.jws}getSeedResponse
+2020-02-27 05:39:21,851 | zeep.wsdl.wsdl - DEBUG - Adding message: {https://maullin.sii.cl/DTEWS/CrSeed.jws}getVersionMenorRequest
+2020-02-27 05:39:21,851 | zeep.wsdl.wsdl - DEBUG - Adding message: {https://maullin.sii.cl/DTEWS/CrSeed.jws}getVersionMayorRequest
+2020-02-27 05:39:21,851 | zeep.wsdl.wsdl - DEBUG - Adding message: {https://maullin.sii.cl/DTEWS/CrSeed.jws}getVersionPatchRequest
+2020-02-27 05:39:21,851 | zeep.wsdl.wsdl - DEBUG - Adding message: {https://maullin.sii.cl/DTEWS/CrSeed.jws}getVersionMenorResponse
+2020-02-27 05:39:21,851 | zeep.wsdl.wsdl - DEBUG - Adding message: {https://maullin.sii.cl/DTEWS/CrSeed.jws}getSeedRequest
+2020-02-27 05:39:21,851 | zeep.wsdl.wsdl - DEBUG - Adding message: {https://maullin.sii.cl/DTEWS/CrSeed.jws}getStateRequest
+2020-02-27 05:39:21,852 | zeep.wsdl.wsdl - DEBUG - Adding message: {https://maullin.sii.cl/DTEWS/CrSeed.jws}getVersionPatchResponse
+2020-02-27 05:39:21,852 | zeep.wsdl.wsdl - DEBUG - Adding message: {https://maullin.sii.cl/DTEWS/CrSeed.jws}getStateResponse
+2020-02-27 05:39:21,852 | zeep.wsdl.wsdl - DEBUG - Adding port: {https://maullin.sii.cl/DTEWS/CrSeed.jws}CrSeed
+2020-02-27 05:39:21,877 | zeep.wsdl.wsdl - DEBUG - Adding binding: {https://maullin.sii.cl/DTEWS/CrSeed.jws}CrSeedSoapBinding
+2020-02-27 05:39:21,878 | zeep.wsdl.wsdl - DEBUG - Adding service: CrSeedService
+2020-02-27 05:39:21,879 | zeep.transports - DEBUG - HTTP Post to https://maullin.sii.cl/DTEWS/CrSeed.jws:
+<?xml version='1.0' encoding='utf-8'?>
+<soap-env:Envelope xmlns:soap-env="http://schemas.xmlsoap.org/soap/envelope/"><soap-env:Body><ns0:getSeed xmlns:ns0="https://maullin.sii.cl/DTEWS/CrSeed.jws"/></soap-env:Body></soap-env:Envelope>
+2020-02-27 05:39:21,886 | urllib3.connectionpool - DEBUG - Starting new HTTPS connection (1): maullin.sii.cl:443
+2020-02-27 05:39:27,023 | urllib3.connectionpool - DEBUG - https://maullin.sii.cl:443 "POST /DTEWS/CrSeed.jws HTTP/1.1" 200 None
+2020-02-27 05:39:27,026 | zeep.transports - DEBUG - HTTP Response from https://maullin.sii.cl/DTEWS/CrSeed.jws (status: 200):
+<?xml version="1.0" encoding="UTF-8"?>
+<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+ <soapenv:Body>
+  <ns1:getSeedResponse soapenv:encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" xmlns:ns1="https://maullin.sii.cl/DTEWS/CrSeed.jws">
+   <ns1:getSeedReturn xsi:type="xsd:string">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;&lt;SII:RESPUESTA xmlns:SII=&quot;http://www.sii.cl/XMLSchema&quot;&gt;&lt;SII:RESP_BODY&gt;&lt;SEMILLA&gt;024105662636&lt;/SEMILLA&gt;&lt;/SII:RESP_BODY&gt;&lt;SII:RESP_HDR&gt;&lt;ESTADO&gt;00&lt;/ESTADO&gt;&lt;/SII:RESP_HDR&gt;&lt;/SII:RESPUESTA&gt;</ns1:getSeedReturn>
+  </ns1:getSeedResponse>
+ </soapenv:Body>
+</soapenv:Envelope>
+2020-02-27 05:39:27,028 | root - INFO - Seed 024105662636
+2020-02-27 05:39:27,029 | root - INFO - Application stopped.
