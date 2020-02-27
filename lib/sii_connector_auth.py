@@ -1,8 +1,8 @@
 from lib.sii_connector_base import SiiConnectorBase
 from lxml.etree import tostring
 import logging
-import zeep
-from zeep.wsse.signature import Signature
+from zeep import Client
+from zeep.wsse.signature import MemorySignature
 import re
 
 class SiiConnectorAuth(SiiConnectorBase):
@@ -12,8 +12,8 @@ class SiiConnectorAuth(SiiConnectorBase):
 	REGEX_MATCH_STATE = r"<ESTADO>(\d{2,})</ESTADO>"
 
 	""" Default parameters : test server, CrSeed, test, SSL """
-	def __init__(self, server='maullin', module=0, mode=1, ssl=1):
-		SiiConnectorBase.__init__(self, server, module, mode, ssl)
+	def __init__(self, server='maullin', module=0, mode=1, ssl=1, pfx_file_path="", pfx_password=""):
+		SiiConnectorBase.__init__(self, server, module, mode, ssl, pfx_file_path, pfx_password)
 
 	"""
 		Retrieve "SEMILLA" (seed) used for authentication
@@ -44,10 +44,14 @@ class SiiConnectorAuth(SiiConnectorBase):
 		assert len(seed) >= 12
 		""" Get logger """
 		logger = logging.getLogger()
-		""" Calling getSeed SOAP method """
-		response = self.soap_client.service.getSeed()
-		client = Client(
-			'http://www.webservicex.net/ConvertSpeed.asmx?WSDL',
-			wsse=Signature(
-			private_key_filename, public_key_filename,
-			optional_password))
+		logger.info("get_token:: Getting token")
+		""" Must instanciate another client with Signature enabled """
+		token_service_wsdl = self.get_wsdl_url(self.server, 1)
+		logger.info("get_token:: WSDL : "+ str(token_service_wsdl))
+		self.certificate_service.load_certficate_and_key()
+		self.soap_client = Client(
+			wsdl=token_service_wsdl,
+			wsse=MemorySignature(
+			self.certificate_service.key, self.certificate_service.certificate,
+			self.certificate_service.get_password()))
+		token = self.soap_client.service.getToken(seed)
