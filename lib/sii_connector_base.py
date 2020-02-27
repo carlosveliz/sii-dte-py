@@ -16,14 +16,17 @@ __version__ = '0.1'
 
 class SiiConnectorBase:
 	""" Server name """
-	server_url = 'wsdl/{server-token}/{module}/{module}.wsdl'
+	_wsdl_path_template = 'wsdl/{server-token}/{module}/{module}.wsdl'
+	server_url = ''
 	mode = 1
 	module = 1
+	server = ''
 
 	servers = ['palena', 'maullin']
 	modes = ['production', 'test']
 	modules = [
-					'CrSeed', #Authentication, used to generate token for further comunication
+					'CrSeed', #Authentication, used to generate seed used to request token for further comunication
+					'GetTokenFromSeed', #Authentication, get token from seed
 					'QueryEstUp' #Query document state
 				]
 
@@ -40,11 +43,16 @@ class SiiConnectorBase:
 		logger = logging.getLogger()
 		""" Load certificate """
 		self.certificate_service = CertificateService(pfx_file_path, pfx_password)
-		""" Set module and server """
-		self.server_url = self.server_url.replace('{server-token}', server)
-		self.server_url = self.server_url.replace('{module}', self.modules[module])
 		self.mode = mode
 		self.module = module
 		self.ssl = ssl
+		self.server = server
+		""" Set module and server """
+		self.server_url = self.get_wsdl_url(server, module)
+
 		logger.info("SiiConnectorBase.__init__::Loading WSDL from : " + str(self.server_url))
 		self.soap_client = zeep.Client(wsdl=self.server_url)
+
+
+	def get_wsdl_url(self, server, module_code):
+		return self._wsdl_path_template.replace('{server-token}', server).replace('{module}', self.modules[module_code])
