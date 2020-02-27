@@ -26,7 +26,8 @@ if len(sys.argv) > 1:
 		""" Get seed, build token, exit """
 		logging.warning('Authentication test.')
 		auth = SiiConnectorAuth()
-		auth.get_seed()
+		seed = auth.get_seed()
+		auth.get_token(seed)
 	elif diagnose_type == "2":
 		""" Generate certificate only """
 		logging.warning('Certificate generation test.')
