@@ -1,0 +1,16 @@
+# Compiled source #
+###################
+*.pyc
+*.o
+.so
+
+# Packages #
+############
+*.7z
+*.tar
+*.zip
+
+# Logs and connection string #
+##############################
+*.log
+*.sql
