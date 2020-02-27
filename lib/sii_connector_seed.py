@@ -23,13 +23,13 @@ class SiiConnectorSeed(SiiConnectorBase):
 		""" Calling getSeed SOAP method """
 		response = self.soap_client.service.getSeed()
 		""" Parsing response using RegEX """
-		matches = re.finditer(self.REGEX_MATCH_SEED, response, re.MULTILINE)
-		for matchNum, match in enumerate(matches, start=1):
+		match = re.search(self.REGEX_MATCH_SEED, response, re.MULTILINE)
+		if match:
 			seed = match.group(1)
 
 		""" Parsing state using RegEX """
-		matches = re.finditer(self.REGEX_MATCH_STATE, response, re.MULTILINE)
-		for matchNum, match in enumerate(matches, start=1):
+		match = re.search(self.REGEX_MATCH_STATE, response, re.MULTILINE)
+		if match:
 			state = match.group(1)
 
 		""" State 00 indicate success """
