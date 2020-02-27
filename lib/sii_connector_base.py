@@ -9,6 +9,8 @@ Note :
 
 """
 import zeep
+import logging
+from lib.certificate_service import CertificateService
 
 __version__ = '0.1'
 
@@ -31,12 +33,18 @@ class SiiConnectorBase:
 	""" SOAP client (Zeep) """
 	soap_client = None
 
-	def __init__(self, server='maullin', module=1, mode=1, ssl=0):
+	""" Certificate service """
+	certificate_service = None
+
+	def __init__(self, server='maullin', module=1, mode=1, ssl=0, pfx_file_path="", pfx_password=""):
+		logger = logging.getLogger()
+		""" Load certificate """
+		self.certificate_service = CertificateService(pfx_file_path, pfx_password)
 		""" Set module and server """
 		self.server_url = self.server_url.replace('{server-token}', server)
 		self.server_url = self.server_url.replace('{module}', self.modules[module])
 		self.mode = mode
 		self.module = module
 		self.ssl = ssl
-		print("Loading WSDL from : " + str(self.server_url))
+		logger.info("SiiConnectorBase.__init__::Loading WSDL from : " + str(self.server_url))
 		self.soap_client = zeep.Client(wsdl=self.server_url)

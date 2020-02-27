@@ -7,38 +7,24 @@
 """
 
 from lxml import etree
-from signxml import XMLSigner, XMLVerifier
+import logging
+import subprocess
 
 class CertificateService:
 	""" Properties """
-	self._certificate = ''
-	self._key = ''
+	_certificate = ''
+	_key = ''
+	_pfx_password = ''
+	_pfx_path = ''
 
-	def __init__(self):
-		print("Not implemented.")
+	def __init__(self, pfx_file_path, pfx_password=''):
+		self._pfx_password = pfx_password
+		self._pfx_path = pfx_file_path
 
-	def set_certificate(self, path):
+	def generate_certificate_and_key(self):
+		""" Get logger """
+		logger = logging.getLogger()
+		logger.info("set_certificate::Loading certificate from " + str(self._pfx_path))
 		""" How to safely store certificate ? """
-		print("Not implemented.")
-
-	def sign(self, paylaod, use_loaded_certificate=True, pfx_file_path=None, passphrase=''):
-		""" From signXML sample code """
-		""" PFX file usually contain certificate and private key """
-		""" Extract from PFX file """
-		""" openssl pkcs12 -in [yourfile.pfx] -nocerts -out [keyfile-encrypted.key] """
-		""" openssl pkcs12 -in [yourfile.pfx] -clcerts -nokeys -out [certificate.crt] """
-		""" Passphrase needed to decrypt key """
-
-		system.exec("openssl pkcs12 -in " + pfx_file_path + " -nocerts -out keyfile-encrypted.key")
-		system.exec("openssl pkcs12 -in " + pfx_file_path + " -clcerts -nokeys -out certificate.crt")
-
-		if use_loaded_certificate == False:
-			cert = open("certificate.crt").read()
-			key = open("keyfile-encrypted.key").read()
-			self._certificate = cert
-			self._key = key
-
-		root = etree.fromstring(paylaod)
-		signed_root = XMLSigner().sign(root, key=self._key, cert=self._certificate, passphrase=passphrase)
-
-		return signed_root
+		subprocess.run(["openssl", "pkcs12", "-in", self._pfx_path, "-nocerts" ,"-passin", "pass:" +self._pfx_password, "-passout","pass:" +self._pfx_password, "-out", "cert/keyfile-encrypted.key"])
+		subprocess.run(["openssl", "pkcs12", "-in", self._pfx_path, "-clcerts", "-nokeys", "-passin", "pass:" +self._pfx_password, "-passout","pass:" +self._pfx_password, "-out", "cert/certificate.crt"])

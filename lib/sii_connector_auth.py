@@ -2,6 +2,7 @@ from lib.sii_connector_base import SiiConnectorBase
 from lxml.etree import tostring
 import logging
 import zeep
+from zeep.wsse.signature import Signature
 import re
 
 class SiiConnectorAuth(SiiConnectorBase):
@@ -41,3 +42,12 @@ class SiiConnectorAuth(SiiConnectorBase):
 
 	def get_token(self, seed):
 		assert len(seed) >= 12
+		""" Get logger """
+		logger = logging.getLogger()
+		""" Calling getSeed SOAP method """
+		response = self.soap_client.service.getSeed()
+		client = Client(
+			'http://www.webservicex.net/ConvertSpeed.asmx?WSDL',
+			wsse=Signature(
+			private_key_filename, public_key_filename,
+			optional_password))

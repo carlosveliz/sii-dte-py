@@ -7,6 +7,7 @@ __version__ = '0.1'
 
 from lib.web import app
 from lib.sii_connector_auth import SiiConnectorAuth
+from lib.certificate_service import CertificateService
 from instance.config import FLASK_LISTEN_PORT, FLASK_ENDPOINT, DEBUG_MODE
 import logging
 import sys
@@ -26,6 +27,11 @@ if len(sys.argv) > 1:
 		logging.warning('Authentication test.')
 		auth = SiiConnectorAuth()
 		auth.get_seed()
+	elif diagnose_type == "2":
+		""" Generate certificate only """
+		logging.warning('Certificate generation test.')
+		cert = CertificateService(pfx_file_path=sys.argv[2], pfx_password=sys.argv[3])
+		cert.generate_certificate_and_key()
 else:
 	"""
 	  Run Flask web app
