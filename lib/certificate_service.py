@@ -17,7 +17,7 @@ class CertificateService:
 	_pfx_password = ''
 	_pfx_path = ''
 
-	key_path = 'cert/keyfile-encrypted.key'
+	key_path = 'cert/keyfile.key'
 	cert_path = 'cert/certificate.crt'
 
 	def __init__(self, pfx_file_path, pfx_password=''):
@@ -28,9 +28,15 @@ class CertificateService:
 		""" Get logger """
 		logger = logging.getLogger()
 		logger.info("set_certificate::Loading certificate from " + str(self._pfx_path))
-		""" How to safely store certificate ? """
+
+		""" Generate encrypted privated key """
 		subprocess.run(["openssl", "pkcs12", "-in", self._pfx_path ,"-passin", "pass:" +self._pfx_password, "-passout","pass:" +self._pfx_password, "-out", self.key_path])
+		""" Get certificate """
 		subprocess.run(["openssl", "pkcs12", "-in", self._pfx_path, "-clcerts", "-nokeys", "-passin", "pass:" +self._pfx_password, "-passout","pass:" +self._pfx_password, "-out", self.cert_path])
+		""" Decrypte private key """
+		subprocess.run(["openssl", "rsa", "-in", self.key_path, "-passin", "pass:" +self._pfx_password, "-passout","pass:" +self._pfx_password, "-out", self.key_path])
+		""" How to safely store certificate ? """
+		""" Should delete temporary files and store in memory ? """
 
 	def read_file(self, f_name):
 		with open(f_name, "rb") as f:
