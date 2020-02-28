@@ -1,8 +1,10 @@
 from lib.sii_connector_base import SiiConnectorBase
 from lxml.etree import tostring
 import logging
-from zeep import Client
-from zeep.wsse.signature import MemorySignature
+from requests import Session
+from zeep import Client,Transport
+from lib.zeep.custom_signature import MemorySignatureOneWay
+from zeep.exceptions import SignatureVerificationFailed
 import re
 
 class SiiConnectorAuth(SiiConnectorBase):
@@ -49,9 +51,24 @@ class SiiConnectorAuth(SiiConnectorBase):
 		token_service_wsdl = self.get_wsdl_url(self.server, 1)
 		logger.info("get_token:: WSDL : "+ str(token_service_wsdl))
 		self.certificate_service.load_certficate_and_key()
+
+		""" Pass SII certificate """
+		session = Session()
+		session.verify = False
+		transport = Transport(session=session)
+
 		self.soap_client = Client(
 			wsdl=token_service_wsdl,
-			wsse=MemorySignature(
-			self.certificate_service.key, self.certificate_service.certificate,
-			self.certificate_service.get_password()))
-		token = self.soap_client.service.getToken(seed)
+			wsse=MemorySignatureOneWay(
+				self.certificate_service.key, self.certificate_service.certificate,
+				self.certificate_service.get_password()
+			),
+			transport=transport
+		)
+		try:
+			token = self.soap_client.service.getToken(seed)
+		except SignatureVerificationFailed:
+			logger.info("get_token:: SII doesn't sign response.")
+			pass
+
+		return token
