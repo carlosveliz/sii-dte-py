@@ -19,6 +19,7 @@ class CertificateService:
 
 	key_path = 'cert/keyfile.key'
 	cert_path = 'cert/certificate.crt'
+	sii_cert_path = 'cert/sii_public.cert'
 
 	def __init__(self, pfx_file_path, pfx_password=''):
 		self._pfx_password = pfx_password
