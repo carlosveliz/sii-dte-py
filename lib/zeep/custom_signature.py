@@ -6,6 +6,11 @@ from zeep.exceptions import SignatureVerificationFailed
 from zeep.utils import detect_soap_env
 from zeep.wsse.utils import ensure_id, get_security_header
 
+try:
+	import xmlsec
+except ImportError:
+	xmlsec = None
+
 class MemorySignatureOneWay(object):
 	"""Sign given SOAP envelope with WSSE sig using given key and cert."""
 
@@ -14,7 +19,7 @@ class MemorySignatureOneWay(object):
 	key_data,
 	cert_data,
 	password=None,
-	signature_method=None,
+	signature_method=xmlsec.Transform.RSA_SHA1,
 	digest_method=None,
 	):
 		check_xmlsec_import()
@@ -36,13 +41,6 @@ class MemorySignatureOneWay(object):
 		""" Avoid checking response """
 		return envelope
 
-
-try:
-	import xmlsec
-except ImportError:
-	xmlsec = None
-
-
 # SOAP envelope
 SOAP_NS = "http://schemas.xmlsoap.org/soap/envelope/"
 
@@ -60,39 +58,7 @@ def _make_verify_key(cert_data):
 	key = xmlsec.Key.from_memory(cert_data, xmlsec.KeyFormat.CERT_PEM, None)
 	return key
 
-class MemorySignature(object):
-	"""Sign given SOAP envelope with WSSE sig using given key and cert."""
-
-	def __init__(
-		self,
-		key_data,
-		cert_data,
-		password=None,
-		signature_method=None,
-		digest_method=None,
-	):
-		check_xmlsec_import()
-
-		self.key_data = key_data
-		self.cert_data = cert_data
-		self.password = password
-		self.digest_method = digest_method
-		self.signature_method = signature_method
-
-	def apply(self, envelope, headers):
-		key = _make_sign_key(self.key_data, self.cert_data, self.password)
-		_sign_envelope_with_key(
-			envelope, key, self.signature_method, self.digest_method
-		)
-		return envelope, headers
-
-	def verify(self, envelope):
-		key = _make_verify_key(self.cert_data)
-		_verify_envelope_with_key(envelope, key)
-		return envelope
-
-
-class Signature(MemorySignature):
+class Signature(MemorySignatureOneWay):
 	"""Sign given SOAP envelope with WSSE sig using given key file and cert file."""
 
 	def __init__(
@@ -110,19 +76,6 @@ class Signature(MemorySignature):
 			signature_method,
 			digest_method,
 		)
-
-
-class BinarySignature(Signature):
-	"""Sign given SOAP envelope with WSSE sig using given key file and cert file.
-	Place the key information into BinarySecurityElement."""
-
-	def apply(self, envelope, headers):
-		key = _make_sign_key(self.key_data, self.cert_data, self.password)
-		_sign_envelope_with_key_binary(
-			envelope, key, self.signature_method, self.digest_method
-		)
-		return envelope, headers
-
 
 def check_xmlsec_import():
 	if xmlsec is None:
@@ -151,18 +104,22 @@ def _signature_prepare(envelope, key, signature_method, digest_method):
 	soap_env = detect_soap_env(envelope)
 
 	# Create the Signature node.
+	""" Sii uses inclusive C14N """
 	signature = xmlsec.template.create(
 		envelope,
-		xmlsec.Transform.EXCL_C14N,
-		signature_method or xmlsec.Transform.RSA_SHA1,
+		xmlsec.Transform.C14N,
+		xmlsec.Transform.RSA_SHA1,
 	)
 
 	# Add a KeyInfo node with X509Data child to the Signature. XMLSec will fill
 	# in this template with the actual certificate details when it signs.
 	key_info = xmlsec.template.ensure_key_info(signature)
 	x509_data = xmlsec.template.add_x509_data(key_info)
-	xmlsec.template.x509_data_add_issuer_serial(x509_data)
+	""" Sii doesn't care about issuer """
+	#xmlsec.template.x509_data_add_issuer_serial(x509_data)
 	xmlsec.template.x509_data_add_certificate(x509_data)
+	""" Sii needs keyinfo """
+	xmlsec.template.add_key_value(key_info)
 
 	# Insert the Signature node in the wsse:Security header.
 	security = get_security_header(envelope)
@@ -177,12 +134,14 @@ def _signature_prepare(envelope, key, signature_method, digest_method):
 		_sign_node(ctx, signature, timestamp)
 	ctx.sign(signature)
 
+	""" Not used by Sii """
 	# Place the X509 data inside a WSSE SecurityTokenReference within
 	# KeyInfo. The recipient expects this structure, but we can't rearrange
 	# like this until after signing, because otherwise xmlsec won't populate
 	# the X509 data (because it doesn't understand WSSE).
-	sec_token_ref = etree.SubElement(key_info, QName(ns.WSSE, "SecurityTokenReference"))
-	return security, sec_token_ref, x509_data
+	#sec_token_ref = etree.SubElement(key_info, QName(ns.WSSE, "SecurityTokenReference"))
+	#return security, sec_token_ref, x509_data
+	return security, key_info, x509_data
 
 
 def _sign_envelope_with_key(envelope, key, signature_method, digest_method):
@@ -286,4 +245,5 @@ def _sign_node(ctx, signature, target, digest_method=None):
 	# target node contents before signing. This ensures that changes to
 	# irrelevant whitespace, attribute ordering, etc won't invalidate the
 	# signature.
-	xmlsec.template.add_transform(ref, xmlsec.Transform.EXCL_C14N)
+	""" Sii uses inclusive C14N """
+	xmlsec.template.add_transform(ref, xmlsec.Transform.C14N)
