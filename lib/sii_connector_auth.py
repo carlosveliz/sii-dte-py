@@ -4,6 +4,7 @@ import logging
 from requests import Session
 from zeep import Client,Transport
 from lib.zeep.custom_signature import MemorySignatureOneWay
+from lib.zeep.sii_plugin import SiiPlugin
 from zeep.exceptions import SignatureVerificationFailed
 import re
 
@@ -56,19 +57,14 @@ class SiiConnectorAuth(SiiConnectorBase):
 		session = Session()
 		session.verify = False
 		transport = Transport(session=session)
+		sii_plugin = SiiPlugin()
 
 		self.soap_client = Client(
 			wsdl=token_service_wsdl,
-			wsse=MemorySignatureOneWay(
-				self.certificate_service.key, self.certificate_service.certificate,
-				self.certificate_service.get_password()
-			),
-			transport=transport
+			transport=transport,
+			plugins=[sii_plugin]
 		)
-		try:
-			token = self.soap_client.service.getToken(seed)
-		except SignatureVerificationFailed:
-			logger.info("get_token:: SII doesn't sign response.")
-			pass
+
+		token = self.soap_client.service.getToken(seed)
 
 		return token
