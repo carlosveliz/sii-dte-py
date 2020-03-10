@@ -69,8 +69,13 @@ class SiiConnectorAuth(SiiConnectorBase):
 			state = match.group(1)
 
 		""" State 00 indicate success """
+		if state == "10" or state == "11":
+			logger.error("get_token:: Server respond with invalid state code : " + str(state) + " certificate might not be registered in SII.")
 		if state != "00":
 			logger.error("get_token:: Server respond with invalid state code : " + str(state))
+
+		""" Unload certificate """
+		self.unreference_certificate_service()
 
 		return token
 
