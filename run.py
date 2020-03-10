@@ -27,6 +27,7 @@ if len(sys.argv) > 1:
 		logging.warning('Authentication test.')
 		auth = SiiConnectorAuth()
 		seed = auth.get_seed()
+		auth = SiiConnectorAuth(server='maullin', module=SiiConnectorAuth.GET_TOKEN_MODULE_ID)
 		auth.get_token(seed)
 	elif diagnose_type == "2":
 		""" Generate certificate only """

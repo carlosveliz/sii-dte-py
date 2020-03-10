@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions targetNamespace="http://DefaultNamespace" xmlns="http://schemas.xmlsoap.org/wsdl/" xmlns:apachesoap="http://xml.apache.org/xml-soap" xmlns:impl="http://DefaultNamespace" xmlns:intf="http://DefaultNamespace" xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:wsdlsoap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <message name="getStateResponse">
+    <part name="getStateReturn" type="xsd:string"/>
+  </message>
+  <message name="getVersionPatchResponse">
+    <part name="getVersionPatchReturn" type="xsd:string"/>
+  </message>
+  <message name="getVersionPatchRequest">
+  </message>
+  <message name="getVersionMenorResponse">
+    <part name="getVersionMenorReturn" type="xsd:string"/>
+  </message>
+  <message name="getVersionMenorRequest">
+  </message>
+  <message name="getVersionMayorResponse">
+    <part name="getVersionMayorReturn" type="xsd:string"/>
+  </message>
+  <message name="getTokenResponse">
+    <part name="getTokenReturn" type="xsd:string"/>
+  </message>
+  <message name="getStateRequest">
+  </message>
+  <message name="getVersionMayorRequest">
+  </message>
+  <message name="getTokenRequest">
+    <part name="pszXml" type="xsd:string"/>
+  </message>
+  <portType name="GetTokenFromSeed">
+    <operation name="getVersionMayor">
+      <input message="impl:getVersionMayorRequest" name="getVersionMayorRequest"/>
+      <output message="impl:getVersionMayorResponse" name="getVersionMayorResponse"/>
+    </operation>
+    <operation name="getVersionMenor">
+      <input message="impl:getVersionMenorRequest" name="getVersionMenorRequest"/>
+      <output message="impl:getVersionMenorResponse" name="getVersionMenorResponse"/>
+    </operation>
+    <operation name="getVersionPatch">
+      <input message="impl:getVersionPatchRequest" name="getVersionPatchRequest"/>
+      <output message="impl:getVersionPatchResponse" name="getVersionPatchResponse"/>
+    </operation>
+    <operation name="getToken" parameterOrder="pszXml">
+      <input message="impl:getTokenRequest" name="getTokenRequest"/>
+      <output message="impl:getTokenResponse" name="getTokenResponse"/>
+    </operation>
+    <operation name="getState">
+      <input message="impl:getStateRequest" name="getStateRequest"/>
+      <output message="impl:getStateResponse" name="getStateResponse"/>
+    </operation>
+  </portType>
+  <binding name="GetTokenFromSeedSoapBinding" type="impl:GetTokenFromSeed">
+    <wsdlsoap:binding style="rpc" transport="http://schemas.xmlsoap.org/soap/http"/>
+    <operation name="getVersionMayor">
+      <wsdlsoap:operation soapAction=""/>
+      <input name="getVersionMayorRequest">
+        <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://DefaultNamespace" use="encoded"/>
+      </input>
+      <output name="getVersionMayorResponse">
+        <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://DefaultNamespace" use="encoded"/>
+      </output>
+    </operation>
+    <operation name="getVersionMenor">
+      <wsdlsoap:operation soapAction=""/>
+      <input name="getVersionMenorRequest">
+        <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://DefaultNamespace" use="encoded"/>
+      </input>
+      <output name="getVersionMenorResponse">
+        <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://DefaultNamespace" use="encoded"/>
+      </output>
+    </operation>
+    <operation name="getVersionPatch">
+      <wsdlsoap:operation soapAction=""/>
+      <input name="getVersionPatchRequest">
+        <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://DefaultNamespace" use="encoded"/>
+      </input>
+      <output name="getVersionPatchResponse">
+        <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://DefaultNamespace" use="encoded"/>
+      </output>
+    </operation>
+    <operation name="getToken">
+      <wsdlsoap:operation soapAction=""/>
+      <input name="getTokenRequest">
+        <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://DefaultNamespace" use="encoded"/>
+      </input>
+      <output name="getTokenResponse">
+        <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://DefaultNamespace" use="encoded"/>
+      </output>
+    </operation>
+    <operation name="getState">
+      <wsdlsoap:operation soapAction=""/>
+      <input name="getStateRequest">
+        <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://DefaultNamespace" use="encoded"/>
+      </input>
+      <output name="getStateResponse">
+        <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://DefaultNamespace" use="encoded"/>
+      </output>
+    </operation>
+  </binding>
+  <service name="GetTokenFromSeedService">
+    <port binding="impl:GetTokenFromSeedSoapBinding" name="GetTokenFromSeed">
+      <wsdlsoap:address location="https://palena.sii.cl/DTEWS/GetTokenFromSeed.jws"/>
+    </port>
+  </service>
+</definitions>

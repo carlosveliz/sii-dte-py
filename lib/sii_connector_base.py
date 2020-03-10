@@ -11,12 +11,16 @@ Note :
 import zeep
 import logging
 from lib.certificate_service import CertificateService
+from lib.zeep.sii_plugin import SiiPlugin
+from requests import Session
+
 
 __version__ = '0.1'
 
 class SiiConnectorBase:
 	""" Server name """
-	_wsdl_path_template = 'wsdl/{server-token}/{module}/{module}.wsdl'
+	_local_wsdl_path_template = 'wsdl/{server-token}/{module}/{module}.wsdl'
+	_remote_wsdl_path_template = 'https://{server-token}.sii.cl/DTEWS/{module}.jws?WSDL'
 	server_url = ''
 	mode = 1
 	module = 1
@@ -30,11 +34,14 @@ class SiiConnectorBase:
 					'QueryEstUp' #Query document state
 				]
 
+	GET_SEED_MODULE_ID = 0
+	GET_TOKEN_MODULE_ID = 1
 	""" SSL activated """
 	ssl = 0
 
 	""" SOAP client (Zeep) """
 	soap_client = None
+	sii_plugin = None
 
 	""" Certificate service """
 	certificate_service = None
@@ -50,9 +57,22 @@ class SiiConnectorBase:
 		""" Set module and server """
 		self.server_url = self.get_wsdl_url(server, module)
 
-		logger.info("SiiConnectorBase.__init__::Loading WSDL from : " + str(self.server_url))
-		self.soap_client = zeep.Client(wsdl=self.server_url)
+		""" Pass SII certificate """
+		session = Session()
+		session.verify = False
+		transport = zeep.Transport(session=session)
 
+		self.certificate_service.load_certficate_and_key()
+		self.sii_plugin = SiiPlugin()
+		self.sii_plugin.cert = self.certificate_service.certificate
+		self.sii_plugin.key = self.certificate_service.key
+
+		logger.info("SiiConnectorBase.__init__::Loading WSDL from : " + str(self.server_url))
+		self.soap_client = zeep.Client(
+			wsdl=self.server_url,
+			transport=transport,
+			plugins=[self.sii_plugin]
+		)
 
 	def get_wsdl_url(self, server, module_code):
-		return self._wsdl_path_template.replace('{server-token}', server).replace('{module}', self.modules[module_code])
+		return self._local_wsdl_path_template.replace('{server-token}', server).replace('{module}', self.modules[module_code])

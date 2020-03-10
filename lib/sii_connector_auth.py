@@ -11,6 +11,7 @@ import re
 class SiiConnectorAuth(SiiConnectorBase):
 	""" As discribed in documentation, seed is at least 12 digits """
 	REGEX_MATCH_SEED = r"<SEMILLA>(\d{12,})</SEMILLA>"
+	REGEX_MATCH_TOKEN = r"<TOKEN>(\w{8,})</TOKEN>"
 	""" State seems to be at least 3 digits """
 	REGEX_MATCH_STATE = r"<ESTADO>(\d{2,})</ESTADO>"
 
@@ -43,28 +44,35 @@ class SiiConnectorAuth(SiiConnectorBase):
 		logger.info("Seed " + str(seed))
 		return seed
 
+	def read_file(self, f_name):
+		with open(f_name, "rb") as f:
+			return f.read()
+
 	def get_token(self, seed):
 		assert len(seed) >= 12
 		""" Get logger """
 		logger = logging.getLogger()
 		logger.info("get_token:: Getting token")
-		""" Must instanciate another client with Signature enabled """
-		token_service_wsdl = self.get_wsdl_url(self.server, 1)
-		logger.info("get_token:: WSDL : "+ str(token_service_wsdl))
-		self.certificate_service.load_certficate_and_key()
 
-		""" Pass SII certificate """
-		session = Session()
-		session.verify = False
-		transport = Transport(session=session)
-		sii_plugin = SiiPlugin()
+		seed_template = u'<getToken><item><Semilla>' + seed + '</Semilla></item>' + self.read_file('cert/sign_sii_xml.tmpl').decode('utf-8') + '</getToken>'
+		print(str(seed_template))
+		seed_message = self.sii_plugin.test_sign_xmlsec(seed_template)
+		token = ''
 
-		self.soap_client = Client(
-			wsdl=token_service_wsdl,
-			transport=transport,
-			plugins=[sii_plugin]
-		)
+		response = self.soap_client.service.getToken(seed_message)
 
-		token = self.soap_client.service.getToken(seed)
+		""" Parsing response using RegEX """
+		match = re.search(self.REGEX_MATCH_TOKEN, token, re.MULTILINE)
+		if match:
+			token = match.group(1)
+
+		""" Parsing state using RegEX """
+		match = re.search(self.REGEX_MATCH_STATE, response, re.MULTILINE)
+		if match:
+			state = match.group(1)
+
+		""" State 00 indicate success """
+		if state != "00":
+			logger.error("get_seed:: Server respond with invalid state code : " + str(state))
 
 		return token
