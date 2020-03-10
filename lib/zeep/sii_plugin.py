@@ -24,6 +24,7 @@ class SiiPlugin(Plugin):
 		return envelope, http_headers
 
 	def sign(self, message_with_template_included):
+		logger = logging.getLogger()
 		"""Should sign a file using a dynamicaly created template, key from PEM and an X509 cert."""
 		assert(message_with_template_included)
 		# Load the pre-constructed XML template.
@@ -36,8 +37,12 @@ class SiiPlugin(Plugin):
 		assert signature_node.tag.endswith(xmlsec.Node.SIGNATURE)
 
 		ctx = xmlsec.SignatureContext()
-		ctx.key = xmlsec.Key.from_memory(self.key, format=xmlsec.constants.KeyDataFormatPem)
-		ctx.key.load_cert_from_memory(self.cert, format=xmlsec.constants.KeyDataFormatCertPem)
+		try:
+			ctx.key = xmlsec.Key.from_memory(self.key, format=xmlsec.constants.KeyDataFormatPem)
+			ctx.key.load_cert_from_memory(self.cert, format=xmlsec.constants.KeyDataFormatCertPem)
+		except xmlsec.Error:
+			logger.error("SiiPlugin::sign Key or certificate could not be loaded.")
+			return ''
 
 		ctx.sign(signature_node)
 		template.remove(xmlsec.tree.find_node(template, xmlsec.Node.SIGNATURE))
