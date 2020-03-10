@@ -3,7 +3,6 @@ from lxml.etree import tostring
 import logging
 from requests import Session
 from zeep import Client,Transport
-from lib.zeep.custom_signature import MemorySignatureOneWay
 from lib.zeep.sii_plugin import SiiPlugin
 from zeep.exceptions import SignatureVerificationFailed
 import re
