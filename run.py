@@ -22,13 +22,23 @@ logging.info('Application started.')
 if len(sys.argv) > 1:
 	logging.warning('Diagnose started.')
 	diagnose_type = sys.argv[1]
+	if diagnose_type == "0":
+		logging.warning('Full test.')
+		auth = SiiConnectorAuth(pfx_file_path=sys.argv[2], pfx_password=sys.argv[3])
+		seed = auth.get_seed()
+		print("Seed : " + seed)
+		auth = SiiConnectorAuth(server='maullin', module=SiiConnectorAuth.GET_TOKEN_MODULE_ID, pfx_file_path=sys.argv[2], pfx_password=sys.argv[3])
+		token = auth.get_token(seed)
+		print("Token : " + token)
 	if diagnose_type == "1":
 		""" Get seed, build token, exit """
 		logging.warning('Authentication test.')
 		auth = SiiConnectorAuth()
 		seed = auth.get_seed()
+		print("Seed : " + seed)
 		auth = SiiConnectorAuth(server='maullin', module=SiiConnectorAuth.GET_TOKEN_MODULE_ID)
-		auth.get_token(seed)
+		token = auth.get_token(seed)
+		print("Token : " + token)
 	elif diagnose_type == "2":
 		""" Generate certificate only """
 		logging.warning('Certificate generation test.')
