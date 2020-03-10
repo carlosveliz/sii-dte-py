@@ -27,7 +27,10 @@ if len(sys.argv) > 1:
 		auth = SiiConnectorAuth(pfx_file_path=sys.argv[2], pfx_password=sys.argv[3])
 		seed = auth.get_seed()
 		print("Seed : " + seed)
-		auth = SiiConnectorAuth(server='maullin', module=SiiConnectorAuth.GET_TOKEN_MODULE_ID, pfx_file_path=sys.argv[2], pfx_password=sys.argv[3])
+		auth = SiiConnectorAuth(server='maullin', \
+								module=SiiConnectorAuth.GET_TOKEN_MODULE_ID, \
+								pfx_file_path=sys.argv[2], \
+								pfx_password=sys.argv[3])
 		token = auth.get_token(seed)
 		print("Token : " + token)
 	if diagnose_type == "1":
@@ -36,7 +39,10 @@ if len(sys.argv) > 1:
 		auth = SiiConnectorAuth()
 		seed = auth.get_seed()
 		print("Seed : " + seed)
-		auth = SiiConnectorAuth(server='maullin', module=SiiConnectorAuth.GET_TOKEN_MODULE_ID)
+		auth = SiiConnectorAuth(server='maullin', \
+								module=SiiConnectorAuth.GET_TOKEN_MODULE_ID, \
+								pfx_file_path=sys.argv[2], \
+								pfx_password=sys.argv[3])
 		token = auth.get_token(seed)
 		print("Token : " + token)
 	elif diagnose_type == "2":
