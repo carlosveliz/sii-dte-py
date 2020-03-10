@@ -9,6 +9,7 @@
 from lxml import etree
 import logging
 import subprocess
+import os
 
 class CertificateService:
 	""" Properties """
@@ -36,16 +37,27 @@ class CertificateService:
 		subprocess.run(["openssl", "pkcs12", "-in", self._pfx_path, "-clcerts", "-nokeys", "-passin", "pass:" +self._pfx_password, "-passout","pass:" +self._pfx_password, "-out", self.cert_path])
 		""" Decrypte private key """
 		subprocess.run(["openssl", "rsa", "-in", self.key_path, "-passin", "pass:" +self._pfx_password, "-passout","pass:" +self._pfx_password, "-out", self.key_path])
-		""" How to safely store certificate ? """
-		""" Should delete temporary files and store in memory ? """
+		""" Load temporary created files and delete """
+		self._load_certficate_and_key()
+		self._remove_certificate_and_key()
 
 	def read_file(self, f_name):
 		with open(f_name, "rb") as f:
 			return f.read()
 
-	def load_certficate_and_key(self):
+	def _load_certficate_and_key(self):
 		self.certificate = self.read_file(self.cert_path)
 		self.key = self.read_file(self.key_path)
+
+	def _remove_certificate_and_key(self):
+		try:
+			os.remove(self.key_path)
+		except OSError as e:  ## if failed, report it back to the user ##
+			print ("Error: %s - %s." % (e.filename, e.strerror))
+		try:
+			os.remove(self.cert_path)
+		except OSError as e:  ## if failed, report it back to the user ##
+			print ("Error: %s - %s." % (e.filename, e.strerror))
 
 	def get_password(self):
 		return self._pfx_password
