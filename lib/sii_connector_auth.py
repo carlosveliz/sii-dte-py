@@ -52,14 +52,11 @@ class SiiConnectorAuth(SiiConnectorBase):
 		assert len(seed) >= 12
 		""" Get logger """
 		logger = logging.getLogger()
-		logger.info("get_token:: Getting token")
-
-		seed_template = u'<getToken><item><Semilla>' + seed + '</Semilla></item>' + self.read_file('cert/sign_sii_xml.tmpl').decode('utf-8') + '</getToken>'
-		print(str(seed_template))
-		seed_message = self.sii_plugin.test_sign_xmlsec(seed_template)
+		logger.debug("get_token:: Getting token")
 		token = ''
+		token_message = self.build_token_message(seed)
 
-		response = self.soap_client.service.getToken(seed_message)
+		response = self.soap_client.service.getToken(token_message)
 
 		""" Parsing response using RegEX """
 		match = re.search(self.REGEX_MATCH_TOKEN, token, re.MULTILINE)
@@ -73,6 +70,19 @@ class SiiConnectorAuth(SiiConnectorBase):
 
 		""" State 00 indicate success """
 		if state != "00":
-			logger.error("get_seed:: Server respond with invalid state code : " + str(state))
+			logger.error("get_token:: Server respond with invalid state code : " + str(state))
 
 		return token
+
+	def build_token_message(self, seed):
+		""" Get logger """
+		logger = logging.getLogger()
+		""" Build token template (Message + Signature) """
+		token_template = u'<getToken><item><Semilla>' + seed + '</Semilla></item>' + self.read_file('cert/sign_sii_xml.tmpl').decode('utf-8') + '</getToken>'
+
+		token_message = self.sii_plugin.sign(token_template)
+		""" Add XML standard header """
+		token_message = '<?xml version="1.0" encoding="UTF-8"?> ' + token_message
+		logger.debug("build_token_message:: Message :")
+		logger.debug(str(token_message))
+		return token_message
