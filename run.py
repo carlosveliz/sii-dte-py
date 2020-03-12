@@ -6,6 +6,7 @@ It gets a copy of the app from your package and runs it.
 __version__ = '0.1'
 
 from lib.web import app
+from lib.models.token import Token
 from lib.sii_connector_auth import SiiConnectorAuth
 from lib.certificate_service import CertificateService
 from instance.config import FLASK_LISTEN_PORT, FLASK_ENDPOINT, DEBUG_MODE
@@ -31,7 +32,7 @@ if len(sys.argv) > 1:
 								module=SiiConnectorAuth.GET_TOKEN_MODULE_ID, \
 								pfx_file_path=sys.argv[2], \
 								pfx_password=sys.argv[3])
-		token = auth.get_token(seed)
+		token = Token(auth.get_token(seed))
 		print("Token : " + token)
 	if diagnose_type == "1":
 		""" Get seed, build token, exit """
