@@ -1,5 +1,4 @@
 import requests
-from instance.config import APPLICATION_NAME, REFERER
 
 class SiiDocumentUploader():
 	""" State seems to be at least 3 digits """
@@ -7,12 +6,16 @@ class SiiDocumentUploader():
 	_token = ''
 	""" https://maullin.sii.cl/cgi_dte/UPL/DTEUpload """
 	_url = ''
+	_application_name = ''
+	_referer = ''
 
-	def __init__(self, token, url)
+	def __init__(self, token, url, application_name='sii-dte-py', referer='https://github.com/SunPaz'):
 		self._token = token
 		self._url = url
+		self._application_name = application_name
+		self._referer = referer
 
-	def send_document(self, user_rut, dest_rut, sii_document)
+	def send_document(self, user_rut, dest_rut, sii_document):
 		#POST /cgi_dte/UPL/DTEUpload
 		#HTTP/1.0^M Accept: image/gif, image/x-xbitmap, image/jpeg, image/pjpeg, application/vnd.ms-powerpoint, application/ms-excel, application/msword, */*
 		#Referer:http://empresaabc.cl/test.html
@@ -35,8 +38,8 @@ class SiiDocumentUploader():
 		headers = { \
 				'Content-type': 'multipart/form-data', \
 				'Accept-Charset': 'UTF-8', \
-				'User-Agent: Mozilla/4.0 (compatible; PROG 1.0; ' + APPLICATION_NAME + ')', \
-				'Referer: ' + REFERER, \
-				'Cookie: TOKEN=' + self._token
+				'User-Agent': 'Mozilla/4.0 (compatible; PROG 1.0; ' + self._application_name + ')', \
+				'Referer': self._referer, \
+				'Cookie:': 'TOKEN=' + self._token
 		}
 		r = requests.post(self._url, data=payload, headers=headers)
