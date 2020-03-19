@@ -1,4 +1,27 @@
 import datetime
+from lxml import etree
+
+"""
+General format :
+
+<DTE version=1.0”>
+ <Documento ID=””>
+	 <Encabezado>... </Encabezado>
+	 <DetalleFactura>... </DetalleFactura>
+	 <DescuentoRecargoGlobal>... </DescuentoRecargoGlobal>
+	 <Referencia>... </Referencia>
+	 <TED>... </TED> /* Timbre Electrónico DTE
+	 <TmstFirma> ... </TmstFirma> /* TimeStamp firma del DTE
+ </Documento>
+<Signature>  	Firma digital sobre
+  <Documento>... </Documento>
+  </Signature>
+
+</DTE>
+
+
+"""
+
 
 class DTEPerson:
 	_type = 0
@@ -32,6 +55,9 @@ class DTEPerson:
 		self._type = type
 		self._parameters = parameters
 
+	def get_attr(self, attr):
+		return self._parameters[attr]
+
 	def dump(self):
 		outside_markup = self.__markup[self.__types[self._type]]['Type']
 		dumped = '<' + outside_markup + '>'
@@ -45,10 +71,10 @@ class DTEPerson:
 
 class DTEHeader:
 	""" Document identity, composed of sender, reciber information, document type, and total amount """
-	_sender = DTEPerson(1, None)
-	_receiver = DTEPerson(0, None)
-	_dte_document_type = 0
-	_dte_document_number = 0
+	sender = DTEPerson(1, None)
+	receiver = DTEPerson(0, None)
+	dte_document_type = 0
+	dte_document_number = 0
 	_dte_export_type = 0
 	_dte_export_indicator = 0
 	_dte_payment_method = 0
@@ -56,7 +82,7 @@ class DTEHeader:
 	_net_amount = 0
 	_tax_rate = 0
 	_taxes = 0
-	_total_amount = 0
+	total_amount = 0
 
 	_specifics = None
 
@@ -108,10 +134,10 @@ class DTEHeader:
 	def __init__(self, sender, receiver, document_type, document_number, payment_method, expiry_date, specific_parameters):
 		""" specific_parameters parameter should contains document type based parameters """
 		assert(document_type in self.__valid_document_types)
-		self._sender = sender
-		self._receiver = receiver
-		self._dte_document_type = document_type
-		self._dte_document_number = document_number
+		self.sender = sender
+		self.receiver = receiver
+		self.dte_document_type = document_type
+		self.dte_document_number = document_number
 		self._dte_payment_method = payment_method
 		self._dte_expiry_date = expiry_date
 		self._specifics = specific_parameters
@@ -119,7 +145,7 @@ class DTEHeader:
 	def dump_specifics(self):
 		dumped = ''
 		for param in self._specifics:
-			markup = self.__specifics_by_document_type[self._dte_document_type][param]
+			markup = self.__specifics_by_document_type[self.dte_document_type][param]
 			value = self._specifics[param]
 			dumped = dumped + '<' + markup + '>' + str(value) + '</' + markup + '>'
 
@@ -127,8 +153,8 @@ class DTEHeader:
 
 	def dump(self):
 		return '<Encabezado>' + self.dump_document_identification() + \
-		self._sender.dump()  + \
-		self._receiver.dump() + \
+		self.sender.dump()  + \
+		self.receiver.dump() + \
 		self.dump_totales() + \
 		 '</Encabezado>'
 
@@ -136,7 +162,7 @@ class DTEHeader:
 		return '<Totales>' + '<MntNeto>' + str(self._net_amount) + '</MntNeto>' + \
 						'<TasaIVA>' + str(self._tax_rate) + '</TasaIVA>' + \
 						'<IVA>' + str(self._taxes) + '</IVA>' + \
-						'<MntTotal>' + str(self._total_amount) + '</MntTotal>' + \
+						'<MntTotal>' + str(self.total_amount) + '</MntTotal>' + \
 		 	'</Totales>'
 
 	def dump_document_identification(self):
@@ -149,10 +175,10 @@ class DTEHeader:
 						'</IdDoc>'
 
 	def dump_document_number(self):
-		return '<Folio>'+ str(self._dte_document_number) +'</Folio>'
+		return '<Folio>'+ str(self.dte_document_number) +'</Folio>'
 
 	def dump_document_type(self):
-		return '<TipoDTE>' + str(self._dte_document_type) + '</TipoDTE>'
+		return '<TipoDTE>' + str(self.dte_document_type) + '</TipoDTE>'
 
 	def dump_issue_date(self):
 		return '<FchEmis>' + str(datetime.datetime.now()) + '</FchEmis>'
@@ -216,7 +242,7 @@ class DTEItems:
 			""" Get item """
 			item = self._items[item_key]
 			if item is not None:
-				dumped = dumped + '<DTEItem>'
+				dumped = dumped + '<Detalle>'
 				index = index + 1
 				dumped = dumped + '<' + index_markup + '>' + str(index) + '</' + index_markup + '>'
 
@@ -236,11 +262,14 @@ class DTEItems:
 						dumped = dumped + '<' + markup + '>' + str(value) + '</' + markup + '>'
 					except:
 						pass
-				dumped = dumped + '</DTEItem>'
+				dumped = dumped + '</Detalle>'
 		return dumped
 
+	def get_first_item_description(self):
+		return self._items[1]['Description']
+
 	def dump(self):
-		return '<DTEItems>' + str(self.dump_items()) + '</DTEItems>'
+		return self.dump_items()
 
 class DTEReference:
 	_code = ''
@@ -248,6 +277,59 @@ class DTEReference:
 
 	def dump(self):
 		return '<DTEReference></DTEReference>'
+
+class DTECover:
+
+	"""
+	<Caratula version="1.0">
+	<RutEmisor>76087419-1</RutEmisor>
+	<RutEnvia>22926257-2</RutEnvia>
+	<RutReceptor>55555555-5</RutReceptor>
+	<FchResol>2014-08-22</FchResol>
+	<NroResol>80</NroResol>
+	<TmstFirmaEnv>2020-03-19T11:22:45</TmstFirmaEnv>
+	<SubTotDTE>
+	<TpoDTE>110</TpoDTE>
+	<NroDTE>1</NroDTE>
+	</SubTotDTE>
+	</Caratula>
+	"""
+	def __init__(self):
+		print("Not implemented")
+
+class DTECAF:
+	embedded_private_key = ''
+	_parameters = None
+	_signature = ''
+	__markup = { 'RUT':'RE',
+					'Name':'RS',
+					'Type':'TD',
+					'From':'D',
+					'To':'H',
+					'FechaAuthorization':'FA',
+					'RSAPrivateKeyModule':'M',
+					'RSAPrivateKeyExp':'E',
+					'KeyId':'IDK'
+					}
+
+
+	def __init__(self, signature, parameters, private_key=''):
+		self._parameters = parameters
+		self._signature = signature
+		self.embedded_private_key = private_key
+		print("Not implemented")
+
+	def dump(self):
+		dumped = '<AUTORIZACION><CAF version="1.0"><DA>'
+		for param in self._parameters:
+			markup = self.__markup[param]
+			value = self._parameters[param]
+			dumped = dumped + '<' + markup + '>' + value + '</' + markup + '>'
+
+		dumped = dumped + '</DA>'
+		dumped = dumped + '<FRMA algoritmo="SHA1withRSA">' + self._signature + '</FRMA>'
+		dumped = dumped + '</CAF></AUTORIZACION>'
+		return dumped
 
 class DTE:
 	""" Envio DTE """
@@ -268,8 +350,11 @@ class DTE:
 	_other_charges = [] #DTEItems()
 	_sii_signature = None
 	_timestamp = datetime.datetime.now()
+	_caf = None
+	_document_id = ''
+	_ted = ''
 
-	def __init__(self, header, items, discount, reference, other, signature, timestamp):
+	def __init__(self, header, items, discount, reference, other, signature, timestamp, caf=None):
 		self._header = header
 		self._items = items
 		self._discount = discount
@@ -277,6 +362,39 @@ class DTE:
 		self._other_charges = other
 		self._sii_signature = signature
 		self._timestamp = timestamp
+		self._caf = caf
+		self._document_id = 'T' + str(self._header.dte_document_type) + 'I' + str(self._header.dte_document_number)
+
+	def generate_ted(self):
+		caf_private_key = ''
+		document_data = '<DD>' + \
+				  '<RE>' + self._header.sender.get_attr('RUT') + '</RE>' + \
+				  '<TD>' + str(self._header.dte_document_type) + '</TD>' + \
+				  '<F>' + str(self._header.dte_document_number) + '</F>' + \
+				  '<FE>' + str(self._timestamp) + '</FE>' + \
+				  '<RR>' + self._header.receiver.get_attr('RUT') + '</RR>' + \
+				  '<RSR>' + self._header.receiver.get_attr('Name') + '</RSR>' + \
+				  '<MNT>' + str(self._header.total_amount) + '</MNT>' + \
+				  '<IT1>' + self._items.get_first_item_description() + '</IT1>' + \
+				  self._caf.dump() + \
+				  '<TSTED>' + str(datetime.datetime.now()) + '</TSTED>' + \
+				  '</DD>'
+
+		signature = self.sign(document_data, self._caf.embedded_private_key)
+		ted = '<TED version="1.0">' + \
+			document_data + \
+		  '<FRMT algoritmo="SHA1withRSA">' + signature + '</FRMT>' + \
+		  '</TED>'
+		return ted
+
+	def sign(self, data, key):
+		return 'NotImplemented'
+
+	def dump(self):
+		return '<DTE version="1.0">' + self.dump_document_only() + '</DTE>'
+
+	def dump_document_only(self):
+		return '<Documento ID="' + self._document_id + '">' + self._header.dump() + self._items.dump() + self.generate_ted() + '</Documento>'
 
 if __name__ == "__main__":
 	""" Dump test XML """
@@ -340,4 +458,20 @@ if __name__ == "__main__":
 				}
 
 	items = DTEItems(EXPEDITION_DOCUMENT_TYPE, item_list)
-	print(items.dump())
+	caf_parameters = {'RUT':'XXXXXXX-3',
+						'Name':'Matthieu AMOROS',
+						'Type':'52',
+						'From':'0',
+						'To':'10',
+						'FechaAuthorization':'2020-03-17',
+						'RSAPrivateKeyModule':'waVWjYCJLcFAtrWgXheAxkGF2sdfsdfsdf1gTQ3OenDOCezdztNKtLU8hczwWNH/iPA3jwqVGjPt6kYOqz1212d5uIAN6sW8tKQgU8IEfgIw==',
+						'RSAPrivateKeyExp':'Aw=l',
+						'KeyId':'300'
+						}
+	caf = DTECAF(parameters=caf_parameters, signature='E/waVWjYCJLcFAtrWgXheAxkGF2sdfsdfsdf1gTQ3OenDOCezdztNKtLU8hczwWNH+5fyH4JbHdO24JRHyLNsw==', private_key='')
+
+	dte = DTE(header, items, '', '', '', '', '',caf=caf)
+
+	dte_etree = etree.fromstring(dte.dump())
+	pretty_dte = etree.tostring(dte_etree, pretty_print=True).decode('UTF-8')
+	print(pretty_dte)
