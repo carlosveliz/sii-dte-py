@@ -163,26 +163,84 @@ class DTEHeader:
 	def dump_expiry_date(self):
 		return '<FchVenc>' + str(self._dte_expiry_date) + '</FchVenc>'
 
+
 class DTEItems:
-	_items = []
+	"""
+	'CodeType':'TpoCodigo',
+		EAN13, PLU, DUN14, INT1, INT2, EAN128, etc.
+	"""
 
-	def add_item(self, item):
-		_items.append(item)
+	"""
+	'Extension':'IndExe'
+	1: No afecto o exento de IVA  (10)
+	2: Producto o servicio no es facturable
+	3: Garantía de depósito por envases (Cervezas, Jugos, Aguas Minerales, Bebidas Analcohólicas u otros autorizados por Resolución especial)
+	4: Ítem No Venta. (Para facturas y  guías de despacho (ésta última con Indicador Tipo de Traslado de Bienes igual a 1)  y este ítem no será facturando
+	5: Ítem a rebajar. Para guías de despacho NO VENTA que rebajan guía anterior. En el área de  referencias se debe indicar la guía anterior.
+	6: Producto o servicio no facturable negativo (excepto en liquidaciones-factura)
+	"""
+
+	"""
+	'ItemPrice':'MontoItem'
+	(Precio Unitario  * Cantidad ) – Monto Descuento + Monto Recargo
+	"""
+
+	__properties_by_document_type = {52: {},
+									33: {},
+									43: {'LiqDocType':'TpoDocLiq'},
+									0: { 'Index':'NroLinDet',
+										'CodeType':'TpoCodigo',
+										'Code':'VlrCodigo',
+										'Extension':'IndExe',
+										'Name':'NmbItem',
+										'Description':'DscItem',
+										'Quantity':'QtyItem',
+										'Unit':'UnmdItem',
+										'UnitPrice':'PrcItem',
+										'ItemPrice':'MontoItem'
+										}
+								}
+
+	_items = None
+	_document_type = 0
+
+	def __init__(self, document_type, items):
+		self._document_type = document_type
+		self._items = items
+
+	def dump_items(self):
+		dumped = ''
+		index = 0
+		index_markup = self.__properties_by_document_type[0]['Index']
+		for item_key in self._items:
+			""" Get item """
+			item = self._items[item_key]
+			if item is not None:
+				dumped = dumped + '<DTEItem>'
+				index = index + 1
+				dumped = dumped + '<' + index_markup + '>' + str(index) + '</' + index_markup + '>'
+
+				""" Build with common properties """
+				for prop in item:
+					try:
+						markup = self.__properties_by_document_type[0][prop]
+						value = item[prop]
+						dumped = dumped + '<' + markup + '>' + str(value) + '</' + markup + '>'
+					except:
+						pass
+				""" Specific properties """
+				for prop in item:
+					try:
+						markup = self.__properties_by_document_type[self._document_type][prop]
+						value = item[prop]
+						dumped = dumped + '<' + markup + '>' + str(value) + '</' + markup + '>'
+					except:
+						pass
+				dumped = dumped + '</DTEItem>'
+		return dumped
 
 	def dump(self):
-		return '<DTEItems></DTEItems>'
-
-class DTEItem:
-	_code = ''
-	_quantity = 0
-	_net_value = 0
-	_raw_value = 0
-	_discount = 0
-	_additional_amount = 0
-	_document_reference = 0
-
-	def dump(self):
-		return '<DTEItem></DTEItem>'
+		return '<DTEItems>' + str(self.dump_items()) + '</DTEItems>'
 
 class DTEReference:
 	_code = ''
@@ -222,6 +280,7 @@ class DTE:
 
 if __name__ == "__main__":
 	""" Dump test XML """
+	EXPEDITION_DOCUMENT_TYPE = 52
 	sender_parameters = {'RUT':'XXXXXXX-3',
 						'Name':'Matthieu AMOROS',
 						'Activity':'PERSONA',
@@ -244,5 +303,41 @@ if __name__ == "__main__":
 							'MovementType': '2' #Internal
 							}
 
-	header = DTEHeader(sender, receiver, 52, 1, 1, datetime.datetime.now(), specific_parameters)
-	print(header.dump())
+	header = DTEHeader(sender, receiver, EXPEDITION_DOCUMENT_TYPE, 1, 1, datetime.datetime.now(), specific_parameters)
+
+	""" Items """
+
+	item_list = {1: {'CodeType':'INT01',
+						'Code':'18KGMZ',
+						'Extension':'1',
+						'Name':'CAJA MANZANA 18KG',
+						'Description':'CAJA MANZANA FRESCA 18KG GALA',
+						'Quantity':'20',
+						'Unit':'UN',
+						'UnitPrice':'1000',
+						'ItemPrice':'20000'
+						},
+				2: {'CodeType':'INT01',
+									'Code':'10KGPE',
+									'Extension':'1',
+									'Name':'CAJA PERA 10KG',
+									'Description':'CAJA PERA FRESCA 10KG ABATE',
+									'Quantity':'20',
+									'Unit':'UN',
+									'UnitPrice':'500',
+									'ItemPrice':'10000'
+									},
+				3: {'CodeType':'INT01',
+									'Code':'PAL1',
+									'Extension':'1',
+									'Name':'PALLET 100x120',
+									'Description':'PALLET MADERA DE 100x120CM',
+									'Quantity':'2',
+									'Unit':'UN',
+									'UnitPrice':'10',
+									'ItemPrice':'20'
+									}
+				}
+
+	items = DTEItems(EXPEDITION_DOCUMENT_TYPE, item_list)
+	print(items.dump())
