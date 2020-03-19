@@ -9,7 +9,7 @@ class SiiDocumentUploader():
 	_application_name = ''
 	_referer = ''
 
-	def __init__(self, token, url, application_name='sii-dte-py', referer='https://github.com/SunPaz'):
+	def __init__(self, token, url='https://maullin.sii.cl/cgi_dte/UPL/DTEUpload', application_name='sii-dte-py', referer='https://github.com/SunPaz'):
 		self._token = token
 		self._url = url
 		self._application_name = application_name
@@ -42,4 +42,5 @@ class SiiDocumentUploader():
 				'Referer': self._referer, \
 				'Cookie:': 'TOKEN=' + self._token
 		}
+
 		r = requests.post(self._url, data=payload, headers=headers)
