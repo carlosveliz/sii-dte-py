@@ -2,3 +2,5 @@ flask
 signxml
 zeep
 xmlsec
+pdfkit
+pdf417

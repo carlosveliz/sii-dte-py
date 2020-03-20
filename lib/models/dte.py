@@ -130,6 +130,7 @@ class DTEHeader:
 										},
 									33: {}
 								}
+	comment = ''
 
 	def __init__(self, sender, receiver, document_type, document_number, payment_method, expiry_date, specific_parameters):
 		""" specific_parameters parameter should contains document type based parameters """
@@ -141,13 +142,20 @@ class DTEHeader:
 		self._dte_payment_method = payment_method
 		self._dte_expiry_date = expiry_date
 		self._specifics = specific_parameters
+		try:
+			self.comment = specific_parameters['Comment']
+		except:
+			pass
 
 	def dump_specifics(self):
 		dumped = ''
 		for param in self._specifics:
-			markup = self.__specifics_by_document_type[self.dte_document_type][param]
-			value = self._specifics[param]
-			dumped = dumped + '<' + markup + '>' + str(value) + '</' + markup + '>'
+			try:
+				markup = self.__specifics_by_document_type[self.dte_document_type][param]
+				value = self._specifics[param]
+				dumped = dumped + '<' + markup + '>' + str(value) + '</' + markup + '>'
+			except:
+				continue
 
 		return dumped
 
@@ -264,6 +272,9 @@ class DTEItems:
 						pass
 				dumped = dumped + '</Detalle>'
 		return dumped
+
+	def get_item_list_for_template(self):
+		return self._items
 
 	def get_first_item_description(self):
 		return self._items[1]['Description']
@@ -401,6 +412,33 @@ class DTE:
 	def dump_document_only(self):
 		return '<Documento ID="' + self._document_id + '">' + self._header.dump() + self._items.dump() + self.generate_ted() + '</Documento>'
 
+	def to_template_parameters(self):
+		dict = { 'Sender': {
+							'RUT':self._header.sender.get_attr('RUT'),
+							'Name':self._header.sender.get_attr('Name'),
+							'Activity':self._header.sender.get_attr('Activity'),
+							'Address':self._header.sender.get_attr('Address'),
+							'Address2':'',
+							'City':self._header.sender.get_attr('City'),
+							'Phone':''
+							},
+				'DocumentNumber': self._header.dte_document_number,
+				'SII' : 'SANTIAGO CENTRO',
+				'Receiver': {
+							'RUT':self._header.receiver.get_attr('RUT'),
+							'Name':self._header.receiver.get_attr('Name'),
+							'Activity':self._header.receiver.get_attr('Activity'),
+							'Address':self._header.receiver.get_attr('Address'),
+							'Address2':'',
+							'City':self._header.sender.get_attr('City'),
+							'Phone':''
+				},
+				'Details': self._items.get_item_list_for_template(),
+				'Comment': self._header.comment
+		}
+
+		return dict
+
 class DTEBuidler:
 	def build(self, type, sender, receiver, header, items, caf):
 			sender_object = DTEPerson(1, sender)
@@ -417,7 +455,7 @@ class DTEBuidler:
 
 			dte_etree = etree.fromstring(dte.dump())
 			pretty_dte = etree.tostring(dte_etree, pretty_print=True).decode('UTF-8')
-			return dte_etree, pretty_dte
+			return dte_etree, pretty_dte, dte
 
 if __name__ == "__main__":
 	""" Dump test XML """

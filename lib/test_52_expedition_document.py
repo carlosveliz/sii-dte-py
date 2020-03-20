@@ -70,9 +70,10 @@ if __name__ == "__main__":
 						'Signature': 'E/waVWjYCJLcFAtrWgXheAxkGF2sdfsdfsdf1gTQ3OenDOCezdztNKtLU8hczwWNH+5fyH4JbHdO24JRHyLNsw==',
 						'PrivateKey': 'sdfasdfASDAsd#$3423'
 						}
+
 	builder = DTEBuidler()
 
-	dte_etree, pretty_dte = builder.build(EXPEDITION_DOCUMENT_TYPE, sender_parameters, receiver_parameters, specific_header_parameters, item_list, caf_parameters)
+	_, pretty_dte, _ = builder.build(EXPEDITION_DOCUMENT_TYPE, sender_parameters, receiver_parameters, specific_header_parameters, item_list, caf_parameters)
 	print(pretty_dte)
 else:
 	print("Test only")
