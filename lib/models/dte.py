@@ -309,7 +309,9 @@ class DTECAF:
 					'FechaAuthorization':'FA',
 					'RSAPrivateKeyModule':'M',
 					'RSAPrivateKeyExp':'E',
-					'KeyId':'IDK'
+					'KeyId':'IDK',
+					'Signature' :'',
+					'PrivateKey': ''
 					}
 
 
@@ -323,6 +325,9 @@ class DTECAF:
 		dumped = '<AUTORIZACION><CAF version="1.0"><DA>'
 		for param in self._parameters:
 			markup = self.__markup[param]
+			if markup == '':
+				""" Should not be printed """
+				continue
 			value = self._parameters[param]
 			dumped = dumped + '<' + markup + '>' + value + '</' + markup + '>'
 
@@ -395,6 +400,24 @@ class DTE:
 
 	def dump_document_only(self):
 		return '<Documento ID="' + self._document_id + '">' + self._header.dump() + self._items.dump() + self.generate_ted() + '</Documento>'
+
+class DTEBuidler:
+	def build(self, type, sender, receiver, header, items, caf):
+			sender_object = DTEPerson(1, sender)
+			receiver_object = DTEPerson(0, receiver)
+			header_object = DTEHeader(sender_object, receiver_object, type, 1, 1, datetime.datetime.now(), header)
+
+			""" Items """
+			items_object = DTEItems(type, items)
+			signature = caf['Signature']
+			private_key = caf['PrivateKey']
+			caf_object = DTECAF(parameters=caf, signature=signature, private_key=private_key)
+
+			dte = DTE(header_object, items_object, '', '', '', '', '',caf=caf_object)
+
+			dte_etree = etree.fromstring(dte.dump())
+			pretty_dte = etree.tostring(dte_etree, pretty_print=True).decode('UTF-8')
+			return dte_etree, pretty_dte
 
 if __name__ == "__main__":
 	""" Dump test XML """

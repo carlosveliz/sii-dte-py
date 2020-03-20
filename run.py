@@ -6,7 +6,7 @@ It gets a copy of the app from your package and runs it.
 __version__ = '0.1'
 
 from lib.web import app
-from lib.models.token import Token
+from lib.models.sii_token import Token
 from lib.sii_connector_auth import SiiConnectorAuth
 from lib.certificate_service import CertificateService
 from instance.config import FLASK_LISTEN_PORT, FLASK_ENDPOINT, DEBUG_MODE
