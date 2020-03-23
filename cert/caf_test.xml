@@ -1,0 +1,20 @@
+<CAF version=”1.0”>
+<DA>
+ <RE>11111111-1</RE>
+<RS>Ejemplo S.A.</RS>
+ <TD>33</TD>
+ <RNG>
+ <D>50</D>
+ <H>101</H>
+ </RNG>
+ <FA>2002-06-10</FA>
+ <RSAPK>
+<M>AMPa7mxz8ysTRazehr5/Oiau98/ ... lku7y2twwndI/142ds54aWjqd </M>
+<E>A2.../B</E>
+ </RSAPK>
+<IDK> 3 </IDK>
+</DA>
+<FRMA algoritmo=”SHA1withRSA”>
+ F2/hdgF42d4eAw ... iU7=6faRDs6k=
+</FRMA>
+</CAF>
