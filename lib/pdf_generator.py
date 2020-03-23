@@ -9,7 +9,7 @@
 
 import pdfkit
 import pdf417
-from models.dte import DTE, DTEBuidler
+from models.dte import DTE, DTEBuidler, DTECAF
 from jinja2 import Environment, FileSystemLoader
 
 class PDFGenerator:
@@ -125,20 +125,13 @@ if __name__ == "__main__":
 									}
 				}
 
-	caf_parameters = {'RUT':'XXXXXXX-3',
-						'Name':'Matthieu AMOROS',
-						'Type':'52',
-						'From':'0',
-						'To':'10',
-						'FechaAuthorization':'2020-03-17',
-						'RSAPrivateKeyModule':'waVWjYCJLcFAtrWgXheAxkGF2sdfsdfsdf1gTQ3OenDOCezdztNKtLU8hczwWNH/iPA3jwqVGjPt6kYOqz1212d5uIAN6sW8tKQgU8IEfgIw==',
-						'RSAPrivateKeyExp':'Aw=l',
-						'KeyId':'300',
-						'Signature': 'E/waVWjYCJLcFAtrWgXheAxkGF2sdfsdfsdf1gTQ3OenDOCezdztNKtLU8hczwWNH+5fyH4JbHdO24JRHyLNsw==',
-						'PrivateKey': 'sdfasdfASDAsd#$3423'
-						}
+	caf = DTECAF(parameters={}, signature='', private_key='')
+	caf.load_from_XML('../cert/caf_test.xml')
 
 	builder = DTEBuidler()
 
-	_, _, dte_object = builder.build(EXPEDITION_DOCUMENT_TYPE, sender_parameters, receiver_parameters, specific_header_parameters, item_list, caf_parameters)
+	_, pretty_dte, dte_object = builder.build(EXPEDITION_DOCUMENT_TYPE, sender_parameters, receiver_parameters, specific_header_parameters, item_list, caf)
 	pdf.generate(dte_object)
+
+	myXML = open('../temp/DTE_52.xml', "w")
+	myXML.write(pretty_dte)
