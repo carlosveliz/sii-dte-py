@@ -1,4 +1,4 @@
-<CAF version=”1.0”>
+<CAF version="1.0">
 <DA>
  <RE>11111111-1</RE>
 <RS>Ejemplo S.A.</RS>
@@ -14,7 +14,7 @@
  </RSAPK>
 <IDK> 3 </IDK>
 </DA>
-<FRMA algoritmo=”SHA1withRSA”>
+<FRMA algoritmo="SHA1withRSA">
  F2/hdgF42d4eAw ... iU7=6faRDs6k=
 </FRMA>
 </CAF>
