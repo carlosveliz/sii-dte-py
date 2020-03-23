@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 import datetime
 from lxml import etree
 
@@ -321,10 +322,15 @@ class DTECAF:
 					'RSAPrivateKeyModule':'M',
 					'RSAPrivateKeyExp':'E',
 					'KeyId':'IDK',
-					'Signature' :'',
-					'PrivateKey': ''
+					'_Signature' :'',
+					'_PrivateKey': '',
+					'_EmbeddedSignature': 'FRMA',
+					'_RSAPrivateKey': 'RSASK',
+					'_RSAPublicKey': 'RSAPUBK'
 					}
 
+	def __name__(self):
+		return 'DTECAF'
 
 	def __init__(self, signature, parameters, private_key=''):
 		self._parameters = parameters
@@ -336,7 +342,7 @@ class DTECAF:
 		dumped = '<AUTORIZACION><CAF version="1.0"><DA>'
 		for param in self._parameters:
 			markup = self.__markup[param]
-			if markup == '':
+			if '_' in param:
 				""" Should not be printed """
 				continue
 			value = self._parameters[param]
@@ -346,6 +352,24 @@ class DTECAF:
 		dumped = dumped + '<FRMA algoritmo="SHA1withRSA">' + self._signature + '</FRMA>'
 		dumped = dumped + '</CAF></AUTORIZACION>'
 		return dumped
+
+	def load_from_XML(self, filepath):
+		print("Loading CAF from xml")
+		tree = etree.parse(filepath)
+		return self.load_from_etree(tree)
+
+	def get_property_by_markup(self, search_markup):
+		for property, markup in self.__markup.items():
+			if markup == search_markup:
+				return property
+
+	def load_from_etree(self, tree):
+		for elem in tree.iter():
+			property = self.get_property_by_markup(elem.tag)
+			if property is not None:
+				self._parameters[property] = elem.text
+
+		self.embedded_private_key = self._parameters['_RSAPrivateKey']
 
 class DTE:
 	""" Envio DTE """
@@ -404,6 +428,8 @@ class DTE:
 		return ted
 
 	def sign(self, data, key):
+		""" SII specified RSA over SHA1 """
+
 		return 'NotImplemented'
 
 	def dump(self):
@@ -447,9 +473,13 @@ class DTEBuidler:
 
 			""" Items """
 			items_object = DTEItems(type, items)
-			signature = caf['Signature']
-			private_key = caf['PrivateKey']
-			caf_object = DTECAF(parameters=caf, signature=signature, private_key=private_key)
+
+			if isinstance(caf, DTECAF):
+				caf_object = caf
+			else:
+				caf_object = DTECAF(parameters=caf, signature=signature, private_key=private_key)
+				signature = caf['_Signature']
+				private_key = caf['_PrivateKey']
 
 			dte = DTE(header_object, items_object, '', '', '', '', '',caf=caf_object)
 
@@ -519,8 +549,10 @@ if __name__ == "__main__":
 				}
 
 	items = DTEItems(EXPEDITION_DOCUMENT_TYPE, item_list)
+
+	""" Create CAF from parameters """
 	caf_parameters = {'RUT':'XXXXXXX-3',
-						'Name':'Matthieu AMOROS',
+						'Name':'EMPRESA PRUEBA',
 						'Type':'52',
 						'From':'0',
 						'To':'10',
@@ -531,6 +563,8 @@ if __name__ == "__main__":
 						}
 	caf = DTECAF(parameters=caf_parameters, signature='E/waVWjYCJLcFAtrWgXheAxkGF2sdfsdfsdf1gTQ3OenDOCezdztNKtLU8hczwWNH+5fyH4JbHdO24JRHyLNsw==', private_key='')
 
+	""" Could be loaded from XML too """
+	#caf.load_from_XML('../../cert/caf_test.xml')
 	dte = DTE(header, items, '', '', '', '', '',caf=caf)
 
 	dte_etree = etree.fromstring(dte.dump())
