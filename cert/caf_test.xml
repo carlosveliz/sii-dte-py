@@ -8,6 +8,11 @@
  <H>101</H>
  </RNG>
  <FA>2002-06-10</FA>
+ <RSASK>-----BEGIN RSA PRIVATE KEY-----
+TEST
+-----END RSA PRIVATE KEY-----
+</RSASK>
+
  <RSAPK>
 <M>AMPa7mxz8ysTRazehr5/Oiau98/ ... lku7y2twwndI/142ds54aWjqd </M>
 <E>A2.../B</E>
