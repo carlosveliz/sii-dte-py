@@ -177,38 +177,20 @@ p {
 					</tr>
 				</thead>
 				<tbody>
+					{% set index = 1 %}
 					{% for unit in parameters['Details'] %}
+					<tr>
+						<td>{{ loop.index }}</td>
+						<td>{{ parameters['Details'][unit]['Code'] }}</td>
+						<td>{{ parameters['Details'][unit]['Name'] }}</td>
+						<td>{{ parameters['Details'][unit]['Description'] }}</td>
+						<td>{{ parameters['Details'][unit]['Quantity'] }}</td>
+						<td>{{ parameters['Details'][unit]['Unit'] }}</td>
+						<td>{{ parameters['Details'][unit]['UnitPrice'] }}</td>
+						<td></td>
+						<td>{{ parameters['Details'][unit]['ItemPrice'] }}</td>
+					</tr>
 					{% endfor %}
-					<tr>
-						<td>1</td>
-						<td>ITM1</td>
-						<td>ITEM 1 AFECTO</td>
-						<td>551</td>
-						<td>U.</td>
-						<td>7.659</td>
-						<td>1.500</td>
-						<td>4.218.609</td>
-					</tr>
-					<tr>
-						<td>2</td>
-						<td>ITM1</td>
-						<td>ITEM 1 AFECTO</td>
-						<td>551</td>
-						<td>U.</td>
-						<td>7.659</td>
-						<td>1.500</td>
-						<td>4.218.609</td>
-					</tr>
-					<tr>
-						<td>3</td>
-						<td>ITM1</td>
-						<td>ITEM 1 AFECTO</td>
-						<td>551</td>
-						<td>U.</td>
-						<td>7.659</td>
-						<td>1.500</td>
-						<td>4.218.609</td>
-					</tr>
 				</tbody>
 			</table>
 			<br />
