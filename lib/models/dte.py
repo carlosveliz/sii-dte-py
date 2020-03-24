@@ -316,11 +316,11 @@ class DTECAF:
 	__markup = { 'RUT':'RE',
 					'Name':'RS',
 					'Type':'TD',
-					'From':'D',
-					'To':'H',
+					'_From':'D',
+					'_To':'H',
 					'FechaAuthorization':'FA',
-					'RSAPrivateKeyModule':'M',
-					'RSAPrivateKeyExp':'E',
+					'_RSAPrivateKeyModule':'M',
+					'_RSAPrivateKeyExp':'E',
 					'KeyId':'IDK',
 					'_Signature' :'',
 					'_PrivateKey': '',
@@ -335,8 +335,10 @@ class DTECAF:
 	def __init__(self, signature, parameters, private_key=''):
 		self._parameters = parameters
 		self._signature = signature
-		self.embedded_private_key = private_key
-		print("Not implemented")
+		if('_RSAPrivateKey' in parameters):
+			self.embedded_private_key = parameters['_RSAPrivateKey']
+		else:
+			self.embedded_private_key = private_key
 
 	def dump(self):
 		dumped = '<AUTORIZACION><CAF version="1.0"><DA>'
@@ -347,10 +349,13 @@ class DTECAF:
 				continue
 			value = self._parameters[param]
 			dumped = dumped + '<' + markup + '>' + value + '</' + markup + '>'
-
+		""" Add range """
+		dumped = dumped + '<RSAPK><M>' + self._parameters['_RSAPrivateKeyModule'] + '</M><E>'+ self._parameters['_RSAPrivateKeyExp'] +'</E></RSAPK>'
+		dumped = dumped + '<RNG><D>' + self._parameters['_From'] + '</D><H>'+ self._parameters['_To'] +'</H></RNG>'
 		dumped = dumped + '</DA>'
-		dumped = dumped + '<FRMA algoritmo="SHA1withRSA">' + self._signature + '</FRMA>'
+		dumped = dumped + '<FRMA algoritmo="SHA1withRSA">' + self._parameters['_EmbeddedSignature'] + '</FRMA>'
 		dumped = dumped + '</CAF></AUTORIZACION>'
+
 		return dumped
 
 	def load_from_XML(self, filepath):
@@ -394,7 +399,7 @@ class DTE:
 	_document_id = ''
 	_ted = ''
 
-	def __init__(self, header, items, discount, reference, other, signature, timestamp, caf=None):
+	def __init__(self, header, items, discount, reference, other, signature, timestamp, caf=None, signer=None):
 		self._header = header
 		self._items = items
 		self._discount = discount
@@ -404,6 +409,7 @@ class DTE:
 		self._timestamp = timestamp
 		self._caf = caf
 		self._document_id = 'T' + str(self._header.dte_document_type) + 'I' + str(self._header.dte_document_number)
+		self._signer = signer
 
 	def generate_ted(self):
 		caf_private_key = ''
@@ -427,10 +433,25 @@ class DTE:
 		  '</TED>'
 		return ted
 
-	def sign(self, data, key):
-		""" SII specified RSA over SHA1 """
+	def sign(self, data, key, algorithm='SHA1withRSA'):
+		if self._signer is not None:
+			self._signer.key = key
+			sign = self._signer.sign_with_algorithm(data, algorithm)
+			return sign
+		else:
+			import xmlsec
+			import base64
+			print(str(key))
+			ctx = xmlsec.SignatureContext()
+			ctx.key = xmlsec.Key.from_memory(key, format=xmlsec.constants.KeyDataFormatPem)
+			data = data.replace('\n', ' ').replace('\r', '').replace('\t', '').replace('> ', '>').replace(' <', '<')
 
-		return 'NotImplemented'
+			data = bytes(data, 'ISO-8859-1')
+
+			sign = ctx.sign_binary(data, xmlsec.constants.TransformRsaSha1)
+			""" To base 64 and back """
+			base64_encoded_data = base64.b64encode(sign)
+			return base64_encoded_data.decode('ISO-8859-1')
 
 	def dump(self):
 		return '<DTE version="1.0">' + self.dump_document_only() + '</DTE>'
@@ -550,21 +571,10 @@ if __name__ == "__main__":
 
 	items = DTEItems(EXPEDITION_DOCUMENT_TYPE, item_list)
 
-	""" Create CAF from parameters """
-	caf_parameters = {'RUT':'XXXXXXX-3',
-						'Name':'EMPRESA PRUEBA',
-						'Type':'52',
-						'From':'0',
-						'To':'10',
-						'FechaAuthorization':'2020-03-17',
-						'RSAPrivateKeyModule':'waVWjYCJLcFAtrWgXheAxkGF2sdfsdfsdf1gTQ3OenDOCezdztNKtLU8hczwWNH/iPA3jwqVGjPt6kYOqz1212d5uIAN6sW8tKQgU8IEfgIw==',
-						'RSAPrivateKeyExp':'Aw=l',
-						'KeyId':'300'
-						}
-	caf = DTECAF(parameters=caf_parameters, signature='E/waVWjYCJLcFAtrWgXheAxkGF2sdfsdfsdf1gTQ3OenDOCezdztNKtLU8hczwWNH+5fyH4JbHdO24JRHyLNsw==', private_key='')
+	caf = DTECAF(parameters={}, signature='', private_key='')
 
 	""" Could be loaded from XML too """
-	#caf.load_from_XML('../../cert/caf_test.xml')
+	caf.load_from_XML('../../cert/caf_test.xml')
 	dte = DTE(header, items, '', '', '', '', '',caf=caf)
 
 	dte_etree = etree.fromstring(dte.dump())
