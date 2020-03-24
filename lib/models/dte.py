@@ -86,6 +86,7 @@ class DTEHeader:
 	total_amount = 0
 
 	_specifics = None
+	totales = {}
 
 	__valid_document_types = {
 	33: 'Factura Electrónica',
@@ -133,7 +134,7 @@ class DTEHeader:
 								}
 	comment = ''
 
-	def __init__(self, sender, receiver, document_type, document_number, payment_method, expiry_date, specific_parameters):
+	def __init__(self, sender, receiver, document_type, document_number, payment_method, expiry_date, specific_parameters, totales):
 		""" specific_parameters parameter should contains document type based parameters """
 		assert(document_type in self.__valid_document_types)
 		self.sender = sender
@@ -143,6 +144,8 @@ class DTEHeader:
 		self._dte_payment_method = payment_method
 		self._dte_expiry_date = expiry_date
 		self._specifics = specific_parameters
+		self.totales = totales
+
 		try:
 			self.comment = specific_parameters['Comment']
 		except:
@@ -168,11 +171,11 @@ class DTEHeader:
 		 '</Encabezado>'
 
 	def dump_totales(self):
-		return '<Totales>' + '<MntNeto>' + str(self._net_amount) + '</MntNeto>' + \
-						'<TasaIVA>' + str(self._tax_rate) + '</TasaIVA>' + \
-						'<IVA>' + str(self._taxes) + '</IVA>' + \
-						'<MntTotal>' + str(self.total_amount) + '</MntTotal>' + \
-		 	'</Totales>'
+		return '<Totales><MntNeto>' + str(self.totales['Net']) + '</MntNeto>' + \
+						'<TasaIVA>' + str(self.totales['Rate']) + '</TasaIVA>' + \
+						'<IVA>' + str(self.totales['IVA']) + '</IVA>' + \
+						'<MntTotal>' + str(self.totales['Total']) + '</MntTotal>' + \
+		 			'</Totales>'
 
 	def dump_document_identification(self):
 		return '<IdDoc>' + self.dump_document_type() + \
@@ -273,6 +276,27 @@ class DTEItems:
 						pass
 				dumped = dumped + '</Detalle>'
 		return dumped
+
+	def dump_totales(self, totales):
+		dump = '<MntNeto>' + str(totales['Net']) + '</MntNeto>'
+		dump = dump + '<TasaIVA>' + str(totales['Rate']) + '</TasaIVA>'
+		dump = dump + '<IVA>' + str(totales['IVA']) + '</IVA>'
+		dump = dump + '<MntTotal>' + str(totales['Total']) + '</MntTotal>'
+
+		return dump
+
+	def get_totales(self, iva_rate):
+		totales = {}
+		totales['Net'] = 0
+
+		for item_key in self._items:
+			totales['Net'] = int(totales['Net']) + int(self._items[item_key]['ItemPrice'])
+
+		totales['Rate'] = iva_rate
+		totales['IVA'] = totales['Net'] * iva_rate
+		totales['Total'] = totales['IVA'] + totales['Net']
+
+		return totales
 
 	def get_item_list_for_template(self):
 		return self._items
@@ -480,19 +504,20 @@ class DTE:
 							'Phone':''
 				},
 				'Details': self._items.get_item_list_for_template(),
-				'Comment': self._header.comment
+				'Comment': self._header.comment,
+				'Totales': self._header.totales
 		}
 
 		return dict
 
 class DTEBuidler:
+	__iva_by_type = {33: 0.19, 52: 0.19, 34: 0}
 	def build(self, type, sender, receiver, header, items, caf):
 			sender_object = DTEPerson(1, sender)
 			receiver_object = DTEPerson(0, receiver)
-			header_object = DTEHeader(sender_object, receiver_object, type, 1, 1, datetime.datetime.now(), header)
-
-			""" Items """
 			items_object = DTEItems(type, items)
+			iva_rate = self.__iva_by_type[type]
+			header_object = DTEHeader(sender_object, receiver_object, type, 1, 1, datetime.datetime.now(), header, items_object.get_totales(iva_rate))
 
 			if isinstance(caf, DTECAF):
 				caf_object = caf
@@ -526,13 +551,6 @@ if __name__ == "__main__":
 						'Comune':'Las condes',
 						'City':'Santiago'}
 	receiver = DTEPerson(0, receiver_parameters)
-
-	""" Header """
-	specific_parameters = {'ExpeditionType': '1', #Paid by sender
-							'MovementType': '2' #Internal
-							}
-
-	header = DTEHeader(sender, receiver, EXPEDITION_DOCUMENT_TYPE, 1, 1, datetime.datetime.now(), specific_parameters)
 
 	""" Items """
 
@@ -569,6 +587,15 @@ if __name__ == "__main__":
 				}
 
 	items = DTEItems(EXPEDITION_DOCUMENT_TYPE, item_list)
+
+	""" Header """
+	specific_parameters = {'ExpeditionType': '1', #Paid by sender
+							'MovementType': '2' #Internal
+							}
+
+	header = DTEHeader(sender, receiver, EXPEDITION_DOCUMENT_TYPE, 1, 1, datetime.datetime.now(), specific_parameters, items.get_totales(0.19))
+
+
 
 	caf = DTECAF(parameters={}, signature='', private_key='')
 
