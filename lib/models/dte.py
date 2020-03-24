@@ -441,7 +441,6 @@ class DTE:
 		else:
 			import xmlsec
 			import base64
-			print(str(key))
 			ctx = xmlsec.SignatureContext()
 			ctx.key = xmlsec.Key.from_memory(key, format=xmlsec.constants.KeyDataFormatPem)
 			data = data.replace('\n', ' ').replace('\r', '').replace('\t', '').replace('> ', '>').replace(' <', '<')
