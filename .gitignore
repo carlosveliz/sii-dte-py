@@ -22,3 +22,7 @@
 *.pfx
 *.key
 *.crt
+
+# Temporary files #
+###################
+/temp/*
