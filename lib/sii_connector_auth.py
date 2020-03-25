@@ -15,8 +15,8 @@ class SiiConnectorAuth(SiiConnectorBase):
 	REGEX_MATCH_STATE = r"<ESTADO>(\d{2,})</ESTADO>"
 
 	""" Default parameters : test server, CrSeed, test, SSL """
-	def __init__(self, server='maullin', module=0, mode=1, ssl=1, pfx_file_path="", pfx_password=""):
-		SiiConnectorBase.__init__(self, server, module, mode, ssl, pfx_file_path, pfx_password)
+	def __init__(self, server='maullin', module=0, mode=1, ssl=1):
+		SiiConnectorBase.__init__(self, server, module, mode, ssl)
 
 	"""
 		Retrieve "SEMILLA" (seed) used for authentication
