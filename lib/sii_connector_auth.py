@@ -3,7 +3,6 @@ from lxml.etree import tostring
 import logging
 from requests import Session
 from zeep import Client,Transport
-from lib.zeep.custom_signature import MemorySignatureOneWay
 from lib.zeep.sii_plugin import SiiPlugin
 from zeep.exceptions import SignatureVerificationFailed
 import re
@@ -59,7 +58,7 @@ class SiiConnectorAuth(SiiConnectorBase):
 		response = self.soap_client.service.getToken(token_message)
 
 		""" Parsing response using RegEX """
-		match = re.search(self.REGEX_MATCH_TOKEN, token, re.MULTILINE)
+		match = re.search(self.REGEX_MATCH_TOKEN, response, re.MULTILINE)
 		if match:
 			token = match.group(1)
 

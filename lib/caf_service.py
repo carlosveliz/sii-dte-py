@@ -1,6 +1,7 @@
 """
 	Manage CAF (Código de Autorización de Folios, Docuemnt authorization code)
 """
+from models.dte import DTECAF
 class CAFService:
 	def __init__(self):
 		print("Not implemented")

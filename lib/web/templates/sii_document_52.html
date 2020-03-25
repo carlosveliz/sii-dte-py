@@ -1,0 +1,253 @@
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta name="description" content="DTE, SII, OpenSource">
+	<title>DTE SII OpenSource</title>
+	<html lang="es">
+	<!-- Loading scripts -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"> </script>
+		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.0.0-beta/css/bootstrap.min.css" integrity="sha256-m/h/cUDAhf6/iBRixTbuc8+Rg2cIETQtPcH9D3p2Kg0=" crossorigin="anonymous" differ/>
+		<!-- open-iconic-bootstrap (icon set for bootstrap) -->
+		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/open-iconic/1.1.1/font/css/open-iconic-bootstrap.min.css" integrity="sha256-BJ/G+e+y7bQdrYkS2RBTyNfBHpA9IuGaPmf9htub5MQ=" crossorigin="anonymous" differ/>
+</head>
+
+<style>
+.container{
+	margin-top:2%;
+  max-width:1024px;
+	border-style: solid;
+	border-width: 1px;
+}
+
+h1 {
+	color:red;
+}
+
+p {
+	color:blue;
+}
+
+.sii_mark {
+	border-style: solid;
+	border-width: 5px;
+	height: 140px;
+	width: 330px;
+	color: red;
+	text-align: center;
+
+	font-weight: bold;
+	font-name: 'Arial';
+	float:right;
+}
+
+.logo {
+	height: 150px;
+	width: 600px;
+	color: black;
+	text-align: left;
+	font-size: 10dpi;
+	font-name: 'Arial';
+	float:left;
+}
+
+.receiver {
+	border-style: solid;
+	border-width: 1px;
+	height: 7em;
+	width: 100%;
+	padding: 5px;
+	text-align: left;
+	font-size: 10dpi;
+	font-name: 'Arial';
+	margin-top: 200px;
+}
+
+.part {
+	clear:both;
+}
+
+.header {
+
+}
+
+.receive-data-01 {
+	position:relative;
+	float:left;
+}
+.receive-data-02 {
+	position:relative;
+	float:right;
+}
+
+
+.details {
+	border-style: solid;
+	border-width: 1px;
+	width: 100%;
+	text-align: left;
+	font-size: 10dpi;
+	font-name: 'Arial';
+	padding: 5px;
+}
+
+.totales {
+	width: 300px;
+	text-align: left;
+	font-size: 10dpi;
+	font-name: 'Arial';
+	position:relative;
+	float:right;
+	display: grid;
+  grid-template-columns: auto auto auto;
+}
+
+.comment {
+	position:relative;
+	float:left;
+	width: 300px;
+}
+
+.grid-item {
+  border: 1px solid rgba(0, 0, 0, 0.8);
+	padding: 1px;
+  text-align: left;
+}
+
+.manual-registed {
+	width: 500px;
+	border: 1px solid rgba(0, 0, 0, 0.8);
+	padding: 5px;
+	position:relative;
+	float:right;
+}
+
+.ted {
+	text-align: center;
+	float:left;
+}
+
+</style>
+<body>
+<div id="document">
+	<div class="container">
+		<div class="part header">
+			<br />
+			<div class="sii_mark">
+				R.U.T : {{ parameters['Sender']['RUT'] }} <br /><br />
+				GUÍA DE DESPACHO ELECTRÓNICA <br /><br />
+				N° {{ parameters['DocumentNumber'] }} <br /><br />
+
+				S.I.I. – {{ parameters['SII'] | upper  }}
+			</div>
+			<div class="logo">
+				<b>{{ parameters['Sender']['Name'] | upper  }}</b> <br />
+				{{ parameters['Sender']['Activity'] | upper  }}<br />
+				Casa Matriz: {{ parameters['Sender']['Address'] | upper  }}<br />
+				Sucursal: {{ parameters['Sender']['Address2'] | upper  }}<br />
+				Fono: {{ parameters['Sender']['Phone'] }}
+			</div>
+		</div>
+		<div class="part receiver">
+			<br />
+			<div class="receive-data-01">
+				Señor (es): <b>{{ parameters['Receiver']['Name']  | upper }}</b> <br />
+				Dirección: <b>{{ parameters['Receiver']['Address'] | upper }} </b> <br />
+				Giro: <b>{{ parameters['Receiver']['Activity'] | upper }} </b>
+			</div>
+			<div class="receive-data-02">
+				RUT: <b>{{ parameters['Receiver']['RUT'] }}</b><br />
+				Comuna: <b>{{ parameters['Receiver']['City'] | upper  }} </b> <br />
+				Teléfono: <b> {{ parameters['Receiver']['Phone'] }}</b>
+			</div>
+		</div>
+		<div class="part details">
+			<br />
+			<table class="table">
+				<thead>
+					<tr>
+						<th>#</th>
+						<th>Código</th>
+						<th>Descripción</th>
+						<th>Cantidad</th>
+						<th>Unid. P.</th>
+						<th>Unit.</th>
+						<th>$ Dscto.</th>
+						<th>Valor</th>
+					</tr>
+				</thead>
+				<tbody>
+					{% set index = 1 %}
+					{% for unit in parameters['Details'] %}
+					<tr>
+						<td>{{ loop.index }}</td>
+						<td>{{ parameters['Details'][unit]['Code'] }}</td>
+						<td>{{ parameters['Details'][unit]['Name'] }}</td>
+						<td>{{ parameters['Details'][unit]['Description'] }}</td>
+						<td>{{ parameters['Details'][unit]['Quantity'] }}</td>
+						<td>{{ parameters['Details'][unit]['Unit'] }}</td>
+						<td>{{ parameters['Details'][unit]['UnitPrice'] }}</td>
+						<td></td>
+						<td>{{ parameters['Details'][unit]['ItemPrice'] }}</td>
+					</tr>
+					{% endfor %}
+				</tbody>
+			</table>
+			<br />
+			<table class="table">
+				<thead>
+					<tr>
+						<th>Tipo Documento</th>
+						<th>Folio</th>
+						<th>Fecha</th>
+						<th>Razón Referencia</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr>
+						<td>Guía de Despacho Electrónica</td>
+						<td>200</td>
+						<td>01-11-2009 </td>
+						<td>Factura Guía de Despacho</td>
+					</tr>
+				</tbody>
+			</table>
+		</div>
+		<br />
+		<div class="part">
+			<div class="comment">
+				<b>Observación :</b> <br />
+				{{ parameters['Comment'] | wordwrap }}
+
+			</div>
+			<div class="totales">
+				<div class="grid-item"><b>Descuento</b></div> <div class="grid-item">${{ parameters['Comment'][''] }}</div>
+				<div class="grid-item"><b>Monto Neto</b></div> <div class="grid-item">${{ parameters['Comment']['Net'] }}</div>
+				<div class="grid-item"><b>Monto Exento</b></div> <div class="grid-item">$0</div>
+				<div class="grid-item"><b>IVA (19%)</b></div> <div class="grid-item">${{ parameters['Comment']['Rate'] }}</div>
+				<div class="grid-item"><b>Monto Total</b></div> <div class="grid-item">${{ parameters['Comment']['Total'] }}</div>
+			</div>
+		</div>
+		<div class="part" >
+			<br />
+			<div class="ted">
+				<img src="{{ted}}" style="height:150px; width:450px" alt="TED {{ted}}" /> <br />
+				Timbre electrónico SII <br />
+				Res. XX de AAAA <br />
+				Verifique documento: www.sii.cl <br />
+			</div>
+			<div class="manual-registed"">
+				Nombre:___________________________________ <br />
+				RUT: _________________ FECHA: ____________ <br />
+				Recinto: _______________ FIRMA: ____________ <br />
+				El acuse de recibo que se declara en este acto, de acuerdo a lo <br />
+				dispuesto en la letra b) del Art. 4° y la letra c) del Art. 5° de la <br />
+				Ley 19.983, acredita que la entrega de mercadería(s) o servicio(s) <br />
+				ha(n) sido recibido(s). <br />
+				<b>CEDIBLE</b>
+			</div>
+		</div>
+		<br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br />
+	</div>
+</div>
+</body>

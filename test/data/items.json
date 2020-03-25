@@ -1,0 +1,31 @@
+{"1": {"CodeType":"INT01",
+					"Code":"18KGMZ",
+					"Extension":"1",
+					"Name":"CAJA MANZANA 18KG",
+					"Description":"CAJA MANZANA FRESCA 18KG GALA",
+					"Quantity":"20",
+					"Unit":"UN",
+					"UnitPrice":"1000",
+					"ItemPrice":"20000"
+					},
+	"2": {"CodeType":"INT01",
+						"Code":"10KGPE",
+						"Extension":"1",
+						"Name":"CAJA PERA 10KG",
+						"Description":"CAJA PERA FRESCA 10KG ABATE",
+						"Quantity":"20",
+						"Unit":"UN",
+						"UnitPrice":"500",
+						"ItemPrice":"10000"
+						},
+	"3": {"CodeType":"INT01",
+						"Code":"PAL1",
+						"Extension":"1",
+						"Name":"PALLET 100x120",
+						"Description":"PALLET MADERA DE 100x120CM",
+						"Quantity":"2",
+						"Unit":"UN",
+						"UnitPrice":"10",
+						"ItemPrice":"20"
+						}
+}

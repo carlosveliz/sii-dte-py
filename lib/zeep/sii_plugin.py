@@ -1,6 +1,7 @@
 from zeep import Plugin
 from lxml import etree
 import xmlsec
+import base64
 import logging
 
 class SiiPlugin(Plugin):
@@ -22,6 +23,18 @@ class SiiPlugin(Plugin):
 			print(str(operation.name))
 
 		return envelope, http_headers
+
+	def sign_with_algorithm(self, message, Algorithm='RSAxSHA1'):
+		""" SII specified RSA over SHA1 """
+		ctx = xmlsec.SignatureContext()
+		ctx.key = xmlsec.Key.from_memory(key, format=xmlsec.constants.KeyDataFormatPem)
+		""" Flatten data """
+		data = data.replace('\n', ' ').replace('\r', '').replace('\t', '').replace('> ', '>').replace(' <', '<')
+		data = bytes(data, 'ISO-8859-1')
+		sign = ctx.sign_binary(data, xmlsec.constants.TransformRsaSha1)
+		""" To base 64 and back to ISO-8859-1"""
+		base64_encoded_data = base64.b64encode(sign)
+		return base64_encoded_data.decode('ISO-8859-1')
 
 	def sign(self, message_with_template_included):
 		logger = logging.getLogger()
