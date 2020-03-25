@@ -21,5 +21,8 @@ class Token():
 	def _is_expired(self):
 		return datetime.datetime.now() >= self._expiry_date
 
+	def to_json(self):
+		return '{"token":' + self._token_string + ', "expiry":' + str(self._expiry_date) + '}'
+
 class TokenExpiredError(Exception):
 	""" Raised on token expiration """
