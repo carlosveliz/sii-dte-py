@@ -7,7 +7,7 @@ __version__ = '0.1'
 import logging
 import sys
 import json
-from lib.web import app
+from web.router import app
 from lib.models.sii_token import Token
 from lib.models.dte import DTECAF, DTEBuidler
 from lib.sii_connector_auth import SiiConnectorAuth
@@ -31,13 +31,15 @@ if len(sys.argv) > 1:
 		print("generate_pdf <sii type>")
 	if command == "get_token":
 		logging.warning('Full test.')
-		auth = SiiConnectorAuth(pfx_file_path=sys.argv[2], pfx_password=sys.argv[3])
+		auth = SiiConnectorAuth(module=SiiConnectorAuth.GET_SEED_MODULE_ID)
 		seed = auth.get_seed()
 		print("Seed : " + seed)
-		auth = SiiConnectorAuth(server='maullin', \
-								module=SiiConnectorAuth.GET_TOKEN_MODULE_ID, \
-								pfx_file_path=sys.argv[2], \
-								pfx_password=sys.argv[3])
+		auth = SiiConnectorAuth(module=SiiConnectorAuth.GET_TOKEN_MODULE_ID)
+
+		""" Extract key """
+		cert = CertificateService(pfx_file_path=sys.argv[2], pfx_password=sys.argv[3])
+		cert.generate_certificate_and_key()
+		auth.set_key_and_certificate(cert.key, cert.certificate)
 		token_string = auth.get_token(seed)
 		token = Token(token_string)
 		print("Token : " + token.get_token())
