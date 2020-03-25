@@ -58,7 +58,7 @@ class SiiConnectorAuth(SiiConnectorBase):
 		response = self.soap_client.service.getToken(token_message)
 
 		""" Parsing response using RegEX """
-		match = re.search(self.REGEX_MATCH_TOKEN, token, re.MULTILINE)
+		match = re.search(self.REGEX_MATCH_TOKEN, response, re.MULTILINE)
 		if match:
 			token = match.group(1)
 
