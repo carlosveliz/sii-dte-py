@@ -302,7 +302,8 @@ class DTEItems:
 		return self._items
 
 	def get_first_item_description(self):
-		return self._items[1]['Description']
+		first_key = list(self._items.keys())[0]
+		return self._items[first_key]['Description']
 
 	def dump(self):
 		return self.dump_items()
@@ -531,78 +532,3 @@ class DTEBuidler:
 			dte_etree = etree.fromstring(dte.dump())
 			pretty_dte = etree.tostring(dte_etree, pretty_print=True).decode('UTF-8')
 			return dte_etree, pretty_dte, dte
-
-if __name__ == "__main__":
-	""" Dump test XML """
-	EXPEDITION_DOCUMENT_TYPE = 52
-	sender_parameters = {'RUT':'XXXXXXX-3',
-						'Name':'Matthieu AMOROS',
-						'Activity':'PERSONA',
-						'Address':'1606 Pasaje X',
-						'Comune':'Teno',
-						'City':'Curico',
-						'Acteco': '1234'}
-	sender = DTEPerson(1, sender_parameters)
-
-	receiver_parameters = {'RUT':'XXXXXXX-4',
-						'Name':'Matthieu AMOROS',
-						'Activity':'PERSONA',
-						'Address':'555 Pasaje X',
-						'Comune':'Las condes',
-						'City':'Santiago'}
-	receiver = DTEPerson(0, receiver_parameters)
-
-	""" Items """
-
-	item_list = {1: {'CodeType':'INT01',
-						'Code':'18KGMZ',
-						'Extension':'1',
-						'Name':'CAJA MANZANA 18KG',
-						'Description':'CAJA MANZANA FRESCA 18KG GALA',
-						'Quantity':'20',
-						'Unit':'UN',
-						'UnitPrice':'1000',
-						'ItemPrice':'20000'
-						},
-				2: {'CodeType':'INT01',
-									'Code':'10KGPE',
-									'Extension':'1',
-									'Name':'CAJA PERA 10KG',
-									'Description':'CAJA PERA FRESCA 10KG ABATE',
-									'Quantity':'20',
-									'Unit':'UN',
-									'UnitPrice':'500',
-									'ItemPrice':'10000'
-									},
-				3: {'CodeType':'INT01',
-									'Code':'PAL1',
-									'Extension':'1',
-									'Name':'PALLET 100x120',
-									'Description':'PALLET MADERA DE 100x120CM',
-									'Quantity':'2',
-									'Unit':'UN',
-									'UnitPrice':'10',
-									'ItemPrice':'20'
-									}
-				}
-
-	items = DTEItems(EXPEDITION_DOCUMENT_TYPE, item_list)
-
-	""" Header """
-	specific_parameters = {'ExpeditionType': '1', #Paid by sender
-							'MovementType': '2' #Internal
-							}
-
-	header = DTEHeader(sender, receiver, EXPEDITION_DOCUMENT_TYPE, 1, 1, datetime.datetime.now(), specific_parameters, items.get_totales(0.19))
-
-
-
-	caf = DTECAF(parameters={}, signature='', private_key='')
-
-	""" Could be loaded from XML too """
-	caf.load_from_XML('../../cert/caf_test.xml')
-	dte = DTE(header, items, '', '', '', '', '',caf=caf)
-
-	dte_etree = etree.fromstring(dte.dump())
-	pretty_dte = etree.tostring(dte_etree, pretty_print=True).decode('UTF-8')
-	print(pretty_dte)
