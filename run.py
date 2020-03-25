@@ -38,8 +38,9 @@ if len(sys.argv) > 1:
 								module=SiiConnectorAuth.GET_TOKEN_MODULE_ID, \
 								pfx_file_path=sys.argv[2], \
 								pfx_password=sys.argv[3])
-		token = Token(auth.get_token(seed))
-		print("Token : " + token)
+		token_string = auth.get_token(seed)
+		token = Token(token_string)
+		print("Token : " + token.get_token())
 	if command == "generate_cert":
 		""" Generate certificate only """
 		logging.warning('Certificate generation test.')
