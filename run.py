@@ -81,6 +81,7 @@ else:
 	"""
 	  Run Flask web app
 	"""
+	logging.info('Web server started on ' + str(FLASK_ENDPOINT) + ':' + str(FLASK_LISTEN_PORT))
 	app.run(debug=DEBUG_MODE, host=FLASK_ENDPOINT, port=int(FLASK_LISTEN_PORT))
 
 logging.info('Application stopped.')
