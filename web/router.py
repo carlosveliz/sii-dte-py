@@ -2,8 +2,10 @@ __version__ = '0.1'
 import json
 import datetime
 import uuid
+import os
 from flask import render_template, jsonify, session, request, redirect, url_for, Flask
 from lib.models.dte import DTEBuidler
+from lib.models.sii_token import Token
 from lib.pdf_generator import PDFGenerator
 from lib.certificate_service import CertificateService
 from lib.sii_connector_auth import SiiConnectorAuth
@@ -14,9 +16,12 @@ app = Flask(__name__, instance_relative_config=True)
 epoch = datetime.datetime.utcfromtimestamp(0)
 app.secret_key = str(epoch)
 
+_key_by_uid = {}
+
 def is_anonymous_authorized_pages(endpoint):
 	return (endpoint == 'login' \
-	or endpoint == 'static')
+	or endpoint == 'static'
+	or endpoint == 'index')
 
 @app.before_request
 def auth():
@@ -26,21 +31,26 @@ def auth():
 			""" Return HTTP 403, Forbidden and login page """
 			return "Not logged in", 403
 
-@app.route('/login', methods=['GET'])
+@app.route('/login', methods=['POST'])
 def login():
-	session['uid'] = uuid.uuid4()
+	if 'RUT' in request.form:
+		session['uid'] = uuid.uuid4()
+		session['RUT'] = request.form['RUT']
+		return "", 200
+	else:
+		return "Missing RUT parameter.", 400
 
 @app.route('/logout', methods=['POST'])
 def logout():
 	""" Delete session """
-	del session['key']
-	del session['cert']
+	uid = str(session['uid'])
 	del session['uid']
+	del _key_by_uid[uid]
 	return "", 200
 
 @app.route('/')
 def index():
-	return "Running", 200
+	return render_template('index.html')
 
 ALLOWED_EXTENSIONS = ['pfx', 'pem']
 def is_valid_file(filename):
@@ -52,9 +62,10 @@ def set_certificate():
 	password = request.form['password']
 
 	if is_valid_file(certificate.filename):
+		uid = str(session['uid'])
 		""" Save in temporary location """
-		certificate.filename = 'c-' + str(session['uid'])
-		filepath = '../temp/' + str(certificate.filename)
+		certificate.filename = str(session['uid']) + '.pfx'
+		filepath = 'temp/' + str(certificate.filename)
 		certificate.save(filepath)
 
 		""" Extract key and certificate """
@@ -62,30 +73,34 @@ def set_certificate():
 		cert.generate_certificate_and_key()
 
 		""" Store in session """
-		session['key'] = cert.key
-		session['cert'] = cert.certificate
+		_key_by_uid[uid] = { 'key': cert.key, 'cert': cert.certificate }
 
 		""" Delete """
 		os.remove(filepath)
+		if cert.key is not None and len(cert.key) > 0:
+			return "", 200
+		else:
+			return "Could not extract key (Invalid password ?)", 400
 	else:
 		return "Valid file extensions: " + str(ALLOWED_EXTENSIONS), 400
 
 @app.route('/token', methods=['GET'])
 def get_token():
-	if 'key' not in session or 'cert' not in session:
+	if 'key' in session and 'cert' in session:
+		uid = str(session['uid'])
 		""" Get seed """
 		auth = SiiConnectorAuth(module=SiiConnectorAuth.GET_SEED_MODULE_ID)
 		seed = auth.get_seed()
 
 		""" Get token """
 		auth = SiiConnectorAuth(module=SiiConnectorAuth.GET_TOKEN_MODULE_ID)
-		auth.set_key_and_certificate(cert.key, cert.certificate)
+		auth.set_key_and_certificate(_key_by_uid[uid]['key'], _key_by_uid[uid]['cert'])
 
 		token_string = auth.get_token(seed)
 		token = Token(token_string)
 
 		""" Store in session """
-		session['token'] = token
+		session['token'] = token.to_json()
 		return token.to_json(), 200
 	else:
 		return "Certificate not loaded.", 400
