@@ -52,3 +52,5 @@ pip3 install -r requirements.txt
 		```
 		PDF file output in temp directory
 		```
+## Use cases
+A PDF sample generated using this project is available at "documents/sample_52.pdf"
