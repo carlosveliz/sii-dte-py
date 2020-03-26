@@ -25,6 +25,8 @@ pip3 install -r requirements.txt
  - get_token <pfx_file_path> <pfx_password>
  		```
 		python3 run.py get_token '/home/user/Desktop/cert/my-cert.pfx' Password
+		```
+		```
 		* Application secret key : X
 		getSeed
 		Seed : 024945556814
@@ -35,6 +37,8 @@ pip3 install -r requirements.txt
  - generate_cert <pfx_file_path> <pfx_password>
 		```
 		python3 run.py generate_cert '/home/user/Desktop/cert/my-cert.pfx' Password
+		```
+		```
 		* Application secret key : X
 		writing RSA key
 		No output
@@ -42,7 +46,8 @@ pip3 install -r requirements.txt
  - generate_pdf <sii type>
 		```
 		 	python3 run.py generate_pdf 52
-
+ 		```
+		```
 		 * Application secret key : X
 		Loading CAF from xml
 		QStandardPaths: XDG_RUNTIME_DIR not set, defaulting to '/tmp/runtime-root'
