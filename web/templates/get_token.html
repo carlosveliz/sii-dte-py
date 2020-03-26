@@ -1,0 +1,20 @@
+
+<div>
+	<input type="button" value="Obtener token" onClick="getToken();" />
+	<input type="text" value="" id="tokenValue" />
+</div>
+
+
+<script>
+	function getToken() {
+		$.ajax({
+							url: '/token',
+							type: 'GET',
+							dataType: 'json',
+							success: function(data) {
+								console.log(data);
+								$('#tokenValue').val(data.token);
+						}
+		});
+	}
+</script>
