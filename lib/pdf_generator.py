@@ -18,8 +18,8 @@ FILE_DIR = os.path.dirname(os.path.realpath(__file__))
 class PDFGenerator:
 
 	__template_by_type = {
-							52:'lib/web/templates/sii_document_52.html',
-							33:'lib/web/templates/sii_document_33.html'
+							52:'web/templates/sii_document_52.html',
+							33:'web/templates/sii_document_33.html'
 						}
 
 	def generate(self, dte):
