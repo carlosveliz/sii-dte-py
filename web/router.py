@@ -36,32 +36,40 @@ def login():
 	if 'RUT' in request.form:
 		session['uid'] = uuid.uuid4()
 		session['RUT'] = request.form['RUT']
-		return "", 200
+		return render_template('index.html'), 200
 	else:
 		return "Missing RUT parameter.", 400
 
-@app.route('/logout', methods=['POST'])
+@app.route('/logout', methods=['GET'])
 def logout():
 	""" Delete session """
 	uid = str(session['uid'])
 	del session['uid']
-	del _key_by_uid[uid]
-	return "", 200
+	try:
+		del _key_by_uid[uid]
+	except KeyError:
+		""" No certificate registered """
+		pass
+	return "Disconnected", 200
 
 @app.route('/')
 def index():
 	return render_template('index.html')
 
-ALLOWED_EXTENSIONS = ['pfx', 'pem']
-def is_valid_file(filename):
-	return '.' in filename and filename.rsplit('.',1)[1] in ALLOWED_EXTENSIONS
+ALLOWED_CERT_EXTENSIONS = ['pfx', 'pem']
+def is_valid_cert_file(filename):
+	return '.' in filename and filename.rsplit('.',1)[1] in ALLOWED_CERT_EXTENSIONS
+
+ALLOWED_CAF_EXTENSIONS = ['xml', 'caf']
+def is_valid_caf_file(filename):
+	return '.' in filename and filename.rsplit('.',1)[1] in ALLOWED_CAF_EXTENSIONS
 
 @app.route('/certificate', methods=['POST'])
 def set_certificate():
 	certificate = request.files['certificate']
 	password = request.form['password']
 
-	if is_valid_file(certificate.filename):
+	if is_valid_cert_file(certificate.filename):
 		uid = str(session['uid'])
 		""" Save in temporary location """
 		certificate.filename = str(session['uid']) + '.pfx'
@@ -74,11 +82,12 @@ def set_certificate():
 
 		""" Store in session """
 		_key_by_uid[uid] = { 'key': cert.key, 'cert': cert.certificate }
+		session['key_state'] = 'loaded'
 
 		""" Delete """
 		os.remove(filepath)
 		if cert.key is not None and len(cert.key) > 0:
-			return "", 200
+			return render_template('index.html')
 		else:
 			return "Could not extract key (Invalid password ?)", 400
 	else:
@@ -110,9 +119,16 @@ def set_dte():
 	dte = request.json
 	return "", 200
 
+@app.route('/caf',  methods=['POST'])
+def set_caf():
+	caf = request.files['caf']
+	if is_valid_caf_file(caf.filename):
+		print("Not implemented")
+	return render_template('index.html'), 200
+
 @app.route('/dte/<string:document_id>/preview',  methods=['GET'])
 def generate_preview(document_id):
-	""" Get parameters, build PDF and return file """
+	""" Get parameters, build HTML and return file """
 	return "", 200
 
 @app.route('/pdf', methods=['POST'])
