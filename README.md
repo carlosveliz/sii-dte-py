@@ -14,6 +14,14 @@ Its current state allows you to :
 pip3 install -r requirements.txt
 ```
 # Use cases
+ - Basic Web UI :
+	 ```
+		python3 run.py
+	 ```
+	 	-	First "login" with your RUT (this is just a mean to initiate session, no authentication)
+	 	-	Then load your certiciate and password
+		- Finally call "/token" to see your token
+
  - get_token <pfx_file_path> <pfx_password>
  		```
 		python3 run.py get_token '/home/sunpaz/Desktop/cert/nv-cert-vr.pfx' L92G0BM03M
