@@ -18,6 +18,11 @@ app.secret_key = str(epoch)
 
 _key_by_uid = {}
 
+def redirect_url(default='index'):
+	return request.args.get('next') or \
+	request.referrer or \
+	url_for(default)
+
 def is_anonymous_authorized_pages(endpoint):
 	return (endpoint == 'login' \
 	or endpoint == 'static'
@@ -36,7 +41,7 @@ def login():
 	if 'RUT' in request.form:
 		session['uid'] = uuid.uuid4()
 		session['RUT'] = request.form['RUT']
-		return render_template('index.html'), 200
+		return redirect(redirect_url())
 	else:
 		return "Missing RUT parameter.", 400
 
@@ -44,13 +49,13 @@ def login():
 def logout():
 	""" Delete session """
 	uid = str(session['uid'])
-	del session['uid']
+	session.clear()
 	try:
 		del _key_by_uid[uid]
 	except KeyError:
 		""" No certificate registered """
 		pass
-	return "Disconnected", 200
+	return redirect(redirect_url())
 
 @app.route('/')
 def index():
@@ -87,7 +92,7 @@ def set_certificate():
 		""" Delete """
 		os.remove(filepath)
 		if cert.key is not None and len(cert.key) > 0:
-			return render_template('index.html')
+			return redirect(redirect_url())
 		else:
 			return "Could not extract key (Invalid password ?)", 400
 	else:
@@ -95,23 +100,23 @@ def set_certificate():
 
 @app.route('/token', methods=['GET'])
 def get_token():
-	if 'key' in session and 'cert' in session:
+	if 'key_state' in session:
 		uid = str(session['uid'])
-		""" Get seed """
-		auth = SiiConnectorAuth(module=SiiConnectorAuth.GET_SEED_MODULE_ID)
-		seed = auth.get_seed()
+		if uid in _key_by_uid:
+			""" Get seed """
+			auth = SiiConnectorAuth(module=SiiConnectorAuth.GET_SEED_MODULE_ID)
+			seed = auth.get_seed()
 
-		""" Get token """
-		auth = SiiConnectorAuth(module=SiiConnectorAuth.GET_TOKEN_MODULE_ID)
-		auth.set_key_and_certificate(_key_by_uid[uid]['key'], _key_by_uid[uid]['cert'])
+			""" Get token """
+			auth = SiiConnectorAuth(module=SiiConnectorAuth.GET_TOKEN_MODULE_ID)
+			auth.set_key_and_certificate(_key_by_uid[uid]['key'], _key_by_uid[uid]['cert'])
 
-		token_string = auth.get_token(seed)
-		token = Token(token_string)
+			token_string = auth.get_token(seed)
+			token = Token(token_string)
 
-		""" Store in session """
-		session['token'] = token.to_json()
-		return token.to_json(), 200
-	else:
+			""" Store in session """
+			session['token'] = token.to_json()
+			return token.to_json(), 200
 		return "Certificate not loaded.", 400
 
 @app.route('/dte',  methods=['POST'])
