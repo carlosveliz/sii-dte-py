@@ -183,7 +183,6 @@ p {
 						<td>{{ loop.index }}</td>
 						<td>{{ parameters['Details'][unit]['Code'] }}</td>
 						<td>{{ parameters['Details'][unit]['Name'] }}</td>
-						<td>{{ parameters['Details'][unit]['Description'] }}</td>
 						<td>{{ parameters['Details'][unit]['Quantity'] }}</td>
 						<td>{{ parameters['Details'][unit]['Unit'] }}</td>
 						<td>{{ parameters['Details'][unit]['UnitPrice'] }}</td>
@@ -204,12 +203,6 @@ p {
 					</tr>
 				</thead>
 				<tbody>
-					<tr>
-						<td>Guía de Despacho Electrónica</td>
-						<td>200</td>
-						<td>01-11-2009 </td>
-						<td>Factura Guía de Despacho</td>
-					</tr>
 				</tbody>
 			</table>
 		</div>
@@ -221,11 +214,11 @@ p {
 
 			</div>
 			<div class="totales">
-				<div class="grid-item"><b>Descuento</b></div> <div class="grid-item">${{ parameters['Comment'][''] }}</div>
-				<div class="grid-item"><b>Monto Neto</b></div> <div class="grid-item">${{ parameters['Comment']['Net'] }}</div>
+				<div class="grid-item"><b>Descuento</b></div> <div class="grid-item">${{ parameters['Totales'][''] }}</div>
+				<div class="grid-item"><b>Monto Neto</b></div> <div class="grid-item">${{ parameters['Totales']['Net'] }}</div>
 				<div class="grid-item"><b>Monto Exento</b></div> <div class="grid-item">$0</div>
-				<div class="grid-item"><b>IVA (19%)</b></div> <div class="grid-item">${{ parameters['Comment']['Rate'] }}</div>
-				<div class="grid-item"><b>Monto Total</b></div> <div class="grid-item">${{ parameters['Comment']['Total'] }}</div>
+				<div class="grid-item"><b>IVA (parameters['Totales']['Rate']%)</b></div> <div class="grid-item">${{ parameters['Totales']['IVA'] }}</div>
+				<div class="grid-item"><b>Monto Total</b></div> <div class="grid-item">${{ parameters['Totales']['Total'] }}</div>
 			</div>
 		</div>
 		<div class="part" >
