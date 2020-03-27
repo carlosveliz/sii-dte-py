@@ -611,8 +611,10 @@ class DTEBuidler:
 		header_object = DTEHeader(sender_object, receiver_object, type, 1, 1, datetime.datetime.now(), header, items_object.get_totales(iva_rate))
 
 		if isinstance(caf, DTECAF):
+			""" Is already an object """
 			caf_object = caf
 		else:
+			""" Build object """
 			caf_object = DTECAF(parameters=caf, signature=signature, private_key=private_key)
 			signature = caf['_Signature']
 			private_key = caf['_PrivateKey']
@@ -632,8 +634,10 @@ class DTEBuidler:
 	def iterate_recurs_etree(self, tree, parameters):
 		items = 0
 		for child in tree:
+			""" Remove SII general tag """
 			tag = child.tag.replace('{http://www.sii.cl/SiiDte}','')
 			if len(child) > 1:
+				""" Extract elements """
 				if tag == 'Emisor':
 					sender = {}
 					parameters['Sender'] = {}
