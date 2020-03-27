@@ -12,11 +12,32 @@
 		<!-- open-iconic-bootstrap (icon set for bootstrap) -->
 		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/open-iconic/1.1.1/font/css/open-iconic-bootstrap.min.css" integrity="sha256-BJ/G+e+y7bQdrYkS2RBTyNfBHpA9IuGaPmf9htub5MQ=" crossorigin="anonymous" differ/>
 </head>
+
+<div>
+	<nav class="navbar navbar-expand-lg navbar-light bg-light" style="z-index:100">
+	<div class="collapse navbar-collapse" id="navbarNav">
+		{% if 'RUT' in session %}
+				<span class="btn navbar-btn">
+
+						RUT : {{ session['RUT'] }}
+
+				</span>
+				<button class="btn btn-shard-default" onclick="document.location='/logout'">
+				<span class="oi oi-account-logout"></span>
+				</button>
+		{% endif %}
+	</div>
+</nav>
+
+</div>
+<div class="container">
 {% if 'uid' not in session %}
 	{% include 'login.html' %}
 {% else %}
-	{% include 'upload_certificate.html' %}
 	{% if 'key_state' in session %}
 		{% include 'get_token.html' %}
+	{% else %}
+		{% include 'upload_certificate.html' %}
 	{% endif %}
 {% endif %}
+</div>
