@@ -149,7 +149,7 @@ p {
 				{% set expeditionType = parameters['Header']['Specifics']['ExpeditionType'] | int %}
 				{% set movementType = parameters['Header']['Specifics']['MovementType'] | int %}
 				{% if movementType == 1 %}
-								Tipo traslado : Operación constituye
+								Tipo traslado : Operación constituye venta
 				{% endif %}
 				{% if movementType == 2 %}
 								Tipo traslado : Ventas por efectuar
@@ -209,8 +209,8 @@ p {
 						<th>Código</th>
 						<th>Descripción</th>
 						<th>Cantidad</th>
-						<th>Unid. P.</th>
 						<th>Unit.</th>
+						<th>Unid. P.</th>
 						<th>$ Dscto.</th>
 						<th>Valor</th>
 					</tr>
@@ -253,10 +253,12 @@ p {
 
 			</div>
 			<div class="totales">
+				{% set iva = parameters['Totales']['Rate'] | float %}
+				{% set iva = iva * 100 %}
 				<div class="grid-item"><b>Descuento</b></div> <div class="grid-item">${{ parameters['Totales'][''] }}</div>
 				<div class="grid-item"><b>Monto Neto</b></div> <div class="grid-item">${{ parameters['Totales']['Net'] }}</div>
 				<div class="grid-item"><b>Monto Exento</b></div> <div class="grid-item">$0</div>
-				<div class="grid-item"><b>IVA (parameters['Totales']['Rate']%)</b></div> <div class="grid-item">${{ parameters['Totales']['IVA'] }}</div>
+				<div class="grid-item"><b>IVA ({{ iva }}%)</b></div> <div class="grid-item">${{ parameters['Totales']['IVA'] }}</div>
 				<div class="grid-item"><b>Monto Total</b></div> <div class="grid-item">${{ parameters['Totales']['Total'] }}</div>
 			</div>
 		</div>
