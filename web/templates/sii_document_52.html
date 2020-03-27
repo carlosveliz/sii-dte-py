@@ -145,7 +145,46 @@ p {
 				{{ parameters['Sender']['Activity'] | upper  }}<br />
 				Casa Matriz: {{ parameters['Sender']['Address'] | upper  }}<br />
 				Sucursal: {{ parameters['Sender']['Address2'] | upper  }}<br />
-				Fono: {{ parameters['Sender']['Phone'] }}
+				Fono: {{ parameters['Sender']['Phone'] }} <br /><br />
+				{% set expeditionType = parameters['Header']['Specifics']['ExpeditionType'] | int %}
+				{% set movementType = parameters['Header']['Specifics']['MovementType'] | int %}
+				{% if movementType == 1 %}
+								Tipo traslado : Operación constituye
+				{% endif %}
+				{% if movementType == 2 %}
+								Tipo traslado : Ventas por efectuar
+				{% endif %}
+				{% if movementType == 3 %}
+								Tipo traslado : Consignaciones
+				{% endif %}
+				{% if movementType == 4 %}
+								Tipo traslado : Entrega gratuita
+				{% endif %}
+				{% if movementType == 5 %}
+								Tipo traslado : Traslados internos
+				{% endif %}
+				{% if movementType == 6 %}
+								Tipo traslado : Otros traslados no venta
+				{% endif %}
+				{% if movementType == 7 %}
+								Tipo traslado : Guía de devolución
+				{% endif %}
+				{% if movementType == 8 %}
+								Tipo traslado : Traslado para exportación. (no venta)
+				{% endif %}
+				{% if movementType == 9 %}
+								Tipo traslado : Venta para exportación
+				{% endif %}
+				<br />
+				{% if expeditionType == 1 %}
+								Tipo despacho : Despacho por cuenta del receptor del documento
+				{% endif %}
+				{% if expeditionType == 2 %}
+								Tipo despacho : Despacho por cuenta del  emisor a instalaciones del  cliente
+				{% endif %}
+				{% if expeditionType == 3 %}
+								Tipo despacho : Despacho por cuenta del emisor a otras instalaciones
+				{% endif %}
 			</div>
 		</div>
 		<div class="part receiver">

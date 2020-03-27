@@ -218,6 +218,17 @@ class DTEHeader:
 	def dump_expiry_date(self):
 		return '<FchVenc>' + str(self._dte_expiry_date) + '</FchVenc>'
 
+	def get_property_by_markup(self, document_type, search_markup):
+		for property, markup in self.__specifics_by_document_type[document_type].items():
+			if markup == search_markup:
+				return property
+
+	def load_specifics_from_xml_parameters(self, document_type, parameters):
+		for i in parameters:
+			property = self.get_property_by_markup(document_type, i)
+			if property is not None:
+				self._specifics[property] = parameters[i]
+
 
 class DTEItems:
 	"""
@@ -557,7 +568,11 @@ class DTE:
 		return '<Documento ID="' + self._document_id + '">' + self._header.dump() + self._items.dump() + ted + '</Documento>'
 
 	def to_template_parameters(self):
-		dict = { 'Sender': {
+		dict = {
+				'Header': {
+					'Specifics': self._header._specifics
+				},
+				'Sender': {
 							'RUT':self._header.sender.get_attr('RUT'),
 							'Name':self._header.sender.get_attr('Name'),
 							'Activity':self._header.sender.get_attr('Activity'),
@@ -638,6 +653,10 @@ class DTEBuidler:
 			tag = child.tag.replace('{http://www.sii.cl/SiiDte}','')
 			if len(child) > 1:
 				""" Extract elements """
+				if tag == 'Encabezado':
+					header = {}
+					parameters['Header'] = {}
+					parameters['Header'] = self.iterate_recurs_etree(child, header)
 				if tag == 'Emisor':
 					sender = {}
 					parameters['Sender'] = {}
@@ -683,6 +702,7 @@ class DTEBuidler:
 		items_parameters = parameters['Items']
 		caf_parameters = parameters['CAF']
 		ted_parameters = parameters['TED']
+		header_parameters = parameters['Header']
 		""" Get dumped TED """
 		dumped_ted = parameters['TED']['Dump']
 		""" Totals """
@@ -707,6 +727,7 @@ class DTEBuidler:
 
 		""" Build header """
 		header = DTEHeader(sender, receiver, document_type, document_number, 1, datetime.datetime.now(), {}, items.get_totales(iva_rate))
+		header.load_specifics_from_xml_parameters(document_type, header_parameters)
 		""" Build final DTE """
 		dte = DTE(header, items, '', '', '', '', '',caf=caf, ted=dumped_ted)
 
