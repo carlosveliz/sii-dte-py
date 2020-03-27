@@ -353,7 +353,7 @@ class DTECAF:
 					'_RSAPrivateKey': 'RSASK',
 					'_RSAPublicKey': 'RSAPUBK'
 					}
-
+	algorithm = 'SHA1withRSA'
 	def __name__(self):
 		return 'DTECAF'
 
@@ -378,7 +378,7 @@ class DTECAF:
 		dumped = dumped + '<RSAPK><M>' + self._parameters['_RSAPrivateKeyModule'] + '</M><E>'+ self._parameters['_RSAPrivateKeyExp'] +'</E></RSAPK>'
 		dumped = dumped + '<RNG><D>' + self._parameters['_From'] + '</D><H>'+ self._parameters['_To'] +'</H></RNG>'
 		dumped = dumped + '</DA>'
-		dumped = dumped + '<FRMA algoritmo="SHA1withRSA">' + self._parameters['_EmbeddedSignature'] + '</FRMA>'
+		dumped = dumped + '<FRMA algoritmo="' + self.algorithm + '">' + self._parameters['_EmbeddedSignature'] + '</FRMA>'
 		dumped = dumped + '</CAF></AUTORIZACION>'
 
 		return dumped
@@ -398,8 +398,12 @@ class DTECAF:
 			property = self.get_property_by_markup(elem.tag)
 			if property is not None:
 				self._parameters[property] = elem.text
+			""" Get signature algorithm """
+			if elem.tag == 'FRMA':
+				self.algorithm = elem.attrib['algoritmo']
 
 		self.embedded_private_key = self._parameters['_RSAPrivateKey']
+
 
 class DTE:
 	""" Envio DTE """
@@ -514,21 +518,25 @@ class DTE:
 class DTEBuidler:
 	__iva_by_type = {33: 0.19, 52: 0.19, 34: 0}
 	def build(self, type, sender, receiver, header, items, caf):
-			sender_object = DTEPerson(1, sender)
-			receiver_object = DTEPerson(0, receiver)
-			items_object = DTEItems(type, items)
-			iva_rate = self.__iva_by_type[type]
-			header_object = DTEHeader(sender_object, receiver_object, type, 1, 1, datetime.datetime.now(), header, items_object.get_totales(iva_rate))
+		sender_object = DTEPerson(1, sender)
+		receiver_object = DTEPerson(0, receiver)
+		items_object = DTEItems(type, items)
+		iva_rate = self.__iva_by_type[type]
+		header_object = DTEHeader(sender_object, receiver_object, type, 1, 1, datetime.datetime.now(), header, items_object.get_totales(iva_rate))
 
-			if isinstance(caf, DTECAF):
-				caf_object = caf
-			else:
-				caf_object = DTECAF(parameters=caf, signature=signature, private_key=private_key)
-				signature = caf['_Signature']
-				private_key = caf['_PrivateKey']
+		if isinstance(caf, DTECAF):
+			caf_object = caf
+		else:
+			caf_object = DTECAF(parameters=caf, signature=signature, private_key=private_key)
+			signature = caf['_Signature']
+			private_key = caf['_PrivateKey']
 
-			dte = DTE(header_object, items_object, '', '', '', '', '',caf=caf_object)
+		dte = DTE(header_object, items_object, '', '', '', '', '',caf=caf_object)
 
-			dte_etree = etree.fromstring(dte.dump())
-			pretty_dte = etree.tostring(dte_etree, pretty_print=True).decode('UTF-8')
-			return dte_etree, pretty_dte, dte
+		dte_etree = etree.fromstring(dte.dump())
+		pretty_dte = etree.tostring(dte_etree, pretty_print=True).decode('UTF-8')
+		return dte_etree, pretty_dte, dte
+
+	def from_file(self, path):
+		root = etree.parse(path)
+		assert root
