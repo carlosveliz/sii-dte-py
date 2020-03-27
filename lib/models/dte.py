@@ -62,6 +62,7 @@ class DTEPerson:
 	def dump(self):
 		outside_markup = self.__markup[self.__types[self._type]]['Type']
 		dumped = '<' + outside_markup + '>'
+
 		for param in self._parameters:
 			markup = self.__markup[self.__types[self._type]][param]
 			value = self._parameters[param]
@@ -69,6 +70,22 @@ class DTEPerson:
 
 		dumped = dumped + '</' + outside_markup + '>'
 		return dumped
+
+	def get_property_by_markup(self, type, search_markup):
+		for property, markup in self.__markup[self.__types[type]].items():
+			if markup == search_markup:
+				return property
+
+	def from_xml_parameters(self, type, xml_parameters):
+		parameters = {}
+
+		for markup in xml_parameters:
+			prop = self.get_property_by_markup(type, markup)
+			if prop is not None:
+				parameters[prop] = xml_parameters[markup]
+
+		self._parameters = parameters
+		return parameters
 
 class DTEHeader:
 	""" Document identity, composed of sender, reciber information, document type, and total amount """
@@ -303,7 +320,32 @@ class DTEItems:
 
 	def get_first_item_description(self):
 		first_key = list(self._items.keys())[0]
-		return self._items[first_key]['Description']
+		try:
+			return self._items[first_key]['Description']
+		except:
+			return self._items[first_key]['Name']
+
+	def get_property_by_markup(self, document_type, search_markup):
+		for property, markup in self.__properties_by_document_type[document_type].items():
+			if markup == search_markup:
+				return property
+		""" Common properties """
+		for property, markup in self.__properties_by_document_type[0].items():
+			if markup == search_markup:
+				return property
+
+	def load_from_xml_parameters(self, document_type, parameters):
+		self._items = {}
+		index = 0
+		for i in parameters:
+			item = parameters[i]
+			for elem in item:
+				property = self.get_property_by_markup(document_type, elem)
+				if property == "Index":
+					index = item[elem]
+					self._items[index] = {}
+				if property is not None:
+					self._items[index][property] = item[elem]
 
 	def dump(self):
 		return self.dump_items()
@@ -394,6 +436,7 @@ class DTECAF:
 				return property
 
 	def load_from_etree(self, tree):
+		""" Load from etree object """
 		for elem in tree.iter():
 			property = self.get_property_by_markup(elem.tag)
 			if property is not None:
@@ -404,6 +447,16 @@ class DTECAF:
 
 		self.embedded_private_key = self._parameters['_RSAPrivateKey']
 
+	def load_from_xml_parameters(self, parameters):
+		""" Load from dictionnary of parameters [markup => value] """
+		for elem in parameters:
+			property = self.get_property_by_markup(elem)
+			if property is not None:
+				self._parameters[property] = parameters[elem]
+
+	def get_document_type(self):
+		""" Returns SII document type """
+		return int(self._parameters['Type'])
 
 class DTE:
 	""" Envio DTE """
@@ -428,7 +481,7 @@ class DTE:
 	_document_id = ''
 	_ted = ''
 
-	def __init__(self, header, items, discount, reference, other, signature, timestamp, caf=None, signer=None):
+	def __init__(self, header, items, discount, reference, other, signature, timestamp, caf=None, signer=None, ted=''):
 		self._header = header
 		self._items = items
 		self._discount = discount
@@ -439,35 +492,44 @@ class DTE:
 		self._caf = caf
 		self._document_id = 'T' + str(self._header.dte_document_type) + 'I' + str(self._header.dte_document_number)
 		self._signer = signer
+		self._ted = ted
 
 	def generate_ted(self):
-		caf_private_key = ''
-		document_data = '<DD>' + \
-				  '<RE>' + self._header.sender.get_attr('RUT') + '</RE>' + \
-				  '<TD>' + str(self._header.dte_document_type) + '</TD>' + \
-				  '<F>' + str(self._header.dte_document_number) + '</F>' + \
-				  '<FE>' + str(self._timestamp) + '</FE>' + \
-				  '<RR>' + self._header.receiver.get_attr('RUT') + '</RR>' + \
-				  '<RSR>' + self._header.receiver.get_attr('Name') + '</RSR>' + \
-				  '<MNT>' + str(self._header.total_amount) + '</MNT>' + \
-				  '<IT1>' + self._items.get_first_item_description() + '</IT1>' + \
-				  self._caf.dump() + \
-				  '<TSTED>' + str(datetime.datetime.now()) + '</TSTED>' + \
-				  '</DD>'
+		""" If not already generated """
+		if self._ted == '':
+			caf_private_key = ''
+			document_data = '<DD>' + \
+					  '<RE>' + self._header.sender.get_attr('RUT') + '</RE>' + \
+					  '<TD>' + str(self._header.dte_document_type) + '</TD>' + \
+					  '<F>' + str(self._header.dte_document_number) + '</F>' + \
+					  '<FE>' + str(self._timestamp) + '</FE>' + \
+					  '<RR>' + self._header.receiver.get_attr('RUT') + '</RR>' + \
+					  '<RSR>' + self._header.receiver.get_attr('Name') + '</RSR>' + \
+					  '<MNT>' + str(self._header.total_amount) + '</MNT>' + \
+					  '<IT1>' + self._items.get_first_item_description() + '</IT1>' + \
+					  self._caf.dump() + \
+					  '<TSTED>' + str(datetime.datetime.now()) + '</TSTED>' + \
+					  '</DD>'
 
-		signature = self.sign(document_data, self._caf.embedded_private_key)
-		ted = '<TED version="1.0">' + \
-			document_data + \
-		  '<FRMT algoritmo="SHA1withRSA">' + signature + '</FRMT>' + \
-		  '</TED>'
-		return ted
+			signature = self.sign(document_data, self._caf.embedded_private_key)
+			ted = '<TED version="1.0">' + \
+				document_data + \
+			  '<FRMT algoritmo="SHA1withRSA">' + signature + '</FRMT>' + \
+			  '</TED>'
+
+			self._ted = ted
+			return ted
+		else:
+			return self._ted
 
 	def sign(self, data, key, algorithm='SHA1withRSA'):
+		""" If there a signer module loaded """
 		if self._signer is not None:
 			self._signer.key = key
 			sign = self._signer.sign_with_algorithm(data, algorithm)
 			return sign
 		else:
+			""" Sign """
 			import xmlsec
 			import base64
 			ctx = xmlsec.SignatureContext()
@@ -485,7 +547,14 @@ class DTE:
 		return '<DTE version="1.0">' + self.dump_document_only() + '</DTE>'
 
 	def dump_document_only(self):
-		return '<Documento ID="' + self._document_id + '">' + self._header.dump() + self._items.dump() + self.generate_ted() + '</Documento>'
+		ted = ''
+		if self._ted == '':
+			""" Generate """
+			ted = self.generate_ted()
+		else:
+			""" Preloaded """
+			ted = self._ted
+		return '<Documento ID="' + self._document_id + '">' + self._header.dump() + self._items.dump() + ted + '</Documento>'
 
 	def to_template_parameters(self):
 		dict = { 'Sender': {
@@ -517,6 +586,23 @@ class DTE:
 
 class DTEBuidler:
 	__iva_by_type = {33: 0.19, 52: 0.19, 34: 0}
+	__object_type_by_tag = { '{http://www.sii.cl/SiiDte}RutEmisor':'RE',
+					'Name':'RS',
+					'Type':'TD',
+					'_From':'D',
+					'_To':'H',
+					'FechaAuthorization':'FA',
+					'_RSAPrivateKeyModule':'M',
+					'_RSAPrivateKeyExp':'E',
+					'KeyId':'IDK',
+					'_Signature' :'',
+					'_PrivateKey': '',
+					'_EmbeddedSignature': 'FRMA',
+					'_RSAPrivateKey': 'RSASK',
+					'_RSAPublicKey': 'RSAPUBK'
+					}
+
+
 	def build(self, type, sender, receiver, header, items, caf):
 		sender_object = DTEPerson(1, sender)
 		receiver_object = DTEPerson(0, receiver)
@@ -538,5 +624,90 @@ class DTEBuidler:
 		return dte_etree, pretty_dte, dte
 
 	def from_file(self, path):
-		root = etree.parse(path)
-		assert root
+		tree = etree.parse(path)
+		root = tree.getroot()
+
+		return self.load_from_etree(root)
+
+	def iterate_recurs_etree(self, tree, parameters):
+		items = 0
+		for child in tree:
+			tag = child.tag.replace('{http://www.sii.cl/SiiDte}','')
+			if len(child) > 1:
+				if tag == 'Emisor':
+					sender = {}
+					parameters['Sender'] = {}
+					parameters['Sender'] = self.iterate_recurs_etree(child, sender)
+				if tag == 'Receptor':
+					receiver = {}
+					parameters['Receiver'] = {}
+					parameters['Receiver'] = self.iterate_recurs_etree(child, receiver)
+				if tag == 'Detalle':
+					item = {}
+					if items == 0:
+						parameters['Items'] = {}
+					parameters['Items'][items] = {}
+					parameters['Items'][items] = self.iterate_recurs_etree(child, item)
+					items = items + 1
+				if tag == 'CAF':
+					caf = {}
+					parameters['CAF'] = {}
+					parameters['CAF'] = self.iterate_recurs_etree(child, caf)
+				if tag == 'TED':
+					ted = {}
+					parameters['TED'] = {}
+					parameters['TED'] = self.iterate_recurs_etree(child, ted)
+					parameters['TED']['Dump'] = etree.tostring(child).decode('UTF-8')
+				if tag == 'Totales':
+					totals = {}
+					parameters['Totals'] = {}
+					parameters['Totals'] = self.iterate_recurs_etree(child, totals)
+				else:
+					self.iterate_recurs_etree(child, parameters)
+			else:
+				parameters[tag] = child.text
+
+		return parameters
+
+	def load_from_etree(self, tree):
+		""" Build parameters """
+		parameters = {}
+		parameters = self.iterate_recurs_etree(tree, parameters)
+		""" Get individual set """
+		sender_parameters = parameters['Sender']
+		receiver_parameters = parameters['Receiver']
+		items_parameters = parameters['Items']
+		caf_parameters = parameters['CAF']
+		ted_parameters = parameters['TED']
+		""" Get dumped TED """
+		dumped_ted = parameters['TED']['Dump']
+		""" Totals """
+		totals_parameters = parameters['Totals']
+		""" Build objects """
+		""" Send and receiver """
+		sender = DTEPerson(1, None)
+		sender.from_xml_parameters(1, sender_parameters)
+		receiver = DTEPerson(0, None)
+		receiver.from_xml_parameters(0, receiver_parameters)
+		""" CAF """
+		caf = DTECAF(parameters={}, signature='', private_key='')
+		caf.load_from_xml_parameters(caf_parameters)
+		""" Get document type """
+		document_type = caf.get_document_type()
+		document_number = int(ted_parameters['F'])
+		""" Items """
+		items = DTEItems(document_type=document_type, items={})
+		items.load_from_xml_parameters(document_type=document_type, parameters=items_parameters)
+		""" Get IVA rate """
+		iva_rate = self.__iva_by_type[document_type]
+
+		""" Build header """
+		header = DTEHeader(sender, receiver, document_type, document_number, 1, datetime.datetime.now(), {}, items.get_totales(iva_rate))
+		""" Build final DTE """
+		dte = DTE(header, items, '', '', '', '', '',caf=caf, ted=dumped_ted)
+
+		""" Extract tree and dump pretty XML """
+		dte_etree = etree.fromstring(dte.dump())
+		pretty_dte = etree.tostring(dte_etree, pretty_print=True).decode('UTF-8')
+
+		return dte_etree, pretty_dte, dte

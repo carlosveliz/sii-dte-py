@@ -29,6 +29,7 @@ if len(sys.argv) > 1:
 		print("get_token <pfx_file_path> <pfx_password>")
 		print("generate_cert <pfx_file_path> <pfx_password>")
 		print("generate_pdf <sii type>")
+		print("generate_pdf_from_xml <xml path>")
 	if command == "get_token":
 		logging.warning('Full test.')
 		auth = SiiConnectorAuth(module=SiiConnectorAuth.GET_SEED_MODULE_ID)
@@ -48,35 +49,40 @@ if len(sys.argv) > 1:
 		logging.warning('Certificate generation test.')
 		cert = CertificateService(pfx_file_path=sys.argv[2], pfx_password=sys.argv[3])
 		cert.generate_certificate_and_key()
+	if command =="generate_pdf_from_xml":
+		pdf = PDFGenerator()
+		builder = DTEBuidler()
+		_, _, dte_object = builder.from_file(sys.argv[2])
+		pdf.generate(dte_object)
 	if command =="generate_pdf":
-			pdf = PDFGenerator()
-			""" Dump test XML """
-			type = int(sys.argv[2])
+		pdf = PDFGenerator()
+		""" Dump test XML """
+		type = int(sys.argv[2])
 
-			sender_parameters = {}
-			receiver_parameters = {}
-			specific_header_parameters = {}
-			item_list = {}
+		sender_parameters = {}
+		receiver_parameters = {}
+		specific_header_parameters = {}
+		item_list = {}
 
-			with open('test/data/sender.json') as json_file:
-				sender_parameters = json.load(json_file)
-			with open('test/data/receiver.json') as json_file:
-				receiver_parameters = json.load(json_file)
-			with open('test/data/items.json') as json_file:
-				item_list = json.load(json_file)
-			with open('test/data/specifics.json') as json_file:
-				specific_header_parameters = json.load(json_file)
+		with open('test/data/sender.json') as json_file:
+			sender_parameters = json.load(json_file)
+		with open('test/data/receiver.json') as json_file:
+			receiver_parameters = json.load(json_file)
+		with open('test/data/items.json') as json_file:
+			item_list = json.load(json_file)
+		with open('test/data/specifics.json') as json_file:
+			specific_header_parameters = json.load(json_file)
 
-			caf = DTECAF(parameters={}, signature='', private_key='')
-			caf.load_from_XML('test/data/caf_test.xml')
+		caf = DTECAF(parameters={}, signature='', private_key='')
+		caf.load_from_XML('test/data/caf_test.xml')
 
-			builder = DTEBuidler()
+		builder = DTEBuidler()
 
-			_, pretty_dte, dte_object = builder.build(type, sender_parameters, receiver_parameters, specific_header_parameters, item_list, caf)
-			pdf.generate(dte_object)
+		_, pretty_dte, dte_object = builder.build(type, sender_parameters, receiver_parameters, specific_header_parameters, item_list, caf)
+		pdf.generate(dte_object)
 
-			myXML = open('temp/DTE_' + str(type) + '.xml', "w")
-			myXML.write(pretty_dte)
+		myXML = open('temp/DTE_' + str(type) + '.xml', "w")
+		myXML.write(pretty_dte)
 else:
 	"""
 	  Run Flask web app
