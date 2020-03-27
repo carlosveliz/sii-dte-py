@@ -10,6 +10,7 @@ The project is currently published under **MIT License** so feel free to copy, m
 
 Current state allows you to :
 	-	Generate PDF with correct format for document type 52
+	- Generate PDF from DTE XML (documenty type 52 only)
 	- Get a token from SII
 	- Parse CAF document
 	- Convert your PFX file to SII expected format using OpenSSL
@@ -52,5 +53,13 @@ pip3 install -r requirements.txt
 		```
 		PDF file output in temp directory
 		```
+	- generate_pdf_from_xml <xml_file_path>
+ 		```
+ 		python3 run.py generate_pdf_from_xml '/home/user/Desktop/xml/xml-52.pfx'
+ 		```
+ 		Result
+ 		```
+ 		PDF file output in temp directory
+ 		```
 ## Use cases
 A PDF sample generated using this project is available at "documents/sample_52.pdf"
