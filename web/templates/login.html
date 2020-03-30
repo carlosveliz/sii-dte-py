@@ -3,9 +3,9 @@
 
 	<!-- Minimal information requiered for SII  -->
 	<form action="/login" method=post enctype=multipart/form-data>
-			<input type="text" class='form-control' name="RUT" placeholder="RUT XXXXXXXX-X" pattern=".*-([\dkK])"/>
-			<input type="text" class='form-control' name="RES" placeholder="N° Resolución SII"/>
-			<input type="text" class='form-control' name="RES_Date" placeholder="Fecha Resolución SII (AAAA-MM-DD)" pattern="^(\d{4})-(\d{2})-(\d{2})$"/>
+			<input type="text" class='form-control' name="RUT" placeholder="RUT XXXXXXXX-X" pattern=".*-([\dkK])" required/>
+			<input type="text" class='form-control' name="RES" placeholder="N° Resolución SII" required/>
+			<input type="text" class='form-control' name="RES_Date" placeholder="Fecha Resolución SII (AAAA-MM-DD)" pattern="^(\d{4})-(\d{2})-(\d{2})$" required/>
 			<input type=submit class='btn btn-succes' value="Enviar" />
 	</form>
 </div>
