@@ -14,6 +14,7 @@ Current state allows you to :
 	- Get a token from SII
 	- Parse CAF document
 	- Convert your PFX file to SII expected format using OpenSSL
+	- Prepare a ready-to-upload XML
 
 ## Install
 ```
@@ -26,7 +27,7 @@ pip3 install -r requirements.txt
 	 ```
 	 	-	First "login" with your RUT (this is just a mean to initiate session, no authentication)
 	 	-	Then load your certiciate and password
-		-   Finally call "/token" to see your token
+		-	Now you can get a token (useless right now, just to check if your certificate is registered in SII) or generate a test PDF
 
  - get_token <pfx_file_path> <pfx_password>
  		```
