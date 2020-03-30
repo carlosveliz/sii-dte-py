@@ -149,41 +149,41 @@ p {
 				{% set expeditionType = parameters['Header']['Specifics']['ExpeditionType'] | int %}
 				{% set movementType = parameters['Header']['Specifics']['MovementType'] | int %}
 				{% if movementType == 1 %}
-								Tipo traslado : Operación constituye venta
+								Tipo de traslado de bienes : Operación constituye venta
 				{% endif %}
 				{% if movementType == 2 %}
-								Tipo traslado : Ventas por efectuar
+								Tipo de traslado de bienes : Ventas por efectuar
 				{% endif %}
 				{% if movementType == 3 %}
-								Tipo traslado : Consignaciones
+								Tipo de traslado de bienes : Consignaciones
 				{% endif %}
 				{% if movementType == 4 %}
-								Tipo traslado : Entrega gratuita
+								Tipo de traslado de bienes : Entrega gratuita
 				{% endif %}
 				{% if movementType == 5 %}
-								Tipo traslado : Traslados internos
+								Tipo de traslado de bienes : Traslados internos
 				{% endif %}
 				{% if movementType == 6 %}
-								Tipo traslado : Otros traslados no venta
+								Tipo de traslado de bienes : Otros traslados no venta
 				{% endif %}
 				{% if movementType == 7 %}
-								Tipo traslado : Guía de devolución
+								Tipo de traslado de bienes : Guía de devolución
 				{% endif %}
 				{% if movementType == 8 %}
-								Tipo traslado : Traslado para exportación. (no venta)
+								Tipo de traslado de bienes : Traslado para exportación. (no venta)
 				{% endif %}
 				{% if movementType == 9 %}
-								Tipo traslado : Venta para exportación
+								Tipo de traslado de bienes : Venta para exportación
 				{% endif %}
 				<br />
 				{% if expeditionType == 1 %}
-								Tipo despacho : Despacho por cuenta del receptor del documento
+								Tipo de despacho : Despacho por cuenta del receptor del documento
 				{% endif %}
 				{% if expeditionType == 2 %}
-								Tipo despacho : Despacho por cuenta del  emisor a instalaciones del  cliente
+								Tipo de despacho : Despacho por cuenta del  emisor a instalaciones del  cliente
 				{% endif %}
 				{% if expeditionType == 3 %}
-								Tipo despacho : Despacho por cuenta del emisor a otras instalaciones
+								Tipo de despacho : Despacho por cuenta del emisor a otras instalaciones
 				{% endif %}
 			</div>
 		</div>
