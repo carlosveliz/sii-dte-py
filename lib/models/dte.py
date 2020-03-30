@@ -508,6 +508,11 @@ class DTECAF:
 		tree = etree.parse(filepath)
 		return self.load_from_etree(tree)
 
+	def load_from_XML_string(self, xml_string):
+		print("Loading CAF from xml")
+		tree = etree.fromstring(xml_string)
+		return self.load_from_etree(tree)
+
 	def get_property_by_markup(self, search_markup):
 		for property, markup in self.__markup.items():
 			if markup == search_markup:
@@ -602,6 +607,9 @@ class DTE:
 
 	def get_document_type(self):
 		return str(self._header.dte_document_type)
+
+	def get_document_id(self):
+		return str(self._document_id)
 
 	def get_document_sender(self):
 		return self._header.sender.get_attr('RUT')
