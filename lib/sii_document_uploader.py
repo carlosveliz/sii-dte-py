@@ -40,7 +40,7 @@ class SiiDocumentUploader():
 				'Accept-Charset': 'UTF-8', \
 				'User-Agent': 'Mozilla/4.0 (compatible; PROG 1.0; ' + self._application_name + ')', \
 				'Referer': self._referer, \
-				'Cookie:': 'TOKEN=' + self._token
+				'Cookie': 'TOKEN=' + self._token
 		}
 
 		r = requests.post(self._url, data=payload, headers=headers)
