@@ -36,6 +36,11 @@
 {% else %}
 	{% if 'key_state' in session %}
 		{% include 'get_token.html' %}
+		{% if 'caf' in session %}
+			{% include 'get_pdf_test.html' %}
+		{% else %}
+			{% include 'upload_caf.html' %}
+		{% endif %}
 	{% else %}
 		{% include 'upload_certificate.html' %}
 	{% endif %}
