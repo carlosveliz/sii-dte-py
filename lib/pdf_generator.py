@@ -29,9 +29,27 @@ class PDFGenerator:
 		options = {
 			'page-size': 'A3',
 			'dpi': 600
-        }
-		pdf = pdfkit.from_string(html, FILE_DIR + '/../temp/test.pdf', options=options)
-		return ''
+		}
+
+		filename = str(dte.get_document_id()) + '.pdf'
+		fullpath = FILE_DIR + '/../temp/' + filename
+
+		pdf = pdfkit.from_string(html, fullpath, options=options)
+		return filename
+
+	def generate_binary(self, dte):
+		# Use False instead of output path to save pdf to a variable
+		ted = self._generate_png_ted(dte.generate_ted())
+		html = self._populate_jinja_template(dte, ted)
+		options = {
+			'page-size': 'A3',
+			'dpi': 600
+		}
+
+		filename = str(dte.get_document_id()) + '.pdf'
+
+		pdf = pdfkit.from_string(html, False, options=options)
+		return filename, pdf
 
 	def _populate_jinja_template(self, dte, ted):
 		""" Get template path by type """
