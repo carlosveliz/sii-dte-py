@@ -1,5 +1,7 @@
 #!/usr/bin/env python
 import datetime
+import json
+import os
 from lxml import etree
 from ..zeep.sii_plugin import SiiPlugin
 
@@ -26,6 +28,11 @@ General format :
 
 DTE_SII_DATE_FORMAT = '%Y-%m-%dT%H:%M:%S'
 DTE_SII_DATE_FORMAT_SHORT = '%Y-%m-%d'
+
+""" Future : Database """
+FILE_DIR = os.path.dirname(os.path.realpath(__file__))
+with open(FILE_DIR + '/database/codes.json') as json_file:
+	db_codes = json.load(json_file)
 
 class DTEPerson:
 	_type = 0
@@ -148,7 +155,9 @@ class DTEHeader:
 
 	__specifics_by_document_type = {52: {'MovementType':'IndTraslado',
 										'ExpeditionType':'TipoDespacho',
-										'PrintedFormat': 'TpoImpresion'
+										'PrintedFormat': 'TpoImpresion',
+										'ShippingPort': 'CodPtoEmbarqu',
+										'LandingPort': 'CodPtoDesemb'
 										},
 									33: {}
 								}
@@ -170,6 +179,9 @@ class DTEHeader:
 			self.comment = specific_parameters['Comment']
 		except:
 			pass
+
+	def get_specifics_for_display(self):
+		return self._specifics
 
 	def dump_specifics(self):
 		dumped = ''
@@ -655,7 +667,7 @@ class DTE:
 	def to_template_parameters(self):
 		dict = {
 				'Header': {
-					'Specifics': self._header._specifics,
+					'Specifics': self._header.get_specifics_for_display(),
 					'Date': str(datetime.datetime.now().strftime(DTE_SII_DATE_FORMAT_SHORT))
 				},
 				'Sender': {
@@ -680,7 +692,7 @@ class DTE:
 				},
 				'Details': self._items.get_item_list_for_template(),
 				'Comment': self._header.comment,
-				'Totales': self._header.totales,
+				'Totales': self._header.totales
 		}
 
 		return dict
