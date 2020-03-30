@@ -3,8 +3,8 @@ import json
 import datetime
 import uuid
 import os
-from flask import render_template, jsonify, session, request, redirect, url_for, Flask
-from lib.models.dte import DTEBuidler
+from flask import render_template, jsonify, session, request, redirect, url_for, make_response, Flask
+from lib.models.dte import DTEBuidler, DTECAF
 from lib.models.sii_token import Token
 from lib.pdf_generator import PDFGenerator
 from lib.certificate_service import CertificateService
@@ -16,7 +16,9 @@ app = Flask(__name__, instance_relative_config=True)
 epoch = datetime.datetime.utcfromtimestamp(0)
 app.secret_key = str(epoch)
 
+""" In memory store, future : database store """
 _key_by_uid = {}
+_caf_by_uid = {}
 
 def redirect_url(default='index'):
 	return request.args.get('next') or \
@@ -54,10 +56,11 @@ def logout():
 	session.clear()
 	try:
 		del _key_by_uid[uid]
+		del _caf_by_uid[uid]
 	except KeyError:
 		""" No certificate registered """
 		pass
-	return redirect(redirect_url())
+	return redirect(redirect_url('login'))
 
 @app.route('/')
 def index():
@@ -128,9 +131,12 @@ def set_dte():
 
 @app.route('/caf',  methods=['POST'])
 def set_caf():
+	uid = str(session['uid'])
 	caf = request.files['caf']
 	if is_valid_caf_file(caf.filename):
-		print("Not implemented")
+		print("CAF received.")
+		_caf_by_uid[uid] = caf.read()
+		session['caf'] = caf.filename
 	return render_template('index.html'), 200
 
 @app.route('/dte/<string:document_id>/preview',  methods=['GET'])
@@ -138,10 +144,40 @@ def generate_preview(document_id):
 	""" Get parameters, build HTML and return file """
 	return "", 200
 
-@app.route('/pdf', methods=['POST'])
-def generate_pdf():
+@app.route('/document/test/<int:type>/pdf', methods=['GET'])
+def generate_pdf(type):
+	uid = str(session['uid'])
 	""" Get parameters, build PDF and return file """
-	return "", 200
+	pdf = PDFGenerator()
+	""" Dump test XML """
+	sender_parameters = {}
+	receiver_parameters = {}
+	specific_header_parameters = {}
+	item_list = {}
+
+	""" Read test files """
+	with open('test/data/sender.json') as json_file:
+		sender_parameters = json.load(json_file)
+	with open('test/data/receiver.json') as json_file:
+		receiver_parameters = json.load(json_file)
+	with open('test/data/items.json') as json_file:
+		item_list = json.load(json_file)
+	with open('test/data/specifics.json') as json_file:
+		specific_header_parameters = json.load(json_file)
+
+	caf = DTECAF(parameters={}, signature='', private_key='')
+	caf.load_from_XML_string(_caf_by_uid[uid])
+
+	builder = DTEBuidler()
+
+	_, pretty_dte, dte_object = builder.build(type, sender_parameters, receiver_parameters, specific_header_parameters, item_list, caf)
+	pdfFilename, binary_pdf = pdf.generate_binary(dte_object)
+
+	response = make_response(binary_pdf)
+	response.headers['Content-Type'] = 'application/pdf'
+	response.headers['Content-Disposition'] = \
+	'attachment; filename=%s.pdf' % pdfFilename
+	return response
 
 @app.route('/dte/<string:document_id>/sii',  methods=['POST'])
 def send_to_sii(document_id):
