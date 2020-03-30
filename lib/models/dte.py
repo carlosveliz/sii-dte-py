@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 import datetime
 from lxml import etree
+from ..zeep.sii_plugin import SiiPlugin
 
 """
 General format :
@@ -23,6 +24,7 @@ General format :
 
 """
 
+DTE_SII_DATE_FORMAT = '%Y-%m-%dT%H:%M:%S'
 
 class DTEPerson:
 	_type = 0
@@ -210,7 +212,7 @@ class DTEHeader:
 		return '<TipoDTE>' + str(self.dte_document_type) + '</TipoDTE>'
 
 	def dump_issue_date(self):
-		return '<FchEmis>' + str(datetime.datetime.now()) + '</FchEmis>'
+		return '<FchEmis>' + str(datetime.datetime.now().strftime(DTE_SII_DATE_FORMAT)) + '</FchEmis>'
 
 	def dump_payment_method(self):
 		return '<FmaPago>' + str(self._dte_payment_method) + '</FmaPago>'
@@ -228,7 +230,6 @@ class DTEHeader:
 			property = self.get_property_by_markup(document_type, i)
 			if property is not None:
 				self._specifics[property] = parameters[i]
-
 
 class DTEItems:
 	"""
@@ -372,20 +373,86 @@ class DTECover:
 
 	"""
 	<Caratula version="1.0">
-	<RutEmisor>76087419-1</RutEmisor>
-	<RutEnvia>22926257-2</RutEnvia>
-	<RutReceptor>55555555-5</RutReceptor>
-	<FchResol>2014-08-22</FchResol>
-	<NroResol>80</NroResol>
-	<TmstFirmaEnv>2020-03-19T11:22:45</TmstFirmaEnv>
-	<SubTotDTE>
-	<TpoDTE>110</TpoDTE>
-	<NroDTE>1</NroDTE>
-	</SubTotDTE>
+		<RutEmisor>76087419-1</RutEmisor>
+		<RutEnvia>22926257-2</RutEnvia>
+		<RutReceptor>55555555-5</RutReceptor>
+		<FchResol>2014-08-22</FchResol>
+		<NroResol>80</NroResol>
+		<TmstFirmaEnv>2020-03-19T11:22:45</TmstFirmaEnv>
+		<SubTotDTE>
+			<TpoDTE>110</TpoDTE>
+			<NroDTE>1</NroDTE>
+		</SubTotDTE>
 	</Caratula>
 	"""
-	def __init__(self):
-		print("Not implemented")
+	_dtes = {}
+	""" Resolution must be {'Date':'YYYY-MM-DD', 'Number': 'XXXX' } """
+	_resolution = {}
+	""" User must be {'RUT' : 'XXXXXXXX-X'} """
+	_user = {}
+
+	def __init__(self, dtes, resolution, user):
+		self._dtes = dtes
+		self._resolution = resolution
+		self._user = user
+
+	def dump(self):
+		dumped = '<Caratula version="1.0">' + self.sender() + self.receiver() + \
+				self.resolution() + self.signature_date() + self.dte_details() + '</Caratula>'
+		return dumped
+
+	def sender(self):
+		return '<RutEmisor>' + self.dte_sender() + '</RutEmisor>' + \
+				'<RutEnvia>' + self._user['RUT'] + '</RutEnvia>'
+
+	def receiver(self):
+		return '<RutReceptor>' + self.dte_receiver() + '</RutReceptor>'
+
+	def resolution(self):
+		return '<FchResol>' + self._resolution['Date'] + '</FchResol>' + \
+				'<NroResol>' + self._resolution['Number'] + '</NroResol>'
+
+	def signature_date(self):
+		return '<TmstFirmaEnv>' + datetime.datetime.now().strftime(DTE_SII_DATE_FORMAT) + '</TmstFirmaEnv>'
+
+	def dte_type(self):
+		type = ''
+		for dte in self._dtes:
+			doc = self._dtes[dte]
+			if type == '':
+				type = doc.get_document_type()
+			else:
+				if type != doc.get_document_type():
+					raise ValueError('Multiple document type found. Should be only one document type by Set.')
+		return type
+
+	def dte_sender(self):
+		sender = ''
+		for dte in self._dtes:
+			doc = self._dtes[dte]
+			if sender == '':
+				sender = doc.get_document_sender()
+			else:
+				if sender != doc.get_document_sender():
+					raise ValueError('Multiple document sender found. Should be only one document sender by Set.')
+		return sender
+
+	def dte_receiver(self):
+		receiver = ''
+		for dte in self._dtes:
+			doc = self._dtes[dte]
+			if receiver == '':
+				receiver = doc.get_document_receiver()
+			else:
+				if receiver != doc.get_document_receiver():
+					raise ValueError('Multiple document receiver found. Should be only one document receiver by Set.')
+		return receiver
+
+	def dte_quantity(self):
+		return len(self._dtes)
+
+	def dte_details(self):
+		return '<SubTotDTE><TpoDTE>' + str(self.dte_type()) + '</TpoDTE><NroDTE>' + str(self.dte_quantity()) + '</NroDTE></SubTotDTE>'
 
 class DTECAF:
 	embedded_private_key = ''
@@ -487,7 +554,7 @@ class DTE:
 	_reference = [] #DTEReference
 	_other_charges = [] #DTEItems()
 	_sii_signature = None
-	_timestamp = datetime.datetime.now()
+	_timestamp = datetime.datetime.now().strftime(DTE_SII_DATE_FORMAT)
 	_caf = None
 	_document_id = ''
 	_ted = ''
@@ -519,7 +586,7 @@ class DTE:
 					  '<MNT>' + str(self._header.total_amount) + '</MNT>' + \
 					  '<IT1>' + self._items.get_first_item_description() + '</IT1>' + \
 					  self._caf.dump() + \
-					  '<TSTED>' + str(datetime.datetime.now()) + '</TSTED>' + \
+					  '<TSTED>' + str(datetime.datetime.now().strftime(DTE_SII_DATE_FORMAT)) + '</TSTED>' + \
 					  '</DD>'
 
 			signature = self.sign(document_data, self._caf.embedded_private_key)
@@ -532,6 +599,15 @@ class DTE:
 			return ted
 		else:
 			return self._ted
+
+	def get_document_type(self):
+		return str(self._header.dte_document_type)
+
+	def get_document_sender(self):
+		return self._header.sender.get_attr('RUT')
+
+	def get_document_receiver(self):
+		return self._header.receiver.get_attr('RUT')
 
 	def sign(self, data, key, algorithm='SHA1withRSA'):
 		""" If there a signer module loaded """
@@ -599,6 +675,30 @@ class DTE:
 
 		return dict
 
+class DTEPayload:
+	""" EnvioDTE """
+
+	def __init__(self, dtes, cover, user):
+		self._dtes = dtes
+		self._cover = cover
+
+	def dump(self):
+		set = '<SetDTE ID="SetDoc">' + \
+				self._cover.dump() + \
+				self.dump_documents() + '</SetDTE>'
+		dumped = '<?xml version="1.0" encoding="ISO-8859-1"?>' + \
+			'<EnvioDTE xmlns="http://www.sii.cl/SiiDte" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.sii.cl/SiiDte EnvioDTE_v10.xsd" version="1.0">' + \
+			 set + SiiPlugin.SIGNATURE_TAG + '</EnvioDTE>'
+
+		return dumped
+
+	def dump_documents(self):
+		dumped = ''
+		for doc in self._dtes:
+			dumped = dumped + self._dtes[doc].dump()
+
+		return dumped
+
 class DTEBuidler:
 	__iva_by_type = {33: 0.19, 52: 0.19, 34: 0}
 	__object_type_by_tag = { '{http://www.sii.cl/SiiDte}RutEmisor':'RE',
@@ -623,7 +723,7 @@ class DTEBuidler:
 		receiver_object = DTEPerson(0, receiver)
 		items_object = DTEItems(type, items)
 		iva_rate = self.__iva_by_type[type]
-		header_object = DTEHeader(sender_object, receiver_object, type, 1, 1, datetime.datetime.now(), header, items_object.get_totales(iva_rate))
+		header_object = DTEHeader(sender_object, receiver_object, type, 1, 1, datetime.datetime.now().strftime(DTE_SII_DATE_FORMAT), header, items_object.get_totales(iva_rate))
 
 		if isinstance(caf, DTECAF):
 			""" Is already an object """
@@ -726,7 +826,7 @@ class DTEBuidler:
 		iva_rate = self.__iva_by_type[document_type]
 
 		""" Build header """
-		header = DTEHeader(sender, receiver, document_type, document_number, 1, datetime.datetime.now(), {}, items.get_totales(iva_rate))
+		header = DTEHeader(sender, receiver, document_type, document_number, 1, datetime.datetime.now().strftime(DTE_SII_DATE_FORMAT), {}, items.get_totales(iva_rate))
 		header.load_specifics_from_xml_parameters(document_type, header_parameters)
 		""" Build final DTE """
 		dte = DTE(header, items, '', '', '', '', '',caf=caf, ted=dumped_ted)
