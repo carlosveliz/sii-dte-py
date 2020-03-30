@@ -26,6 +26,7 @@ logging.info('Application started.')
 if len(sys.argv) > 1:
 	command = sys.argv[1]
 	if command == "help":
+		print("Without parameters: launch flask webserver on http://" + str(FLASK_ENDPOINT) + ":" + str(FLASK_LISTEN_PORT) + "")
 		print("get_token <pfx_file_path> <pfx_password>")
 		print("generate_cert <pfx_file_path> <pfx_password>")
 		print("generate_pdf <sii type>")
@@ -99,6 +100,7 @@ else:
 	"""
 	  Run Flask web app
 	"""
+	print("Type run.py help to show all available commands")
 	logging.info('Web server started on ' + str(FLASK_ENDPOINT) + ':' + str(FLASK_LISTEN_PORT))
 	app.run(debug=DEBUG_MODE, host=FLASK_ENDPOINT, port=int(FLASK_LISTEN_PORT))
 
