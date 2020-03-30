@@ -146,49 +146,52 @@ p {
 				Casa Matriz: {{ parameters['Sender']['Address'] | upper  }}<br />
 				Sucursal: {{ parameters['Sender']['Address2'] | upper  }}<br />
 				Fono: {{ parameters['Sender']['Phone'] }} <br /><br />
+				<br /><br /><br /><br /><br />
 				{% set expeditionType = parameters['Header']['Specifics']['ExpeditionType'] | int %}
 				{% set movementType = parameters['Header']['Specifics']['MovementType'] | int %}
 				{% if movementType == 1 %}
-								Tipo de traslado de bienes : Operación constituye venta
+								Tipo de traslado de bienes : <b>Operación constituye venta</b>
 				{% endif %}
 				{% if movementType == 2 %}
-								Tipo de traslado de bienes : Ventas por efectuar
+								Tipo de traslado de bienes : <b>Ventas por efectuar</b>
 				{% endif %}
 				{% if movementType == 3 %}
-								Tipo de traslado de bienes : Consignaciones
+								Tipo de traslado de bienes : <b>Consignaciones</b>
 				{% endif %}
 				{% if movementType == 4 %}
-								Tipo de traslado de bienes : Entrega gratuita
+								Tipo de traslado de bienes : <b>Entrega gratuita</b>
 				{% endif %}
 				{% if movementType == 5 %}
-								Tipo de traslado de bienes : Traslados internos
+								Tipo de traslado de bienes : <b>Traslados internos</b>
 				{% endif %}
 				{% if movementType == 6 %}
-								Tipo de traslado de bienes : Otros traslados no venta
+								Tipo de traslado de bienes : <b>Otros traslados no venta</b>
 				{% endif %}
 				{% if movementType == 7 %}
-								Tipo de traslado de bienes : Guía de devolución
+								Tipo de traslado de bienes : <b>Guía de devolución</b>
 				{% endif %}
 				{% if movementType == 8 %}
-								Tipo de traslado de bienes : Traslado para exportación. (no venta)
+								Tipo de traslado de bienes : <b>Traslado para exportación. (no venta)</b>
 				{% endif %}
 				{% if movementType == 9 %}
-								Tipo de traslado de bienes : Venta para exportación
+								Tipo de traslado de bienes : <b>Venta para exportación</b>
 				{% endif %}
 				<br />
 				{% if expeditionType == 1 %}
-								Tipo de despacho : Despacho por cuenta del receptor del documento
+								Tipo de despacho : <b>Despacho por cuenta del receptor del documento</b>
 				{% endif %}
 				{% if expeditionType == 2 %}
-								Tipo de despacho : Despacho por cuenta del  emisor a instalaciones del  cliente
+								Tipo de despacho : <b>Despacho por cuenta del  emisor a instalaciones del  cliente</b>
 				{% endif %}
 				{% if expeditionType == 3 %}
-								Tipo de despacho : Despacho por cuenta del emisor a otras instalaciones
+								Tipo de despacho : <b>Despacho por cuenta del emisor a otras instalaciones</b>
 				{% endif %}
+				<br />
+				Fecha de emisión : <b>{{ parameters['Header']['Date'] }}</b>
 			</div>
 		</div>
+		<br /><br /><br /><br /><br /><br /><br />
 		<div class="part receiver">
-			<br />
 			<div class="receive-data-01">
 				Señor (es): <b>{{ parameters['Receiver']['Name']  | upper }}</b> <br />
 				Dirección: <b>{{ parameters['Receiver']['Address'] | upper }} </b> <br />
@@ -263,7 +266,7 @@ p {
 			</div>
 		</div>
 		<div class="part" >
-			<br />
+			<br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br />
 			<div class="ted">
 				<img src="{{ted}}" style="height:150px; width:450px" alt="TED {{ted}}" /> <br />
 				Timbre electrónico SII <br />

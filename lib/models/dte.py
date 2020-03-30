@@ -25,6 +25,7 @@ General format :
 """
 
 DTE_SII_DATE_FORMAT = '%Y-%m-%dT%H:%M:%S'
+DTE_SII_DATE_FORMAT_SHORT = '%Y-%m-%d'
 
 class DTEPerson:
 	_type = 0
@@ -654,7 +655,8 @@ class DTE:
 	def to_template_parameters(self):
 		dict = {
 				'Header': {
-					'Specifics': self._header._specifics
+					'Specifics': self._header._specifics,
+					'Date': str(datetime.datetime.now().strftime(DTE_SII_DATE_FORMAT_SHORT))
 				},
 				'Sender': {
 							'RUT':self._header.sender.get_attr('RUT'),
@@ -678,7 +680,7 @@ class DTE:
 				},
 				'Details': self._items.get_item_list_for_template(),
 				'Comment': self._header.comment,
-				'Totales': self._header.totales
+				'Totales': self._header.totales,
 		}
 
 		return dict
