@@ -9,7 +9,7 @@ import sys
 import json
 from web.router import app
 from lib.models.sii_token import Token
-from lib.models.dte import DTECAF, DTEBuidler
+from lib.models.dte import DTECAF, DTEBuidler, DTECover, DTEPayload
 from lib.sii_connector_auth import SiiConnectorAuth
 from lib.certificate_service import CertificateService
 from lib.pdf_generator import PDFGenerator
@@ -29,6 +29,7 @@ if len(sys.argv) > 1:
 		print("get_token <pfx_file_path> <pfx_password>")
 		print("generate_cert <pfx_file_path> <pfx_password>")
 		print("generate_pdf <sii type>")
+		print("generate_pdf: Should create test/data/sender.json test/data/sender.json test/data/receiver.json test/data/items.json test/data/specifics.json test/data/caf_test.xml")
 		print("generate_pdf_from_xml <xml path>")
 	if command == "get_token":
 		logging.warning('Full test.')
@@ -64,6 +65,7 @@ if len(sys.argv) > 1:
 		specific_header_parameters = {}
 		item_list = {}
 
+		""" Read test files """
 		with open('test/data/sender.json') as json_file:
 			sender_parameters = json.load(json_file)
 		with open('test/data/receiver.json') as json_file:
@@ -81,8 +83,18 @@ if len(sys.argv) > 1:
 		_, pretty_dte, dte_object = builder.build(type, sender_parameters, receiver_parameters, specific_header_parameters, item_list, caf)
 		pdf.generate(dte_object)
 
-		myXML = open('temp/DTE_' + str(type) + '.xml', "w")
-		myXML.write(pretty_dte)
+		""" Add to envelope to be send """
+		envelope = {}
+		envelope[1] = dte_object
+
+		""" Generate cover (Caratula) """
+		cover = DTECover(dtes=envelope, resolution={'Date': '2014-08-22', 'Number': '80'}, user={'RUT':'25656563-3'})
+		""" Generate payload to be uploaded (without signature, only tagged)"""
+		payload = DTEPayload(dtes=envelope, cover=cover, user={})
+		""" Write ready-to-upload XML  (without signature) """
+		myXML = open('temp/DTE_ENV' + str(type) + '.xml', "w")
+		myXML.write(payload.dump())
+
 else:
 	"""
 	  Run Flask web app
