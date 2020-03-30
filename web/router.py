@@ -41,6 +41,8 @@ def login():
 	if 'RUT' in request.form:
 		session['uid'] = uuid.uuid4()
 		session['RUT'] = request.form['RUT']
+		session['RES'] = request.form['RES']
+		session['RES_Date'] = request.form['RES_Date']
 		return redirect(redirect_url())
 	else:
 		return "Missing RUT parameter.", 400

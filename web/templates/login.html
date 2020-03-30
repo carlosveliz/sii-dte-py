@@ -1,7 +1,11 @@
 <div class="">
 	<h1>Login</h1>
+
+	<!-- Minimal information requiered for SII  -->
 	<form action="/login" method=post enctype=multipart/form-data>
-			<input type="text" class='form-control' name="RUT" />
+			<input type="text" class='form-control' name="RUT" placeholder="RUT" />
+			<input type="text" class='form-control' name="RES" placeholder="N° Resolución SII"/>
+			<input type="text" class='form-control' name="RES_Date" placeholder="Fecha Resolución SII (AAAA-MM-DD)"/>
 			<input type=submit class='btn btn-succes' value="Enviar" />
 	</form>
 </div>
