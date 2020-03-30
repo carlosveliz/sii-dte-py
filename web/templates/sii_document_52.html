@@ -41,7 +41,7 @@ p {
 	float:right;
 }
 
-.logo {
+.logo, .specifics_01 {
 	height: 150px;
 	width: 600px;
 	color: black;
@@ -51,6 +51,26 @@ p {
 	float:left;
 }
 
+.specifics_02 {
+	height: 150px;
+	width: 300px;
+	color: black;
+	text-align: left;
+	font-size: 10dpi;
+	font-name: 'Arial';
+	float:right;
+}
+.specifics{
+ 	border-style: solid;
+ 	border-width: 1px;
+ 	height: 7em;
+ 	width: 100%;
+ 	padding: 5px;
+ 	text-align: left;
+ 	font-size: 10dpi;
+ 	font-name: 'Arial';
+ 	margin-top: 200px;
+ }
 .receiver {
 	border-style: solid;
 	border-width: 1px;
@@ -60,7 +80,6 @@ p {
 	text-align: left;
 	font-size: 10dpi;
 	font-name: 'Arial';
-	margin-top: 200px;
 }
 
 .part {
@@ -146,51 +165,21 @@ p {
 				Casa Matriz: {{ parameters['Sender']['Address'] | upper  }}<br />
 				Sucursal: {{ parameters['Sender']['Address2'] | upper  }}<br />
 				Fono: {{ parameters['Sender']['Phone'] }} <br /><br />
-				<br /><br /><br /><br /><br />
-				{% set expeditionType = parameters['Header']['Specifics']['ExpeditionType'] | int %}
-				{% set movementType = parameters['Header']['Specifics']['MovementType'] | int %}
-				{% if movementType == 1 %}
-								Tipo de traslado de bienes : <b>Operación constituye venta</b>
-				{% endif %}
-				{% if movementType == 2 %}
-								Tipo de traslado de bienes : <b>Ventas por efectuar</b>
-				{% endif %}
-				{% if movementType == 3 %}
-								Tipo de traslado de bienes : <b>Consignaciones</b>
-				{% endif %}
-				{% if movementType == 4 %}
-								Tipo de traslado de bienes : <b>Entrega gratuita</b>
-				{% endif %}
-				{% if movementType == 5 %}
-								Tipo de traslado de bienes : <b>Traslados internos</b>
-				{% endif %}
-				{% if movementType == 6 %}
-								Tipo de traslado de bienes : <b>Otros traslados no venta</b>
-				{% endif %}
-				{% if movementType == 7 %}
-								Tipo de traslado de bienes : <b>Guía de devolución</b>
-				{% endif %}
-				{% if movementType == 8 %}
-								Tipo de traslado de bienes : <b>Traslado para exportación. (no venta)</b>
-				{% endif %}
-				{% if movementType == 9 %}
-								Tipo de traslado de bienes : <b>Venta para exportación</b>
-				{% endif %}
-				<br />
-				{% if expeditionType == 1 %}
-								Tipo de despacho : <b>Despacho por cuenta del receptor del documento</b>
-				{% endif %}
-				{% if expeditionType == 2 %}
-								Tipo de despacho : <b>Despacho por cuenta del  emisor a instalaciones del  cliente</b>
-				{% endif %}
-				{% if expeditionType == 3 %}
-								Tipo de despacho : <b>Despacho por cuenta del emisor a otras instalaciones</b>
-				{% endif %}
-				<br />
-				Fecha de emisión : <b>{{ parameters['Header']['Date'] }}</b>
+			</div>
+			<div class="specifics">
+				<div class="specifics_02">
+					Puerto embarque : <b>{{ parameters['Header']['Specifics']['ShippingPort'] }} </b> <br />
+					Puerto desembarque : <b>{{ parameters['Header']['Specifics']['LandingPort'] }} </b>
+				</div>
+				<div class="specifics_01">
+					Fecha de emisión : <b>{{ parameters['Header']['Date'] }}</b> <br />
+					{{ parameters['Header']['Specifics']['MovementType'] }}
+					<br />
+					{{ parameters['Header']['Specifics']['ExpeditionType'] }}
+				</div>
 			</div>
 		</div>
-		<br /><br /><br /><br /><br /><br /><br />
+		<br />
 		<div class="part receiver">
 			<div class="receive-data-01">
 				Señor (es): <b>{{ parameters['Receiver']['Name']  | upper }}</b> <br />
