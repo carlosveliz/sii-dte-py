@@ -161,6 +161,12 @@ class DTEHeader:
 										},
 									33: {}
 								}
+	__property_type_by_specific = {
+								'ShippingPort':'Port',
+								'LandingPort':'Port',
+								'ExpeditionType': 'Description',
+								'MovementType': 'Description'
+								}
 	comment = ''
 
 	def __init__(self, sender, receiver, document_type, document_number, payment_method, expiry_date, specific_parameters, totales):
@@ -181,7 +187,25 @@ class DTEHeader:
 			pass
 
 	def get_specifics_for_display(self):
-		return self._specifics
+		human_readable_specifics = {}
+		for key in self._specifics:
+			human_readable_specifics[key] = self.translate_specific_to_human_readable(key, self._specifics[key])
+		return human_readable_specifics
+
+	def translate_specific_to_human_readable(self, key, value):
+		try:
+			""" Get property type """
+			property_type = self.__property_type_by_specific[key]
+			if property_type == 'Description':
+				""" In that case we need to get description according to searched property """
+				properties = db_codes[property_type][key]
+			else:
+				properties = db_codes[property_type]
+			""" Value should be the code """
+			return properties[value]
+		except:
+			return value
+
 
 	def dump_specifics(self):
 		dumped = ''
