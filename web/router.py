@@ -4,7 +4,7 @@ import datetime
 import uuid
 import os
 from flask import render_template, jsonify, session, request, redirect, url_for, make_response, Flask
-from flask_cors import CORS
+from flask_cors import cross_origin
 from lib.models.dte import DTEBuidler, DTECAF
 from lib.models.sii_token import Token
 from lib.pdf_generator import PDFGenerator
