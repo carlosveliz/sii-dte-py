@@ -1,6 +1,6 @@
 {
 	"ExpeditionType": "1",
-	"MovementType": "2",
+	"MovementType": "8",
 	"ShippingPort": "905",
 	"LandingPort": "556",
 	"Comment" : "TEST TEST TEST TEST TEST TEST TEST TEST TEST TEST TEST TEST TEST TEST TEST TEST TEST TEST TEST TEST TEST TEST TEST TEST TEST TEST TEST TEST"
