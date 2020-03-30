@@ -4,6 +4,7 @@ import datetime
 import uuid
 import os
 from flask import render_template, jsonify, session, request, redirect, url_for, make_response, Flask
+from flask_cors import CORS
 from lib.models.dte import DTEBuidler, DTECAF
 from lib.models.sii_token import Token
 from lib.pdf_generator import PDFGenerator
@@ -39,6 +40,7 @@ def auth():
 			return "Not logged in", 403
 
 @app.route('/login', methods=['POST'])
+@cross_origin()
 def login():
 	if 'RUT' in request.form:
 		session['uid'] = uuid.uuid4()
@@ -50,6 +52,7 @@ def login():
 		return "Missing RUT parameter.", 400
 
 @app.route('/logout', methods=['GET'])
+@cross_origin()
 def logout():
 	""" Delete session """
 	uid = str(session['uid'])
@@ -75,6 +78,7 @@ def is_valid_caf_file(filename):
 	return '.' in filename and filename.rsplit('.',1)[1] in ALLOWED_CAF_EXTENSIONS
 
 @app.route('/certificate', methods=['POST'])
+@cross_origin()
 def set_certificate():
 	certificate = request.files['certificate']
 	password = request.form['password']
@@ -125,11 +129,13 @@ def get_token():
 		return "Certificate not loaded.", 400
 
 @app.route('/dte',  methods=['POST'])
+@cross_origin()
 def set_dte():
 	dte = request.json
 	return "", 200
 
 @app.route('/caf',  methods=['POST'])
+@cross_origin()
 def set_caf():
 	uid = str(session['uid'])
 	caf = request.files['caf']
@@ -140,11 +146,13 @@ def set_caf():
 	return render_template('index.html'), 200
 
 @app.route('/dte/<string:document_id>/preview',  methods=['GET'])
+@cross_origin()
 def generate_preview(document_id):
 	""" Get parameters, build HTML and return file """
 	return "", 200
 
 @app.route('/document/test/<int:type>/pdf', methods=['GET'])
+@cross_origin()
 def generate_pdf(type):
 	uid = str(session['uid'])
 	""" Get parameters, build PDF and return file """
@@ -180,6 +188,7 @@ def generate_pdf(type):
 	return response
 
 @app.route('/dte/<string:document_id>/sii',  methods=['POST'])
+@cross_origin()
 def send_to_sii(document_id):
 	""" Send DTE file stored in session at specified ID to SII """
 	return "", 200
