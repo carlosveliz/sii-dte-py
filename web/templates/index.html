@@ -35,8 +35,10 @@
 	{% include 'login.html' %}
 {% else %}
 	{% if 'key_state' in session %}
+		<br />
 		{% include 'get_token.html' %}
 		{% if 'caf' in session %}
+			<br />
 			{% include 'get_pdf_test.html' %}
 		{% else %}
 			{% include 'upload_caf.html' %}
