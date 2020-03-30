@@ -1,0 +1,11 @@
+<div>
+	<h1>Generar PDF de prueba (con datos en /test/data/*.json)</h1>
+<input type="button" onclick="getPdf(52);" />
+
+</div>
+
+<script>
+	function getPdf(type) {
+		document.location = '/document/test/' + type + '/pdf'
+	}
+</script>
