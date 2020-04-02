@@ -206,7 +206,6 @@ class DTEHeader:
 		except:
 			return value
 
-
 	def dump_specifics(self):
 		dumped = ''
 		for param in self._specifics:
