@@ -177,6 +177,11 @@ def generate_pdf(type):
 	caf.load_from_XML_string(_caf_by_uid[uid])
 
 	builder = DTEBuidler()
+	""" Bind user information """
+	specific_header_parameters['User'] = {}
+	specific_header_parameters['User']['Resolution'] = session['RES']
+	specific_header_parameters['User']['ResolutionDate'] = session['RES_Date']
+	specific_header_parameters['User']['RUT'] = session['RUT']
 
 	_, pretty_dte, dte_object = builder.build(type, sender_parameters, receiver_parameters, specific_header_parameters, item_list, caf)
 	pdfFilename, binary_pdf = pdf.generate_binary(dte_object)
