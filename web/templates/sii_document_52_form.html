@@ -1,0 +1,279 @@
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta name="description" content="DTE, SII, OpenSource">
+	<title>DTE SII OpenSource</title>
+	<html lang="es">
+	<!-- Loading scripts -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"> </script>
+		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.0.0-beta/css/bootstrap.min.css" integrity="sha256-m/h/cUDAhf6/iBRixTbuc8+Rg2cIETQtPcH9D3p2Kg0=" crossorigin="anonymous" differ/>
+		<!-- open-iconic-bootstrap (icon set for bootstrap) -->
+		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/open-iconic/1.1.1/font/css/open-iconic-bootstrap.min.css" integrity="sha256-BJ/G+e+y7bQdrYkS2RBTyNfBHpA9IuGaPmf9htub5MQ=" crossorigin="anonymous" differ/>
+</head>
+
+<style>
+.container{
+	margin-top:2%;
+  max-width:1024px;
+	border-style: solid;
+	border-width: 1px;
+}
+
+h1 {
+	color:red;
+}
+
+p {
+	color:blue;
+}
+
+.sii_mark {
+	border-style: solid;
+	border-width: 5px;
+	height: 140px;
+	width: 330px;
+	color: red;
+	text-align: center;
+
+	font-weight: bold;
+	font-name: 'Arial';
+	float:right;
+}
+
+.logo, .specifics_01 {
+	height: 150px;
+	width: 600px;
+	color: black;
+	text-align: left;
+	font-size: 10dpi;
+	font-name: 'Arial';
+	float:left;
+}
+
+.specifics_02 {
+	height: 150px;
+	width: 300px;
+	color: black;
+	text-align: left;
+	font-size: 10dpi;
+	font-name: 'Arial';
+	float:right;
+}
+.specifics{
+ 	border-style: solid;
+ 	border-width: 1px;
+ 	height: 7em;
+ 	width: 100%;
+ 	padding: 5px;
+ 	text-align: left;
+ 	font-size: 10dpi;
+ 	font-name: 'Arial';
+ 	margin-top: 200px;
+ }
+.receiver {
+	border-style: solid;
+	border-width: 1px;
+	height: 7em;
+	width: 100%;
+	padding: 5px;
+	text-align: left;
+	font-size: 10dpi;
+	font-name: 'Arial';
+}
+
+.part {
+	clear:both;
+}
+
+.header {
+
+}
+
+.receive-data-01 {
+	position:relative;
+	float:left;
+}
+.receive-data-02 {
+	position:relative;
+	float:right;
+}
+
+
+.details {
+	border-style: solid;
+	border-width: 1px;
+	width: 100%;
+	text-align: left;
+	font-size: 10dpi;
+	font-name: 'Arial';
+	padding: 5px;
+}
+
+.totales {
+	width: 400px;
+	text-align: left;
+	font-size: 10dpi;
+	font-name: 'Arial';
+	position:relative;
+	float:right;
+	display: grid;
+}
+
+.comment {
+	position:relative;
+	float:left;
+	width: 300px;
+}
+
+.grid-item {
+  border: 1px solid rgba(0, 0, 0, 0.8);
+	padding: 1px;
+  text-align: left;
+}
+
+.manual-registed {
+	width: 500px;
+	border: 1px solid rgba(0, 0, 0, 0.8);
+	padding: 5px;
+	position:relative;
+	float:right;
+}
+
+.ted {
+	text-align: center;
+	float:left;
+}
+
+</style>
+<body>
+<div id="document">
+	<div class="container">
+		<div class="part header">
+			<br />
+			<div class="sii_mark">
+				R.U.T : {{ parameters['Sender']['RUT'] }} <br /><br />
+				GUÍA DE DESPACHO ELECTRÓNICA <br /><br />
+				N° <input type='number' id='DocumentNumber' name='DocumentNumber' /> <br /><br />
+
+				S.I.I. – <input type='text' class='' id='SII' name='SII' /> <br />
+			</div>
+			<div class="logo">
+				<b>{{ parameters['Sender']['Name'] | upper  }}</b> <br />
+				{{ parameters['Sender']['Activity'] | upper  }}<br />
+				Casa Matriz: {{ parameters['Sender']['Address'] | upper  }}<br />
+				Sucursal: {{ parameters['Sender']['Address2'] | upper  }}<br />
+				Fono: {{ parameters['Sender']['Phone'] }} <br /><br />
+			</div>
+			<div class="specifics">
+				<div class="specifics_02">
+					Puerto embarque : <input type='text' size="10" class='' id='ShippingPort' name='ShippingPort' /><br />
+					Puerto desembarque : <input type='text' size="10" class=''id='LandingPort' name='LandingPort' />
+				</div>
+				<div class="specifics_01">
+					Fecha de emisión :  <input type='date' size="20" class='' id='date' name='Date' /> <br />
+					Tipo movimiento : <input type='text' size="20" class='' id='MovementType' name='Specifics-MovementType' /> <br />
+					Tipo despacho : <input type='text' size="20" class='' id='MovementType' name='Specifics-ExpeditionType' />
+				</div>
+			</div>
+		</div>
+		<br />
+		<div class="part receiver">
+			<div class="receive-data-01">
+				Señor (es): <input type='text' class='' id='Receiver-Name' name='Receiver-Name' /> <br />
+				Dirección: <input type='text' class='' id='Receiver-Address' name='Receiver-Address' /> <br />
+				Giro: <input type='text' class='' id='Receiver-Activity' name='Receiver-Activity' />
+			</div>
+			<div class="receive-data-02">
+				RUT: <input type='text' class='' id='Receiver-RUT' name='Receiver-RUT' /> <br />
+				Comuna: <input type='text' class='' id='Receiver-City' name='Receiver-City' /> <br />
+				Teléfono: <input type='text' class='' id='Receiver-Phone' name='Receiver-Phone' />
+			</div>
+		</div>
+		<div class="part details">
+			<br />
+			<table class="table">
+				<thead>
+					<tr>
+						<th>#</th>
+						<th>Código</th>
+						<th>Descripción</th>
+						<th>Cantidad</th>
+						<th>Unit.</th>
+						<th>Unid. P.</th>
+						<th>$ Dscto.</th>
+						<th>Valor</th>
+						<th></th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr>
+						<td></td>
+						<td><input type='text' size="5" class='' id='Details-Code' name='Details-Code' /></td>
+						<td><input type='text' size="20" class='' id='Details-Name' name='Details-Name' /></td>
+						<td><input type='number' size="2" class='' id='Details-Quantity' name='Details-Quantity' /></td>
+						<td><input type='text' size="5" class='' id='Details-Unit' name='Details-Unit' /></td>
+						<td><input type='number' size="5" class='' id='Details-UnitPrice' name='Details-UnitPrice' /></td>
+						<td></td>
+						<td></td>
+						<td><input type='button' size="5" class='btn btn-success' id='Details-UnitPrice' value="[+]" /></td>
+					</tr>
+				</tbody>
+			</table>
+			<br />
+			<table class="table">
+				<thead>
+					<tr>
+						<th>Tipo Documento</th>
+						<th>Folio</th>
+						<th>Fecha</th>
+						<th>Razón Referencia</th>
+					</tr>
+				</thead>
+				<tbody>
+				</tbody>
+			</table>
+		</div>
+		<br />
+		<div class="part">
+			<div class="comment">
+				<b>Observación :</b> <br />
+				<input type='text' class='form-control'id='Comment' name='Comment' />
+
+			</div>
+			<div class="totales">
+				<b>Descuento</b> <br />
+				<input type='number' size="5" class='' id='desc' disabled/> <br />
+				<b>Monto Neto</b> <br />
+				<input type='number' size="5" class='' id='net' disabled/><br />
+				<b>Monto Exento</b> <br />
+				<input type='number' size="5" class='' id='withoutIva' disabled/><br />
+				<b>IVA (<input type='number' size="2" class='' id='IVA' name='IVA' /> %)</b> <br />
+				<input type='number' size="5" class='' id='totiva' disabled/><br />
+				<b>Monto Total</b>
+				<input type='number' size="5" class='' id='tot' disabled/><br />
+			</div>
+		</div>
+		<div class="part" >
+			<br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br />
+			<div class="ted">
+				<img src="{{ted}}" style="height:150px; width:450px" alt="TED : Timbre electrónico SII" /> <br />
+				Timbre electrónico SII <br />
+				Res. XX de AAAA <br />
+				Verifique documento: www.sii.cl <br />
+			</div>
+			<div class="manual-registed"">
+				Nombre:___________________________________ <br />
+				RUT: _________________ FECHA: ____________ <br />
+				Recinto: _______________ FIRMA: ____________ <br />
+				El acuse de recibo que se declara en este acto, de acuerdo a lo <br />
+				dispuesto en la letra b) del Art. 4° y la letra c) del Art. 5° de la <br />
+				Ley 19.983, acredita que la entrega de mercadería(s) o servicio(s) <br />
+				ha(n) sido recibido(s). <br />
+				<b>CEDIBLE</b>
+			</div>
+		</div>
+		<br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br />
+	</div>
+</div>
+</body>
