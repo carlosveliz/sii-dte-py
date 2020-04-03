@@ -145,12 +145,26 @@ p {
 	float:left;
 }
 
+.disabled {
+    pointer-events: none;
+    opacity: 0.4;
+}
+
 </style>
 <body>
 <div id="document">
 	<div class="container">
 		<div class="part header">
 			<br />
+			<!--  Hidden fileds -->
+			<input type="text" hidden value="{{ parameters['Sender']['Name'] | upper  }}" name="Sender-Name" />
+			<input type="text" hidden value="{{ parameters['Sender']['Activity'] | upper  }}" name="Sender-Activity" />
+			<input type="text" hidden value="{{ parameters['Sender']['Address'] | upper  }}" name="Sender-Address" />
+			<input type="text" hidden value="{{ parameters['Sender']['Address2'] | upper  }}" name="Sender-Address2" />
+			<input type="text" hidden value="{{ parameters['Sender']['Phone'] | upper  }}" name="Sender-Phone" />
+			<input type="text" hidden value="{{ parameters['Sender']['RUT'] | upper  }}" name="Sender-RUT" />
+			<input type="text" hidden value="52" name="DocumentType" />
+
 			<div class="sii_mark">
 				R.U.T : {{ parameters['Sender']['RUT'] }} <br /><br />
 				GUÍA DE DESPACHO ELECTRÓNICA <br /><br />
@@ -209,14 +223,14 @@ p {
 				<tbody>
 					<tr class="newRow">
 						<td></td>
-						<td><input type='text' style="width:4em" class='' id='Details-Code' name='Details-Code' /></td>
-						<td><input type='text' style="width:6em" class='' id='Details-Name' name='Details-Name' /></td>
-						<td><input type='number' style="width:3em" class='' id='Details-Quantity' name='Details-Quantity' /></td>
-						<td><input type='text' style="width:8em" class='' id='Details-Unit' name='Details-Unit' /></td>
-						<td><input type='number' style="width:5em" class='' id='Details-UnitPrice' name='Details-UnitPrice' /></td>
+						<td><input type='text' style="width:4em" class='' id='Details-Code' name='Details-0-Code' /></td>
+						<td><input type='text' style="width:6em" class='' id='Details-Name' name='Details-0-Name' /></td>
+						<td><input type='number' style="width:3em" class='' id='Details-Quantity' name='Details-0-Quantity' /></td>
+						<td><input type='text' style="width:8em" class='' id='Details-Unit' name='Details-0-Unit' /></td>
+						<td><input type='number' style="width:5em" class='' id='Details-UnitPrice' name='Details-0-UnitPrice' /></td>
 						<td></td>
 						<td></td>
-						<td><input type='button' size="5" class='btn btn-success' id='Details-UnitPrice' value="[+]" onclick="addNewDetailRow();" /><input type='button' size="5" class='btn btn-warning remove' id='Details-UnitPrice' value="[-]" onclick="removeNewDetailRow($(this));" disabled /></td>
+						<td><input type='button' size="5" class='btn btn-success' id='Details-UnitPrice' value="[+]" onclick="addNewDetailRow();" /><input type='button' size="5" class='btn btn-warning remove' id='Details-UnitPrice' value="[-]" onclick="removeNewDetailRow($(this));" disabled/></td>
 					</tr>
 				</tbody>
 			</table>
