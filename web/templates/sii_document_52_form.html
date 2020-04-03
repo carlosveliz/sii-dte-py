@@ -276,7 +276,8 @@ p {
 		<br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br />
 	</div>
 </div>
-<input type="button" class="btn btn-succes" value="Guardar" onclick="saveDocument('document');" />
-<script src="/js/document.js" />
-
+<!-- Big fat Save button -->
+<input type="button" class="form-control" style="background-color:green; color: white;" value="Guardar" onclick="saveDocument('document');" />
+<script type="text/javascript"
+				src="{{ url_for('static', filename='js/document.js') }}"></script>
 </body>
