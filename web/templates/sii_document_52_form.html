@@ -192,7 +192,7 @@ p {
 		</div>
 		<div class="part details">
 			<br />
-			<table class="table">
+			<table class="table" id="detailTable">
 				<thead>
 					<tr>
 						<th>#</th>
@@ -207,16 +207,16 @@ p {
 					</tr>
 				</thead>
 				<tbody>
-					<tr>
+					<tr class="newRow">
 						<td></td>
-						<td><input type='text' size="5" class='' id='Details-Code' name='Details-Code' /></td>
-						<td><input type='text' size="20" class='' id='Details-Name' name='Details-Name' /></td>
-						<td><input type='number' size="2" class='' id='Details-Quantity' name='Details-Quantity' /></td>
-						<td><input type='text' size="5" class='' id='Details-Unit' name='Details-Unit' /></td>
-						<td><input type='number' size="5" class='' id='Details-UnitPrice' name='Details-UnitPrice' /></td>
+						<td><input type='text' style="width:4em" class='' id='Details-Code' name='Details-Code' /></td>
+						<td><input type='text' style="width:6em" class='' id='Details-Name' name='Details-Name' /></td>
+						<td><input type='number' style="width:3em" class='' id='Details-Quantity' name='Details-Quantity' /></td>
+						<td><input type='text' style="width:8em" class='' id='Details-Unit' name='Details-Unit' /></td>
+						<td><input type='number' style="width:5em" class='' id='Details-UnitPrice' name='Details-UnitPrice' /></td>
 						<td></td>
 						<td></td>
-						<td><input type='button' size="5" class='btn btn-success' id='Details-UnitPrice' value="[+]" /></td>
+						<td><input type='button' size="5" class='btn btn-success' id='Details-UnitPrice' value="[+]" onclick="addNewDetailRow();" /><input type='button' size="5" class='btn btn-warning remove' id='Details-UnitPrice' value="[-]" onclick="removeNewDetailRow($(this));" disabled /></td>
 					</tr>
 				</tbody>
 			</table>
@@ -252,6 +252,9 @@ p {
 				<input type='number' size="5" class='' id='totiva' disabled/><br />
 				<b>Monto Total</b>
 				<input type='number' size="5" class='' id='tot' disabled/><br />
+				<br />
+				<input type="button" class="btn btn-primary" value="Actualizar" />
+
 			</div>
 		</div>
 		<div class="part" >
