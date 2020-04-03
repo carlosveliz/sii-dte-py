@@ -151,6 +151,41 @@ def generate_preview(document_id):
 	""" Get parameters, build HTML and return file """
 	return "", 200
 
+@app.route('/document/form/<int:type>', methods=['GET'])
+@cross_origin()
+def get_document_form(type):
+	uid = str(session['uid'])
+
+	sender_parameters = {}
+	receiver_parameters = {}
+	specific_header_parameters = {}
+	item_list = {}
+
+	""" Read test files """
+	with open('test/data/sender.json') as json_file:
+		sender_parameters = json.load(json_file)
+	with open('test/data/receiver.json') as json_file:
+		receiver_parameters = json.load(json_file)
+	with open('test/data/items.json') as json_file:
+		item_list = json.load(json_file)
+	with open('test/data/specifics.json') as json_file:
+		specific_header_parameters = json.load(json_file)
+
+	caf = DTECAF(parameters={}, signature='', private_key='')
+	caf.load_from_XML_string(_caf_by_uid[uid])
+
+	builder = DTEBuidler()
+	""" Bind user information """
+	specific_header_parameters['User'] = {}
+	specific_header_parameters['User']['Resolution'] = session['RES']
+	specific_header_parameters['User']['ResolutionDate'] = session['RES_Date']
+	specific_header_parameters['User']['RUT'] = session['RUT']
+
+	_, _, dte_object = builder.build(type, sender_parameters, receiver_parameters, specific_header_parameters, item_list, caf)
+	parameters = dte_object.to_template_parameters()
+
+	return render_template('sii_document_52_form.html', parameters=parameters), 200
+
 @app.route('/document/test/<int:type>/pdf', methods=['GET'])
 @cross_origin()
 def generate_pdf(type):
