@@ -131,8 +131,72 @@ def get_token():
 @app.route('/dte',  methods=['POST'])
 @cross_origin()
 def set_dte():
-	dte = request.json
-	return "", 200
+	""" Format : """
+	"""
+	{
+	'DocumentNumber': '', 'SII': '',
+	'Header': {
+		'Specifics': {
+			'ShippingPort': '',
+			'LandingPort': '',
+			'MovementType': '',
+			'ExpeditionType': ''
+			}
+		},
+	'Date': '',
+	'Receiver': {
+		'Name': '', 'Address': '', 'Activity': '', 'RUT': '', 'City': '', 'Phone': ''
+	},
+	'Details':
+		{
+			'1': {'Code': '', 'Name': '', 'Quantity': '', 'Unit': '', 'UnitPrice': ''},
+			'2': {'Code': '', 'Name': '', 'Quantity': '', 'Unit': '', 'UnitPrice': ''},
+			'3': {'Code': '', 'Name': '', 'Quantity': '', 'Unit': '', 'UnitPrice': ''},
+			'4': {'Code': '', 'Name': '', 'Quantity': '', 'Unit': '', 'UnitPrice': ''},
+			'5': {'Code': '', 'Name': '', 'Quantity': '', 'Unit': '', 'UnitPrice': ''},
+			'6': {'Code': '', 'Name': '', 'Quantity': '', 'Unit': '', 'UnitPrice': ''},
+			'7': {'Code': '', 'Name': '', 'Quantity': '', 'Unit': '', 'UnitPrice': ''}
+		},
+	'Comment': '',
+	'IVA': ''
+	}
+	"""
+	""" Get POSTed parameters, build PDF and return file """
+	uid = str(session['uid'])
+	pdf = PDFGenerator()
+	form_parameters = request.get_json(force=True)
+
+	""" Dump test XML """
+	sender_parameters = {}
+	receiver_parameters = form_parameters['Receiver']
+	specific_header_parameters = form_parameters['Header']['Specifics']
+	specific_header_parameters["DocumentNumber"] = form_parameters['DocumentNumber']
+	item_list = form_parameters['Details']
+
+	""" Read sender file """
+	with open('test/data/sender.json') as json_file:
+		sender_parameters = json.load(json_file)
+
+	builder = DTEBuidler()
+	""" Bind user information """
+	specific_header_parameters['User'] = {}
+	specific_header_parameters['User']['Resolution'] = session['RES']
+	specific_header_parameters['User']['ResolutionDate'] = session['RES_Date']
+	specific_header_parameters['User']['RUT'] = session['RUT']
+
+	type = int(form_parameters["DocumentType"])
+
+	caf = DTECAF(parameters={}, signature='', private_key='')
+	caf.load_from_XML_string(_caf_by_uid[uid])
+
+	_, pretty_dte, dte_object = builder.build(type, sender_parameters, receiver_parameters, specific_header_parameters, item_list, caf)
+	pdfFilename, binary_pdf = pdf.generate_binary(dte_object)
+
+	response = make_response(binary_pdf)
+	response.headers['Content-Type'] = 'application/pdf'
+	response.headers['Content-Disposition'] = \
+	'attachment; filename=%s.pdf' % pdfFilename
+	return response
 
 @app.route('/caf',  methods=['POST'])
 @cross_origin()
