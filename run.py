@@ -81,6 +81,12 @@ if len(sys.argv) > 1:
 
 		builder = DTEBuidler()
 
+		""" Bind user information, mocked for this process """
+		specific_header_parameters['User'] = {}
+		specific_header_parameters['User']['Resolution'] = '80'
+		specific_header_parameters['User']['ResolutionDate'] = '2004'
+		specific_header_parameters['User']['RUT'] = 'RUT'
+
 		_, pretty_dte, dte_object = builder.build(type, sender_parameters, receiver_parameters, specific_header_parameters, item_list, caf)
 		pdf.generate(dte_object)
 
