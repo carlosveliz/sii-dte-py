@@ -23,7 +23,7 @@ function buildCompatibleJsonModel(parameters) {
 		let item = parameters[param];
 		if(item.name.indexOf('-') > 0)
 		{
-			setItemByPath(item.value, item.name, correctFormat)
+			setItemByPath(item.value, item.name, correctFormat);
 		}
 		else {
 			correctFormat[item.name] = item.value;
@@ -48,9 +48,9 @@ function setItemByPath(value, path, array)
 		if(!(node in array))
 		{
 			array[node] = {};
-			//Remove node and pass path
-			setItemByPath(value, path.replace(node + '-', ''), array[node]);
 		}
+		//Remove node and pass path
+		setItemByPath(value, path.replace(node + '-', ''), array[node]);
 	}
 }
 
@@ -62,20 +62,25 @@ function addNewDetailRow() {
 	let target = $("#detailTable > tbody > .newRow");
 	let newRow = '<tr class="newRow">' + target.html() + '</tr>';
 	let elements = $("#detailTable > tbody > .newRow > td > input");
-	target.removeClass("newRow");
 
 	//Update inputs name with unique id
 	elements.each(function(element) {
 		let elem = $(elements[element]);
-		elem.attr('name', 'Details' - rowCount + '-' + elem.attr('name').split('-')[1]);
-		if(!elem.hasClass("remove"))
-		elem.attr('disabled', true);
-		else {
-			elem.attr('disabled', false);
-		}
-	}
-);
 
+		if(elem.attr('name') != undefined)
+		{
+			let newName = 'Details-' + rowCount + '-' + elem.attr('name').split('-')[2];
+			elem.attr('name', newName);
+		}
+
+		if(!elem.hasClass("remove"))
+			elem.addClass('disabled');
+		else {
+			elem.attr("disabled", false);
+			}
+	});
+
+target.removeClass("newRow");
 target.after(newRow);
 }
 
