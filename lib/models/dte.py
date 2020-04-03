@@ -159,7 +159,12 @@ class DTEHeader:
 										'ShippingPort': 'CodPtoEmbarqu',
 										'LandingPort': 'CodPtoDesemb'
 										},
-									33: {}
+									33: {},
+									0: {
+										'User-RUT': 'RutEnvia',
+										'User-Resolution': 'NroResol',
+										'User-ResolutionDate' : 'FchResol'
+										}
 								}
 	__property_type_by_specific = {
 								'ShippingPort':'Port',
@@ -260,12 +265,22 @@ class DTEHeader:
 		for property, markup in self.__specifics_by_document_type[document_type].items():
 			if markup == search_markup:
 				return property
+		for property, markup in self.__specifics_by_document_type[0].items():
+			if markup == search_markup:
+				return property
 
 	def load_specifics_from_xml_parameters(self, document_type, parameters):
 		for i in parameters:
 			property = self.get_property_by_markup(document_type, i)
 			if property is not None:
-				self._specifics[property] = parameters[i]
+				""" Sub array """
+				if '-' in property:
+					sub = property.split('-')[0]
+					prop = property.split('-')[1]
+					""" Create sub array """
+					if sub not in self._specifics:
+						self._specifics[sub] = {}
+					self._specifics[sub][prop] = parameters[i]
 
 class DTEItems:
 	"""
@@ -768,7 +783,10 @@ class DTEBuidler:
 		receiver_object = DTEPerson(0, receiver)
 		items_object = DTEItems(type, items)
 		iva_rate = self.__iva_by_type[type]
-		header_object = DTEHeader(sender_object, receiver_object, type, 1, 1, datetime.datetime.now().strftime(DTE_SII_DATE_FORMAT), header, items_object.get_totales(iva_rate))
+
+		header_object = DTEHeader(sender=sender_object, receiver=receiver_object, document_type=type, \
+									document_number=header['DocumentNumber'], payment_method=header['PaymentType'], expiry_date=header['ExpiryDate'], \
+									specific_parameters=header, totales=items_object.get_totales(iva_rate))
 
 		if isinstance(caf, DTECAF):
 			""" Is already an object """
@@ -802,6 +820,11 @@ class DTEBuidler:
 					header = {}
 					parameters['Header'] = {}
 					parameters['Header'] = self.iterate_recurs_etree(child, header)
+				if tag == 'Caratula':
+					""" Specific headers """
+					spec = {}
+					parameters['User'] = {}
+					parameters['User'] = self.iterate_recurs_etree(child, spec)
 				if tag == 'Emisor':
 					sender = {}
 					parameters['Sender'] = {}
@@ -847,7 +870,12 @@ class DTEBuidler:
 		items_parameters = parameters['Items']
 		caf_parameters = parameters['CAF']
 		ted_parameters = parameters['TED']
+		""" Contains sender RUT, Resolution parameters, usually provided throught authentication """
+		miscs = parameters['User']
 		header_parameters = parameters['Header']
+		for prop in miscs:
+			header_parameters[prop] = miscs[prop]
+
 		""" Get dumped TED """
 		dumped_ted = parameters['TED']['Dump']
 		""" Totals """
@@ -864,6 +892,7 @@ class DTEBuidler:
 		""" Get document type """
 		document_type = caf.get_document_type()
 		document_number = int(ted_parameters['F'])
+
 		""" Items """
 		items = DTEItems(document_type=document_type, items={})
 		items.load_from_xml_parameters(document_type=document_type, parameters=items_parameters)
