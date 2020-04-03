@@ -259,7 +259,7 @@ p {
 			<div class="ted">
 				<img src="{{ted}}" style="height:150px; width:450px" alt="TED : Timbre electrónico SII" /> <br />
 				Timbre electrónico SII <br />
-				Res. XX de AAAA <br />
+				Res. {{ parameters['Header']['Specifics']['User']['Resolution'] }} de {{ parameters['Header']['Specifics']['User']['ResolutionDate'] }} <br />
 				Verifique documento: www.sii.cl <br />
 			</div>
 			<div class="manual-registed"">
@@ -276,4 +276,7 @@ p {
 		<br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br />
 	</div>
 </div>
+<input type="button" class="btn btn-succes" value="Guardar" onclick="saveDocument('document');" />
+<script src="/js/document.js" />
+
 </body>
