@@ -3,5 +3,8 @@
 	"MovementType": "8",
 	"ShippingPort": "905",
 	"LandingPort": "556",
+	"DocumentNumber": "123",
+	"PaymentType": "1",
+	"ExpiryDate": "2020-03-20",
 	"Comment" : "TEST TEST TEST TEST TEST TEST TEST TEST TEST TEST TEST TEST TEST TEST TEST TEST TEST TEST TEST TEST TEST TEST TEST TEST TEST TEST TEST TEST"
 }
