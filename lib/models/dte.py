@@ -153,7 +153,9 @@ class DTEHeader:
 	N: Normal
 	"""
 
-	__specifics_by_document_type = {52: {'MovementType':'IndTraslado',
+	__specifics_by_document_type = {
+									52: {
+										'MovementType':'IndTraslado',
 										'ExpeditionType':'TipoDespacho',
 										'PrintedFormat': 'TpoImpresion',
 										'ShippingPort': 'CodPtoEmbarqu',
@@ -281,7 +283,8 @@ class DTEHeader:
 					if sub not in self._specifics:
 						self._specifics[sub] = {}
 					self._specifics[sub][prop] = parameters[i]
-
+				else:
+					self._specifics[property] = parameters[i]
 class DTEItems:
 	"""
 	'CodeType':'TpoCodigo',
@@ -873,6 +876,7 @@ class DTEBuidler:
 		""" Contains sender RUT, Resolution parameters, usually provided throught authentication """
 		miscs = parameters['User']
 		header_parameters = parameters['Header']
+
 		for prop in miscs:
 			header_parameters[prop] = miscs[prop]
 
