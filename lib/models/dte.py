@@ -165,7 +165,8 @@ class DTEHeader:
 									0: {
 										'User-RUT': 'RutEnvia',
 										'User-Resolution': 'NroResol',
-										'User-ResolutionDate' : 'FchResol'
+										'User-ResolutionDate' : 'FchResol',
+										'IssueDate' : 'FchEmis'
 										}
 								}
 	__property_type_by_specific = {
@@ -255,7 +256,16 @@ class DTEHeader:
 		return '<TipoDTE>' + str(self.dte_document_type) + '</TipoDTE>'
 
 	def dump_issue_date(self):
-		return '<FchEmis>' + str(datetime.datetime.now().strftime(DTE_SII_DATE_FORMAT)) + '</FchEmis>'
+		return '<FchEmis>' + self.get_issue_date() + '</FchEmis>'
+
+	def get_issue_date(self):
+		date = ''
+		if 'IssueDate' in self._specifics:
+			date = self._specifics['IssueDate']
+		else:
+			""" Now """
+			date = str(datetime.datetime.now().strftime(DTE_SII_DATE_FORMAT))
+		return date
 
 	def dump_payment_method(self):
 		return '<FmaPago>' + str(self._dte_payment_method) + '</FmaPago>'
@@ -709,7 +719,7 @@ class DTE:
 		dict = {
 				'Header': {
 					'Specifics': self._header.get_specifics_for_display(),
-					'Date': str(datetime.datetime.now().strftime(DTE_SII_DATE_FORMAT_SHORT))
+					'Date': self._header.get_issue_date() #str(datetime.datetime.now().strftime(DTE_SII_DATE_FORMAT_SHORT))
 				},
 				'Sender': {
 							'RUT':self._header.sender.get_attr('RUT'),
