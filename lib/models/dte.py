@@ -83,7 +83,7 @@ class DTEPerson:
 				value = self._parameters[param]
 				dumped = dumped + '<' + markup + '>' + value + '</' + markup + '>'
 			except KeyError:
-				""" Should not be outputed """
+				""" Should not be output"""
 				pass
 
 		dumped = dumped + '</' + outside_markup + '>'
