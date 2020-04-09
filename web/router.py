@@ -13,13 +13,15 @@ from lib.sii_connector_auth import SiiConnectorAuth
 
 app = Flask(__name__, instance_relative_config=True)
 
-""" Basic key, ensures that is changes everytime with start the application """
+""" Basic key, ensures that is changes everytime at application startup """
 epoch = datetime.datetime.utcfromtimestamp(0)
 app.secret_key = str(epoch)
 
-""" In memory store, future : database store """
+""" Might stay in memory for safety reason """
 _key_by_uid = {}
+""" In memory store, future : database store """
 _caf_by_uid = {}
+_document_list_by_uid = {}
 
 def redirect_url(default='index'):
 	return request.args.get('next') or \
@@ -166,11 +168,16 @@ def set_dte():
 	pdf = PDFGenerator()
 	form_parameters = request.get_json(force=True)
 
-	""" Dump test XML """
 	sender_parameters = {}
 	receiver_parameters = form_parameters['Receiver']
+
 	specific_header_parameters = form_parameters['Header']['Specifics']
-	specific_header_parameters["DocumentNumber"] = form_parameters['DocumentNumber']
+	specific_header_parameters['DocumentNumber'] = form_parameters['DocumentNumber']
+	specific_header_parameters['Comment'] = form_parameters['Comment']
+
+	""" Mocked """
+	specific_header_parameters['PaymentType'] = ''
+
 	item_list = form_parameters['Details']
 
 	""" Read sender file """
@@ -189,14 +196,16 @@ def set_dte():
 	caf = DTECAF(parameters={}, signature='', private_key='')
 	caf.load_from_XML_string(_caf_by_uid[uid])
 
-	_, pretty_dte, dte_object = builder.build(type, sender_parameters, receiver_parameters, specific_header_parameters, item_list, caf)
+	tree, pretty_dte, dte_object = builder.build(type, sender_parameters, receiver_parameters, specific_header_parameters, item_list, caf)
 	pdfFilename, binary_pdf = pdf.generate_binary(dte_object)
 
-	response = make_response(binary_pdf)
-	response.headers['Content-Type'] = 'application/pdf'
-	response.headers['Content-Disposition'] = \
-	'attachment; filename=%s.pdf' % pdfFilename
-	return response
+
+	if uid not in _document_list_by_uid:
+		_document_list_by_uid[uid] = {}
+
+	_document_list_by_uid[uid][pdfFilename] = binary_pdf;
+
+	return pdfFilename, 200
 
 @app.route('/caf',  methods=['POST'])
 @cross_origin()
@@ -212,8 +221,15 @@ def set_caf():
 @app.route('/dte/<string:document_id>/preview',  methods=['GET'])
 @cross_origin()
 def generate_preview(document_id):
-	""" Get parameters, build HTML and return file """
-	return "", 200
+	""" Get preview from previously built document """
+	uid = str(session['uid'])
+	binary_pdf = _document_list_by_uid[uid][document_id]
+
+	response = make_response(binary_pdf)
+	response.headers['Content-Type'] = 'application/pdf'
+	response.headers['Content-Disposition'] = \
+	'attachment; filename=%s.pdf' % document_id
+	return response
 
 @app.route('/document/form/<int:type>', methods=['GET'])
 @cross_origin()

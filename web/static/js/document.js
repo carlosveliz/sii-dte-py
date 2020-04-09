@@ -1,18 +1,24 @@
+$('#ajaxSpinner').hide();
+
 function saveDocument(documentDivId) {
 	let parameters = $('#' + documentDivId).find('input, select, textarea').serializeArray();
 	let correctFormat = buildCompatibleJsonModel(parameters);
+
 	$.ajax({
 		type: 'POST',
-		/**/
 		url: '/dte',
-		/**/
 		dataType: 'application/json',
 		data: JSON.stringify(correctFormat),
-		success: function () {
-
+		beforeSend: function () {
+			$("html, body").animate({ scrollTop: 0 }, "slow");
+				$('#ajaxSpinner').show();
 		},
-		error: function (ex) {
+		complete: function () {
+				$('#ajaxSpinner').hide();
 		}
+		}).always(function(data) {
+			let filename = data.responseText;
+			document.location = '/dte/' + filename + '/preview';
 	});
 }
 
