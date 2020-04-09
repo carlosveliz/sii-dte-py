@@ -39,21 +39,25 @@ class DTEPerson:
 	__types = ['Receiver', 'Sender']
 	_parameters = [];
 
-	__markup = {'Receiver': {'Type':'Receptor',
-							'RUT':'RUTRecep',
-							'Name':'RznSocRecep',
-							'Activity':'GiroRecep',
-							'Address':'DirRecep',
-							'Comune':'CmnaRecep',
-							'City':'CiudadRecep'},
-				'Sender': {'Type':'Emisor',
-				 			'RUT':'RUTEmisor',
-							'Name':'RznSoc',
-							'Activity':'GiroEmis',
-							'Address':'DirOrigen',
-							'Comune':'CmnaOrigen',
-							'City':'CiudadOrigen',
-							'Acteco':'Acteco'}
+	__markup = {'Receiver': {
+								'Type':'Receptor',
+								'RUT':'RUTRecep',
+								'Name':'RznSocRecep',
+								'Activity':'GiroRecep',
+								'Address':'DirRecep',
+								'Comune':'CmnaRecep',
+								'City':'CiudadRecep'
+							},
+				'Sender': {
+								'Type':'Emisor',
+					 			'RUT':'RUTEmisor',
+								'Name':'RznSoc',
+								'Activity':'GiroEmis',
+								'Address':'DirOrigen',
+								'Comune':'CmnaOrigen',
+								'City':'CiudadOrigen',
+								'Acteco':'Acteco'
+							}
 				}
 
 	"""
@@ -74,9 +78,13 @@ class DTEPerson:
 		dumped = '<' + outside_markup + '>'
 
 		for param in self._parameters:
-			markup = self.__markup[self.__types[self._type]][param]
-			value = self._parameters[param]
-			dumped = dumped + '<' + markup + '>' + value + '</' + markup + '>'
+			try:
+				markup = self.__markup[self.__types[self._type]][param]
+				value = self._parameters[param]
+				dumped = dumped + '<' + markup + '>' + value + '</' + markup + '>'
+			except KeyError:
+				""" Should not be outputed """
+				pass
 
 		dumped = dumped + '</' + outside_markup + '>'
 		return dumped
@@ -383,7 +391,9 @@ class DTEItems:
 		totales['Net'] = 0
 
 		for item_key in self._items:
-			totales['Net'] = int(totales['Net']) + int(self._items[item_key]['ItemPrice'])
+			if 'ItemPrice' in self._items[item_key]:
+				""" If price is set """
+				totales['Net'] = int(totales['Net']) + int(self._items[item_key]['ItemPrice'])
 
 		totales['Rate'] = iva_rate
 		totales['IVA'] = totales['Net'] * iva_rate
