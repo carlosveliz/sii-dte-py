@@ -1,20 +1,21 @@
-{"Description" : {
-	"MovementType":{
-		"1":"Tipo de traslado de bienes : <b>Operación constituye venta</b>",
-		"2":"Tipo de traslado de bienes : <b>Ventas por efectuar</b>",
-		"3":"Tipo de traslado de bienes : <b>Consignaciones</b>",
-		"4":"Tipo de traslado de bienes : <b>Entrega gratuita</b>",
-		"5":"Tipo de traslado de bienes : <b>Traslados internos</b>",
-		"6":"Tipo de traslado de bienes : <b>Otros traslados no venta</b>",
-		"7":"Tipo de traslado de bienes : <b>Guía de devolución</b>",
-		"8":"Tipo de traslado de bienes : <b>Traslado para exportación. (no venta)</b>",
-		"9":"Tipo de traslado de bienes : <b>Venta para exportación</b>"
-	},
-	"ExpeditionType":{
-		"1":"Tipo de despacho : <b>Despacho por cuenta del receptor del documento</b>",
-		"2":"Tipo de despacho : <b>Despacho por cuenta del emisor a instalaciones del cliente</b>",
-		"3":"Tipo de despacho : <b>Despacho por cuenta del emisor a otras instalaciones</b>"
-	}
+{
+	"Description" : {
+		"MovementType":{
+			"1":"Tipo de traslado de bienes : <b>Operación constituye venta</b>",
+			"2":"Tipo de traslado de bienes : <b>Ventas por efectuar</b>",
+			"3":"Tipo de traslado de bienes : <b>Consignaciones</b>",
+			"4":"Tipo de traslado de bienes : <b>Entrega gratuita</b>",
+			"5":"Tipo de traslado de bienes : <b>Traslados internos</b>",
+			"6":"Tipo de traslado de bienes : <b>Otros traslados no venta</b>",
+			"7":"Tipo de traslado de bienes : <b>Guía de devolución</b>",
+			"8":"Tipo de traslado de bienes : <b>Traslado para exportación. (no venta)</b>",
+			"9":"Tipo de traslado de bienes : <b>Venta para exportación</b>"
+		},
+		"ExpeditionType":{
+			"1":"Tipo de despacho : <b>Despacho por cuenta del receptor del documento</b>",
+			"2":"Tipo de despacho : <b>Despacho por cuenta del emisor a instalaciones del cliente</b>",
+			"3":"Tipo de despacho : <b>Despacho por cuenta del emisor a otras instalaciones</b>"
+		}
 },
 "Country": {
 "101": "SENEGAL",
