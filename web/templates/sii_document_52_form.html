@@ -60,10 +60,11 @@ p {
 	font-name: 'Arial';
 	float:right;
 }
+
 .specifics{
  	border-style: solid;
  	border-width: 1px;
- 	height: 7em;
+ 	height: 9em;
  	width: 100%;
  	padding: 5px;
  	text-align: left;
@@ -71,6 +72,7 @@ p {
  	font-name: 'Arial';
  	margin-top: 200px;
  }
+
 .receiver {
 	border-style: solid;
 	border-width: 1px;
@@ -98,7 +100,6 @@ p {
 	position:relative;
 	float:right;
 }
-
 
 .details {
 	border-style: solid;
@@ -186,6 +187,7 @@ p {
 				</div>
 				<div class="specifics_01">
 					Fecha de emisión :  <input type='date' size="20" class='' id='date' name='Date' /> <br />
+					Fecha de expiración :  <input type='date' size="20" class='' id='date' name='Header-Specifics-ExpiryDate' /> <br />
 					Tipo movimiento : <input type='text' size="20" class='' id='MovementType' name='Header-Specifics-MovementType' /> <br />
 					Tipo despacho : <input type='text' size="20" class='' id='MovementType' name='Header-Specifics-ExpeditionType' />
 				</div>
@@ -230,7 +232,10 @@ p {
 						<td><input type='number' style="width:5em" class='' id='Details-UnitPrice' name='Details-0-UnitPrice' /></td>
 						<td></td>
 						<td></td>
-						<td><input type='button' size="5" class='btn btn-success' id='Details-UnitPrice' value="[+]" onclick="addNewDetailRow();" /><input type='button' size="5" class='btn btn-warning remove' id='Details-UnitPrice' value="[-]" onclick="removeNewDetailRow($(this));" disabled/></td>
+						<td>
+							<input type='button' size="5" class='btn btn-success' value="[+]" onclick="addNewDetailRow();" />
+							<input type='button' size="5" class='btn btn-warning remove' value="[-]" onclick="removeNewDetailRow($(this));" disabled/>
+						</td>
 					</tr>
 				</tbody>
 			</table>
