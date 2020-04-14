@@ -143,9 +143,11 @@ if len(sys.argv) > 1:
 
 		""" Generate cover (Caratula) """
 		cover = DTECover(dtes=envelope, resolution={'Date': '2014-08-22', 'Number': '80'}, user={'RUT':'25656563-3'})
-		""" Generate payload to be uploaded (without signature, only tagged)"""
+
+		""" Generate payload to be uploaded (without signature, only tagged) """
 		payload = DTEPayload(dtes=envelope, cover=cover, user={})
 		siiSignature = SiiPlugin()
+
 		""" Load key """
 		cert = CertificateService(pfx_file_path=sys.argv[3], pfx_password=sys.argv[4])
 		cert.generate_certificate_and_key()
@@ -154,14 +156,20 @@ if len(sys.argv) > 1:
 
 		""" Remove declaration """
 		declare = '<?xml version="1.0" encoding="ISO-8859-1"?>'
-		payload = payload.dump().replace(declare, '')
+		payload = payload.dump_without_xml_declaration()
+
+		""" Sign """
 		ready_to_upload = siiSignature.sign_tagged_message(payload)
+
 		""" Add declaration back """
 		ready_to_upload = declare + '\n\r' + ready_to_upload
+
 		""" Write ready-to-upload XML  (without signature) """
 		myXML = open('temp/DTE_ENV' + str(type) + '.xml', "w")
 		myXML.write(ready_to_upload)
 		print("Done.")
+
+	sys.exit(0)
 else:
 	"""
 	  Run Flask web app

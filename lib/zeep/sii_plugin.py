@@ -29,10 +29,12 @@ class SiiPlugin(Plugin):
 		""" SII specified RSA over SHA1 """
 		ctx = xmlsec.SignatureContext()
 		ctx.key = xmlsec.Key.from_memory(key, format=xmlsec.constants.KeyDataFormatPem)
+
 		""" Flatten data """
 		data = data.replace('\n', ' ').replace('\r', '').replace('\t', '').replace('> ', '>').replace(' <', '<')
 		data = bytes(data, 'ISO-8859-1')
 		sign = ctx.sign_binary(data, xmlsec.constants.TransformRsaSha1)
+
 		""" To base 64 and back to ISO-8859-1"""
 		base64_encoded_data = base64.b64encode(sign)
 		return base64_encoded_data.decode('ISO-8859-1')
