@@ -1,10 +1,6 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
-<EnvioDTE xmlns="http://www.sii.cl/SiiDte" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.sii.cl/SiiDte EnvioDTE_v10.xsd" version="1.0">
-	<SetDTE ID="SetDoc">
-		<Caratula version="1.0">
-			<RutEmisor>XXXXXXX-3</RutEmisor>
-			<RutEnvia>25656563-3</RutEnvia><RutReceptor>XXXXXXX-4</RutReceptor><FchResol>2014-08-22</FchResol><NroResol>80</NroResol><TmstFirmaEnv>2020-04-09T14:25:00</TmstFirmaEnv><SubTotDTE><TpoDTE>52</TpoDTE><NroDTE>1</NroDTE></SubTotDTE></Caratula><DTE version="1.0"><Documento ID="T52I123"><Encabezado><IdDoc><TipoDTE>52</TipoDTE><Folio>123</Folio><FchEmis>2020-04-09T14:25:00</FchEmis><TipoDespacho>1</TipoDespacho><IndTraslado>8</IndTraslado><CodPtoEmbarqu>905</CodPtoEmbarqu><CodPtoDesemb>556</CodPtoDesemb><FmaPago>1</FmaPago><FchVenc>2020-03-20</FchVenc></IdDoc><Emisor><RUTEmisor>XXXXXXX-3</RUTEmisor><RznSoc>Matthieu AMOROS</RznSoc><GiroEmis>PERSONA</GiroEmis><DirOrigen>1606 Pasaje X</DirOrigen><CmnaOrigen>Teno</CmnaOrigen><CiudadOrigen>Curico</CiudadOrigen><Acteco>1234</Acteco></Emisor><Receptor><RUTRecep>XXXXXXX-4</RUTRecep><RznSocRecep>Matthieu AMOROS</RznSocRecep><GiroRecep>PERSONA</GiroRecep><DirRecep>555 Pasaje X</DirRecep><CmnaRecep>Las condes</CmnaRecep><CiudadRecep>Santiago</CiudadRecep></Receptor><Totales><MntNeto>30020</MntNeto><TasaIVA>0.19</TasaIVA><IVA>5703.8</IVA><MntTotal>35723.8</MntTotal></Totales></Encabezado><Detalle><NroLinDet>1</NroLinDet><TpoCodigo>INT01</TpoCodigo><VlrCodigo>18KGMZ</VlrCodigo><IndExe>1</IndExe><NmbItem>CAJA MANZANA 18KG</NmbItem><DscItem>CAJA MANZANA FRESCA 18KG GALA</DscItem><QtyItem>20</QtyItem><UnmdItem>UN</UnmdItem><PrcItem>1000</PrcItem><MontoItem>20000</MontoItem></Detalle><Detalle><NroLinDet>2</NroLinDet><TpoCodigo>INT01</TpoCodigo><VlrCodigo>10KGPE</VlrCodigo><IndExe>1</IndExe><NmbItem>CAJA PERA 10KG</NmbItem><DscItem>CAJA PERA FRESCA 10KG ABATE</DscItem><QtyItem>20</QtyItem><UnmdItem>UN</UnmdItem><PrcItem>500</PrcItem><MontoItem>10000</MontoItem></Detalle><Detalle><NroLinDet>3</NroLinDet><TpoCodigo>INT01</TpoCodigo><VlrCodigo>PAL1</VlrCodigo><IndExe>1</IndExe><NmbItem>PALLET 100x120</NmbItem><DscItem>PALLET MADERA DE 100x120CM</DscItem><QtyItem>2</QtyItem><UnmdItem>UN</UnmdItem><PrcItem>10</PrcItem><MontoItem>20</MontoItem></Detalle><TED version="1.0"><DD><RE>XXXXXXX-3</RE><TD>52</TD><F>123</F><FE/><RR>XXXXXXX-4</RR><RSR>Matthieu AMOROS</RSR><MNT>0</MNT><IT1>CAJA MANZANA FRESCA 18KG GALA</IT1><AUTORIZACION><CAF version="1.0"><DA><RE>XXXXXXXX-1</RE><RS>EMPRESA DE PRUEBA</RS><TD>52</TD><FA>2020-11-21</FA><IDK>300</IDK><RSAPK><M>ktchlWfitQpnOkdW9cD/aGqLi60iWr4q8yYV
-00gGP5W5jtuXbhLz2LUBOC8UM0RAZC37DdyK7PIbxBRRww==</M><E>Aw==</E></RSAPK><RNG><D>1</D><H>1000</H></RNG></DA><FRMA algoritmo="SHA1withRSA">hh//Vmm5otzCkpnQ8lWVfl9uhbKaSMm/kzK12Shi9iIZa+t05m7lC1h1xWylOZggJFBxpVl/bKCWbkhMSxVERg==</FRMA></CAF></AUTORIZACION><TSTED>2020-04-09T14:25:00</TSTED></DD><FRMT algoritmo="SHA1withRSA">Z0scam0Fd7GKuC//wlp6dpooHSV5BpO/znIXwuwoPUUAs8GCEv6y9MpqHQlnFmmKam1RNcZQ2grfuGT++p5Yilwo/mInyJmjKOIsAjXmIofdk64X/ZwYVW3YCvlXLEBRDFPq9kdO+Kpc7QBcXmyWqSV+L25iLr+c0uikPHDEv+M=</FRMT></TED></Documento></DTE></SetDTE><Signature xmlns="http://www.w3.org/2000/09/xmldsig#">
+<EnvioDTE xmlns="http://www.sii.cl/SiiDte" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.sii.cl/SiiDte EnvioDTE_v10.xsd" version="1.0"><SetDTE ID="SetDoc"><Caratula version="1.0"><RutEmisor>XXXXXXX-3</RutEmisor><RutEnvia>25656563-3</RutEnvia><RutReceptor>XXXXXXX-4</RutReceptor><FchResol>2014-08-22</FchResol><NroResol>80</NroResol><TmstFirmaEnv>2020-04-14T06:52:34</TmstFirmaEnv><SubTotDTE><TpoDTE>52</TpoDTE><NroDTE>1</NroDTE></SubTotDTE></Caratula><DTE version="1.0"><Documento ID="T52I123"><Encabezado><IdDoc><TipoDTE>52</TipoDTE><Folio>123</Folio><FchEmis>2020-04-14T06:52:34</FchEmis><TipoDespacho>1</TipoDespacho><IndTraslado>8</IndTraslado><CodPtoEmbarqu>905</CodPtoEmbarqu><CodPtoDesemb>556</CodPtoDesemb><FmaPago>1</FmaPago><FchVenc>2020-03-20</FchVenc></IdDoc><Emisor><RUTEmisor>XXXXXXX-3</RUTEmisor><RznSoc>Matthieu AMOROS</RznSoc><GiroEmis>PERSONA</GiroEmis><DirOrigen>1606 Pasaje X</DirOrigen><CmnaOrigen>Teno</CmnaOrigen><CiudadOrigen>Curico</CiudadOrigen><Acteco>1234</Acteco></Emisor><Receptor><RUTRecep>XXXXXXX-4</RUTRecep><RznSocRecep>Matthieu AMOROS</RznSocRecep><GiroRecep>PERSONA</GiroRecep><DirRecep>555 Pasaje X</DirRecep><CmnaRecep>Las condes</CmnaRecep><CiudadRecep>Santiago</CiudadRecep></Receptor><Totales><MntNeto>30020</MntNeto><TasaIVA>0.19</TasaIVA><IVA>5703.8</IVA><MntTotal>35723.8</MntTotal></Totales></Encabezado><Detalle><NroLinDet>1</NroLinDet><TpoCodigo>INT01</TpoCodigo><VlrCodigo>18KGMZ</VlrCodigo><IndExe>1</IndExe><NmbItem>CAJA MANZANA 18KG</NmbItem><DscItem>CAJA MANZANA FRESCA 18KG GALA</DscItem><QtyItem>20</QtyItem><UnmdItem>UN</UnmdItem><PrcItem>1000</PrcItem><MontoItem>20000</MontoItem></Detalle><Detalle><NroLinDet>2</NroLinDet><TpoCodigo>INT01</TpoCodigo><VlrCodigo>10KGPE</VlrCodigo><IndExe>1</IndExe><NmbItem>CAJA PERA 10KG</NmbItem><DscItem>CAJA PERA FRESCA 10KG ABATE</DscItem><QtyItem>20</QtyItem><UnmdItem>UN</UnmdItem><PrcItem>500</PrcItem><MontoItem>10000</MontoItem></Detalle><Detalle><NroLinDet>3</NroLinDet><TpoCodigo>INT01</TpoCodigo><VlrCodigo>PAL1</VlrCodigo><IndExe>1</IndExe><NmbItem>PALLET 100x120</NmbItem><DscItem>PALLET MADERA DE 100x120CM</DscItem><QtyItem>2</QtyItem><UnmdItem>UN</UnmdItem><PrcItem>10</PrcItem><MontoItem>20</MontoItem></Detalle><TED version="1.0"><DD><RE>XXXXXXX-3</RE><TD>52</TD><F>123</F><FE/><RR>XXXXXXX-4</RR><RSR>Matthieu AMOROS</RSR><MNT>0</MNT><IT1>CAJA MANZANA FRESCA 18KG GALA</IT1><AUTORIZACION><CAF version="1.0"><DA><RE>XXXXXXXX-1</RE><RS>EMPRESA DE PRUEBA</RS><TD>52</TD><FA>2020-11-21</FA><IDK>300</IDK><RSAPK><M>ktchlWfitQpnOkdW9cD/aGqLi60iWr4q8yYV
+00gGP5W5jtuXbhLz2LUBOC8UM0RAZC37DdyK7PIbxBRRww==</M><E>Aw==</E></RSAPK><RNG><D>1</D><H>1000</H></RNG></DA><FRMA algoritmo="SHA1withRSA">hh//Vmm5otzCkpnQ8lWVfl9uhbKaSMm/kzK12Shi9iIZa+t05m7lC1h1xWylOZggJFBxpVl/bKCWbkhMSxVERg==</FRMA></CAF></AUTORIZACION><TSTED>2020-04-14T06:52:34</TSTED></DD><FRMT algoritmo="SHA1withRSA">FyktMkqGJ8/K7HnSB7+9DgeSnjjSzWyp3bN/f413s7YEk3+CzHf91UdfgnV4jFRj/SDmvRArUwHNOYZ9vOKgLRBEkwTvq9rwz7uDwBFbijs1LwEsv5hkgyU8OPHJ8UPqp2EsCjbu6YchMfjoofekCmcU/4XtrG05eXPVjYFgg6g=</FRMT></TED></Documento><Signature xmlns="http://www.w3.org/2000/09/xmldsig#">
 	<SignedInfo>
 		<CanonicalizationMethod Algorithm="http://www.w3.org/TR/2001/REC-xml-c14n-20010315"/>
 			<SignatureMethod Algorithm="http://www.w3.org/2000/09/xmldsig#rsa-sha1"/>
@@ -13,15 +9,73 @@
 				<Transform Algorithm="http://www.w3.org/2000/09/xmldsig#enveloped-signature"/>
 			</Transforms>
 			<DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha1"/>
-			 <DigestValue>YvUft6HjQvUEm14b8JN4MK0E628=</DigestValue>
+			 <DigestValue>I3O8ysKjWX6fwi4PVSCj/ipHxbI=</DigestValue>
 		 </Reference>
 	</SignedInfo>
-		<SignatureValue>E5BIndoqYSf2ygY7Clk3gRfdzliCzsOL43Zoz9NwTp1mJ/woH/h2kknMjr1puAqI
-KNNa3kVmf/ernWESXMackCZrr8DMP7V6sRqznaCLtqulY2ZRrdRTCO0J2w/fO7A4
-UmsSMh3xcOEy9z6DzB4IQorvHks1L8k21+nIe1tBEd4dGWVfF47x4WZmYIOAr5Rv
-nYQCrFNcnE+p/liCgV6zUL46PkiC9jR2IIE/qlrqe3efdH5Yg3jjfEXbkzLnsZWR
-6zah1Ii6RBf5NhcFYO9n/g2gT07SzDL0wXBNgR4oRO5HeZ5xRPp7qkIHc7JwuGpD
-pVVsiqXTf6+pV6fKZ0wlhQ==</SignatureValue>
+		<SignatureValue>ghLD4eKc/mdNnh1y3xZyXdn3j4pz7HqswytFIbaXGAubI/wrnRskJ/IG9MMqxjt7
+hSorylSCwykBaQ7OW64mncqJHsmT+a2o1LTghXJZhxdosvQKZl5QQVDSgguk6iOh
+SL7u0A0aGRrBp8Z8ukH2OtLbNPSX2/eYhiGmEgPb9MECZwJo2HiOaLxo/0qGDUHP
+LDB+BLxt8BLisPpqiBUzfsGm2Wg15v4fBa8yNcgIHqyiX6R2MuOeq4+ITrOqf08F
+tc+Q6/guyD/X3Z0av8d6G/86aX11cYjTVQNiIiVihDpZynh47fzJ04ECviz04Mz7
+uUJCAGsA5AbmtCFSZQdKBg==</SignatureValue>
+		<KeyInfo>
+			<KeyValue>
+<RSAKeyValue>
+<Modulus>
+5Wv7ewjB7iG8nmneKvksGvVhx2MrqqIoILKGMaRyvTq7Q2FofBqKzkVLrDeDZiiV
+enbce9x6Wf50ZfWdH1vaoOd6FiSjXFwy97bEAsLq8HI3f4FlkaXVmLlBqEZXNbqz
+rAN+t0XbbK8xKUhR03P3w07QjyT3BMPzEr8ZVvEMMzIdXV4bM7/m2JJpr3BywhKl
+NK9xxlH4gN3kgEPPtlsGticbuhLGbXF8rTsDa2UAHpQnukxdXDFjU3AgA+iGDCij
+B1jauJ7Oeh5DmRtMCLdWSoopl0nE2doivfIlyIZB/L8pNqxBKpCxD9fxZv5aIGil
+klo4LGr41I4rfzqmhEJUVw==
+</Modulus>
+<Exponent>
+AQAB
+</Exponent>
+</RSAKeyValue>
+</KeyValue>
+			<X509Data>
+				<X509Certificate>MIIDozCCAougAwIBAgIUf6GY1krvy+3wf5jMHPccZm1jhKcwDQYJKoZIhvcNAQEL
+BQAwUzELMAkGA1UEBhMCQ0wxHjAcBgNVBAgMFVNhbnRpYWdvIE1ldHJvcG9saXRh
+bjERMA8GA1UEBwwIU2FudGlhZ28xETAPBgNVBAoMCE1hdHRoaWV1MB4XDTIwMDQw
+OTIxMDAwM1oXDTIxMDQwOTIxMDAwM1owUzELMAkGA1UEBhMCQ0wxHjAcBgNVBAgM
+FVNhbnRpYWdvIE1ldHJvcG9saXRhbjERMA8GA1UEBwwIU2FudGlhZ28xETAPBgNV
+BAoMCE1hdHRoaWV1MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA5Wv7
+ewjB7iG8nmneKvksGvVhx2MrqqIoILKGMaRyvTq7Q2FofBqKzkVLrDeDZiiVenbc
+e9x6Wf50ZfWdH1vaoOd6FiSjXFwy97bEAsLq8HI3f4FlkaXVmLlBqEZXNbqzrAN+
+t0XbbK8xKUhR03P3w07QjyT3BMPzEr8ZVvEMMzIdXV4bM7/m2JJpr3BywhKlNK9x
+xlH4gN3kgEPPtlsGticbuhLGbXF8rTsDa2UAHpQnukxdXDFjU3AgA+iGDCijB1ja
+uJ7Oeh5DmRtMCLdWSoopl0nE2doivfIlyIZB/L8pNqxBKpCxD9fxZv5aIGilklo4
+LGr41I4rfzqmhEJUVwIDAQABo28wbTAdBgNVHQ4EFgQU/GS/ZZoXqU0ErFUYtr8k
+64Ex454wHwYDVR0jBBgwFoAU/GS/ZZoXqU0ErFUYtr8k64Ex454wCwYDVR0PBAQD
+AgeAMBMGA1UdJQQMMAoGCCsGAQUFBwMCMAkGA1UdEwQCMAAwDQYJKoZIhvcNAQEL
+BQADggEBAKb4MWqQT/nVgvbvul6FPRkf2Ju0Mn9RjTJR6vVqK+WDy/jMd2/MZG6Y
+QCRExnto/sk1u9KNOjkg7GNtFV37V15+Gjbr9+b895inUxuZr1aBtZX3mSGCbLCT
+r9y+mn5QiaBqlkwlJlplrDtRJEHy/GSsOXczV50fTBlwnti2Co9Z2tRybVTKTO78
+UuVs2hHFePENdwpTiObu6eCH0mmPnqGuy0molYgFU5NOgmpFniHefU/yJyXGWLFk
+28hfnUxI38re+k6oUlUFlokc9uMe4fb5Y4g+mljLkZ639w2FoqEt4ZhhaF+Dl8dC
+8p6qdXl5Wzmp3dagFyTTTetRbFP9LrE=</X509Certificate>
+			</X509Data>
+		</KeyInfo>
+</Signature>
+</DTE></SetDTE><Signature xmlns="http://www.w3.org/2000/09/xmldsig#">
+	<SignedInfo>
+		<CanonicalizationMethod Algorithm="http://www.w3.org/TR/2001/REC-xml-c14n-20010315"/>
+			<SignatureMethod Algorithm="http://www.w3.org/2000/09/xmldsig#rsa-sha1"/>
+		<Reference URI="">
+			<Transforms>
+				<Transform Algorithm="http://www.w3.org/2000/09/xmldsig#enveloped-signature"/>
+			</Transforms>
+			<DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha1"/>
+			 <DigestValue>Gt58pe2yWzj6OAO+UZX+LBgwxc8=</DigestValue>
+		 </Reference>
+	</SignedInfo>
+		<SignatureValue>L0LdfT5nlyARMLQ0/mA67vZUeXyDqeeUyNm9EHa5jTln2xGYDCaf6zGHD4RNFhEV
+9la/h06xCdE2tXY+ScGrwshGCpW2H7BP1qAqmDy4s1yHQsBJAlSv8JHPONmXb/eJ
+DSjpVhmV3OF3ZX1emcqB8Zp5oW75M8ZmDaiFPyfVHwYYy5p4NJ057DntjEmr/5Ez
+cYF7cE7a8K74GEIWi/mW9I35OLC7tw35I4xioEPsSMEgcXrwdwWZdbZQ1fEBR1e3
+SOL7NB1LtKCXiQ//tu6St8vj2YBRYgP8Kyi6SxXdB7ZAfTl0W+xSmV6EiQ5kR/An
+Ii2ZtulhGyhA3T+8nNfWFQ==</SignatureValue>
 		<KeyInfo>
 			<KeyValue>
 <RSAKeyValue>
