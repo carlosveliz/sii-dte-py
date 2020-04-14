@@ -668,7 +668,7 @@ class DTE:
 					  '<TSTED>' + str(datetime.datetime.now().strftime(DTE_SII_DATE_FORMAT)) + '</TSTED>' + \
 					  '</DD>'
 
-			signature = self.sign(document_data, self._caf.embedded_private_key)
+			signature = self.sign(document_data, self._caf.embedded_private_key, self._caf.algorithm)
 			ted = '<TED version="1.0">' + \
 				document_data + \
 			  '<FRMT algoritmo="SHA1withRSA">' + signature + '</FRMT>' + \
@@ -768,11 +768,16 @@ class DTEPayload:
 		self._cover = cover
 
 	def dump(self):
+		dumped = self.dump_without_xml_declaration()
+		dumped = '<?xml version="1.0" encoding="ISO-8859-1"?>' + dumped
+
+		return dumped
+
+	def dump_without_xml_declaration(self):
 		set = '<SetDTE ID="SetDoc">' + \
 				self._cover.dump() + \
 				self.dump_documents() + '</SetDTE>'
-		dumped = '<?xml version="1.0" encoding="ISO-8859-1"?>' + \
-			'<EnvioDTE xmlns="http://www.sii.cl/SiiDte" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.sii.cl/SiiDte EnvioDTE_v10.xsd" version="1.0">' + \
+		dumped = '<EnvioDTE xmlns="http://www.sii.cl/SiiDte" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.sii.cl/SiiDte EnvioDTE_v10.xsd" version="1.0">' + \
 			 set + SiiPlugin.SIGNATURE_TAG + '</EnvioDTE>'
 
 		return dumped
