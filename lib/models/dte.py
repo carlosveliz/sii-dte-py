@@ -713,7 +713,9 @@ class DTE:
 			return base64_encoded_data.decode('ISO-8859-1')
 
 	def dump(self):
-		return '<DTE version="1.0">' + self.dump_document_only() + '</DTE>'
+		return '<DTE version="1.0">' + \
+		 		self.dump_document_only() + \
+				SiiPlugin.SIGNATURE_TAG + '</DTE>'
 
 	def dump_document_only(self):
 		ted = ''

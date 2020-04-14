@@ -155,7 +155,6 @@ if len(sys.argv) > 1:
 		""" Remove declaration """
 		declare = '<?xml version="1.0" encoding="ISO-8859-1"?>'
 		payload = payload.dump().replace(declare, '')
-
 		ready_to_upload = siiSignature.sign_tagged_message(payload)
 		""" Add declaration back """
 		ready_to_upload = declare + '\n\r' + ready_to_upload

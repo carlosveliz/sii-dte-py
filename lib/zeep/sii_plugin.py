@@ -45,17 +45,32 @@ class SiiPlugin(Plugin):
 		""" Add signature template """
 		template_string = self.read_file('cert/sign_sii_xml.tmpl').decode('utf-8')
 		tagged_message = tagged_message.replace(self.SIGNATURE_TAG, template_string)
+		full_message = etree.fromstring(tagged_message)
+
+		signed_documents = []
+
+		for child in full_message.iter('{http://www.sii.cl/SiiDte}DTE'):
+			""" Sign child """
+			document = etree.tostring(child, pretty_print=True).decode('utf-8')
+			signed_document = self.sign(document)
+			""" Find parent and insert signed child, remove old one """
+			parent = child.find("..")
+			parent.remove(child)
+			parent.append(etree.fromstring(signed_document))
+
+		tagged_message = etree.tostring(full_message, pretty_print=True).decode('utf-8')
 		return self.sign(tagged_message)
 
 	def sign(self, message_with_template_included):
 		logger = logging.getLogger()
+		logger.info("SiiPlugin::sign Signing element with template.")
 		"""Should sign a file using a dynamicaly created template, key from PEM and an X509 cert."""
 		assert(message_with_template_included)
 		# Load the pre-constructed XML template.
 		template = etree.fromstring(message_with_template_included)
 
-		# Find the <Signature/> node.
-		signature_node = xmlsec.tree.find_node(template, xmlsec.Node.SIGNATURE)
+		# Find the last <Signature/> node.
+		signature_node = template.findall('{http://www.w3.org/2000/09/xmldsig#}Signature')[-1]
 
 		assert signature_node is not None
 		assert signature_node.tag.endswith(xmlsec.Node.SIGNATURE)
@@ -69,6 +84,6 @@ class SiiPlugin(Plugin):
 			return ''
 
 		ctx.sign(signature_node)
-		template.remove(xmlsec.tree.find_node(template, xmlsec.Node.SIGNATURE))
+		template.remove(signature_node)
 		template.insert(1, signature_node)
 		return etree.tostring(template, pretty_print=True).decode('utf-8')
