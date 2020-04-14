@@ -7,7 +7,7 @@ import logging
 class SiiPlugin(Plugin):
 	key = ''
 	cert = ''
-	SIGNATURE_TAG = '[[SIGNATURE]]'
+	SIGNATURE_TAG = '{{SIGNATURE}}'
 
 	def ingress(self, envelope, http_headers, operation):
 		""" Hook on received messages """
